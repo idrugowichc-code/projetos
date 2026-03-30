@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Análise Semanal CRM — Semana 13 · HYGIBRAS</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  :root {
+    --bg: #0f1117;
+    --bg2: #181c27;
+    --bg3: #1e2333;
+    --border: #2a2f42;
+    --border2: #343a50;
+    --text: #e8eaf0;
+    --text2: #9aa0b8;
+    --text3: #6b7290;
+    --blue: #378ADD;
+    --green: #1D9E75;
+    --amber: #BA7517;
+    --red: #E24B4A;
+    --purple: #8B5CF6;
+    --radius: 10px;
+    --radius-sm: 6px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 14px; line-height: 1.5; min-height: 100vh; }
+
+  /* Layout */
+  .page { max-width: 1100px; margin: 0 auto; padding: 32px 24px 64px; }
+  .header { margin-bottom: 32px; }
+  .header h1 { font-size: 22px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .header .meta { color: var(--text2); font-size: 13px; display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+  .badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+  .badge-amber { background: #2a1e05; color: var(--amber); border: 1px solid #3d2c08; }
+  .badge-blue { background: #0c1e35; color: var(--blue); border: 1px solid #143050; }
+  .badge-red { background: #2a0f0f; color: var(--red); border: 1px solid #401515; }
+
+  /* Section */
+  .section { margin-bottom: 32px; }
+  .section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text3); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* Cards grid */
+  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .kpi-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; }
+  .kpi-label { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
+  .kpi-value { font-size: 26px; font-weight: 700; color: var(--text); line-height: 1; margin-bottom: 6px; }
+  .kpi-value.danger { color: var(--red); }
+  .kpi-value.warn { color: var(--amber); }
+  .kpi-value.ok { color: var(--green); }
+  .kpi-sub { font-size: 12px; color: var(--text2); }
+
+  /* Insight boxes */
+  .insight-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .insight-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; }
+  .insight-card.critical { border-left: 3px solid var(--red); }
+  .insight-card.warning { border-left: 3px solid var(--amber); }
+  .insight-card.positive { border-left: 3px solid var(--green); }
+  .insight-card.info { border-left: 3px solid var(--blue); }
+  .insight-icon { font-size: 16px; margin-bottom: 6px; }
+  .insight-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .insight-body { font-size: 12px; color: var(--text2); line-height: 1.6; }
+  .insight-body strong { color: var(--text); }
+
+  /* Two-col layout */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+  /* Chart card */
+  .chart-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; }
+  .chart-card h3 { font-size: 12px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 16px; }
+
+  /* Funnel */
+  .funnel { display: flex; flex-direction: column; gap: 8px; }
+  .funnel-row { display: flex; align-items: center; gap: 12px; }
+  .funnel-label { font-size: 12px; color: var(--text2); min-width: 210px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .funnel-bar-wrap { flex: 1; background: var(--bg3); border-radius: 4px; height: 24px; position: relative; overflow: hidden; }
+  .funnel-bar { height: 100%; border-radius: 4px; display: flex; align-items: center; padding-left: 8px; font-size: 11px; font-weight: 700; color: #fff; transition: width 0.6s ease; }
+  .funnel-count { font-size: 12px; font-weight: 700; color: var(--text); min-width: 30px; text-align: right; }
+  .funnel-pct { font-size: 11px; color: var(--text3); min-width: 40px; text-align: right; }
+
+  /* Table */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; }
+  th { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.05em; padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  td { font-size: 13px; color: var(--text2); padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--bg3); }
+  .td-name { color: var(--text); font-weight: 500; }
+  .td-num { text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; }
+  .pct-bar { display: flex; align-items: center; gap: 8px; }
+  .pct-mini { flex: 1; background: var(--bg3); height: 6px; border-radius: 3px; overflow: hidden; max-width: 80px; }
+  .pct-mini-fill { height: 100%; border-radius: 3px; }
+
+  /* Loss pills */
+  .loss-grid { display: grid; gap: 8px; }
+  .loss-row { display: flex; align-items: center; gap: 10px; }
+  .loss-label { font-size: 13px; color: var(--text2); flex: 1; }
+  .loss-val { font-size: 13px; font-weight: 700; color: var(--text); min-width: 24px; text-align: right; }
+  .loss-pct-text { font-size: 11px; color: var(--text3); min-width: 38px; text-align: right; }
+  .loss-bar-wrap { width: 120px; background: var(--bg3); border-radius: 3px; height: 6px; }
+  .loss-bar-fill { height: 6px; border-radius: 3px; background: var(--red); }
+
+  /* Plan of action */
+  .action-grid { display: grid; gap: 12px; }
+  .action-item { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; display: flex; gap: 14px; align-items: flex-start; }
+  .action-num { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+  .action-num.p1 { background: #2a0f0f; color: var(--red); }
+  .action-num.p2 { background: #2a1e05; color: var(--amber); }
+  .action-num.p3 { background: #0c1e35; color: var(--blue); }
+  .action-content h4 { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .action-content p { font-size: 12px; color: var(--text2); line-height: 1.6; }
+  .action-tag { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+  .tag-urgente { background: #2a0f0f; color: var(--red); }
+  .tag-esta-semana { background: #2a1e05; color: var(--amber); }
+  .tag-processo { background: #0c1e35; color: var(--blue); }
+
+  /* Color dots */
+  .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; flex-shrink: 0; margin-top: 5px; }
+
+  /* Divider */
+  hr { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+
+  /* Responsive */
+  @media (max-width: 700px) {
+    .kpi-grid { grid-template-columns: 1fr 1fr; }
+    .two-col, .three-col, .insight-grid { grid-template-columns: 1fr; }
+    .funnel-label { min-width: 130px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <h1>Análise Semanal CRM — Semana 13</h1>
+    <div class="meta">
+      <span>23–27 de março de 2026</span>
+      <span class="badge badge-amber">⚠ Nenhum fechamento</span>
+      <span class="badge badge-blue">76 negócios ativos no funil</span>
+      <span class="badge badge-red">38% taxa de perda</span>
+    </div>
+  </div>
+
+  <!-- 1. RESUMO EXECUTIVO -->
+  <div class="section">
+    <div class="section-title">1 · Resumo Executivo</div>
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-label">Negócios cadastrados</div>
+        <div class="kpi-value">76</div>
+        <div class="kpi-sub">Semana 13 (23–27/03)</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Fechamentos (Ganhos)</div>
+        <div class="kpi-value danger">0</div>
+        <div class="kpi-sub">Receita fechada: R$ 0,00</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Perdidos na semana</div>
+        <div class="kpi-value warn">29</div>
+        <div class="kpi-sub">38,2% do total</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Pipeline em aberto</div>
+        <div class="kpi-value warn">47</div>
+        <div class="kpi-sub">Valor registrado: R$ 836,65</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. PRINCIPAIS INSIGHTS -->
+  <div class="section">
+    <div class="section-title">2 · Principais Insights</div>
+    <div class="insight-grid">
+      <div class="insight-card critical">
+        <div class="insight-icon">🚨</div>
+        <div class="insight-title">Zero fechamentos na semana</div>
+        <div class="insight-body">Nenhum negócio foi marcado como Ganho na W13. Com 47 em andamento e 2 deals em etapas avançadas (Orçamento), há potencial represado — mas o funil não converteu.</div>
+      </div>
+      <div class="insight-card critical">
+        <div class="insight-icon">📭</div>
+        <div class="insight-title">35,5% dos leads sem origem registrada</div>
+        <div class="insight-body"><strong>27 de 76 negócios</strong> não têm origem preenchida. Destes, <strong>20 foram perdidos</strong> (74% de perda) — tornando impossível medir ROI de canal ou identificar onde está o desperdício.</div>
+      </div>
+      <div class="insight-card warning">
+        <div class="insight-icon">⚠️</div>
+        <div class="insight-title">47% dos LEADS descartados direto na entrada</div>
+        <div class="insight-body">De 53 leads, <strong>25 foram perdidos</strong> (47,2%). O principal motivo: "Cliente fora do perfil" (15 casos). Isso indica falha de qualificação pré-CRM, não de venda.</div>
+      </div>
+      <div class="insight-card warning">
+        <div class="insight-icon">💰</div>
+        <div class="insight-title">Pipeline sem valor real</div>
+        <div class="insight-body">Apenas <strong>2 negócios têm valor preenchido</strong> (R$ 787 e R$ 49 — ambos da Aromitalia, possivelmente duplicata). Os outros 45 deals em andamento estão sem valor, impossibilitando forecast.</div>
+      </div>
+      <div class="insight-card positive">
+        <div class="insight-icon">✅</div>
+        <div class="insight-title">Outbound com excelente retenção</div>
+        <div class="insight-body">31 negócios outbound geraram apenas <strong>2 perdas (6,5%)</strong> — melhor taxa de qualidade do funil. Indica que a abordagem ativa está trazendo leads adequados ao perfil.</div>
+      </div>
+      <div class="insight-card info">
+        <div class="insight-icon">📊</div>
+        <div class="insight-title">Fernanda avança melhor no funil</div>
+        <div class="insight-body">Com 30 negócios e apenas 2 perdas (<strong>6,7% de perda</strong>), Fernanda tem a melhor taxa de retenção. Jeferson lidera em volume (35) mas perdeu 21 (60%). Ponto de aprendizado para equalizar o time.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. GARGALOS DO FUNIL -->
+  <div class="section">
+    <div class="section-title">3 · Gargalos do Funil</div>
+    <div class="two-col">
+      <div class="chart-card">
+        <h3>Distribuição por etapa — todos os status</h3>
+        <div class="funnel">
+          <div class="funnel-row">
+            <div class="funnel-label">LEADS</div>
+            <div class="funnel-bar-wrap">
+              <div class="funnel-bar" style="width:69.7%; background: var(--blue);">LEADS</div>
+            </div>
+            <div class="funnel-count">53</div>
+            <div class="funnel-pct">69,7%</div>
+          </div>
+          <div class="funnel-row">
+            <div class="funnel-label">QUALIFICAÇÃO</div>
+            <div class="funnel-bar-wrap">
+              <div class="funnel-bar" style="width:25%; background: var(--purple);">QUALIF.</div>
+            </div>
+            <div class="funnel-count">19</div>
+            <div class="funnel-pct">25,0%</div>
+          </div>
+          <div class="funnel-row">
+            <div class="funnel-label">OPORTUNIDADE - Tratativa</div>
+            <div class="funnel-bar-wrap">
+              <div class="funnel-bar" style="width:1.3%; background: var(--amber);"> </div>
+            </div>
+            <div class="funnel-count">1</div>
+            <div class="funnel-pct">1,3%</div>
+          </div>
+          <div class="funnel-row">
+            <div class="funnel-label">Gerar Orçamento no Omie</div>
+            <div class="funnel-bar-wrap">
+              <div class="funnel-bar" style="width:1.3%; background: var(--amber);"> </div>
+            </div>
+            <div class="funnel-count">1</div>
+            <div class="funnel-pct">1,3%</div>
+          </div>
+          <div class="funnel-row">
+            <div class="funnel-label">Orçamento Criado com Sucesso</div>
+            <div class="funnel-bar-wrap">
+              <div class="funnel-bar" style="width:2.6%; background: var(--green);"> </div>
+            </div>
+            <div class="funnel-count">2</div>
+            <div class="funnel-pct">2,6%</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <h3>Ativos vs Perdidos por etapa</h3>
+        <canvas id="funnelChart" height="180"></canvas>
+      </div>
+    </div>
+
+    <div style="margin-top:12px; background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; border-left: 3px solid var(--red);">
+      <div style="font-size:13px; font-weight:600; color:var(--text); margin-bottom:6px;">🔴 Gargalo principal: saída na etapa LEADS</div>
+      <div style="font-size:12px; color: var(--text2); line-height: 1.7;">
+        <strong>47,2%</strong> dos leads são descartados sem avançar. A passagem de LEADS → QUALIFICAÇÃO é o maior gargalo do funil — apenas <strong>19 de 53</strong> leads chegam à qualificação.
+        Além disso, a etapa Qualificação → Oportunidade tem conversão de apenas <strong>5,3%</strong> (1 de 19).
+        O funil tem um afunilamento abrupto logo na entrada que precisa ser endereçado com critérios de triagem mais claros.
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. PERFORMANCE POR VENDEDOR -->
+  <div class="section">
+    <div class="section-title">4 · Performance por Vendedor</div>
+    <div class="two-col">
+      <div class="chart-card">
+        <h3>Negócios por vendedor</h3>
+        <canvas id="vendedorChart" height="180"></canvas>
+      </div>
+      <div class="chart-card">
+        <h3>Detalhamento</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Vendedor</th>
+                <th class="td-num">Total</th>
+                <th class="td-num">Ativos</th>
+                <th class="td-num">Perdidos</th>
+                <th>Taxa perda</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="td-name">Jeferson</td>
+                <td class="td-num">35</td>
+                <td class="td-num" style="color:var(--blue)">14</td>
+                <td class="td-num" style="color:var(--red)">21</td>
+                <td>
+                  <div class="pct-bar">
+                    <div class="pct-mini"><div class="pct-mini-fill" style="width:60%; background:var(--red)"></div></div>
+                    <span style="color:var(--red); font-weight:700; font-size:12px">60,0%</span>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td class="td-name">Fernanda</td>
+                <td class="td-num">30</td>
+                <td class="td-num" style="color:var(--blue)">28</td>
+                <td class="td-num" style="color:var(--red)">2</td>
+                <td>
+                  <div class="pct-bar">
+                    <div class="pct-mini"><div class="pct-mini-fill" style="width:6.7%; background:var(--green)"></div></div>
+                    <span style="color:var(--green); font-weight:700; font-size:12px">6,7%</span>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td class="td-name">Hygibras</td>
+                <td class="td-num">10</td>
+                <td class="td-num" style="color:var(--blue)">4</td>
+                <td class="td-num" style="color:var(--red)">6</td>
+                <td>
+                  <div class="pct-bar">
+                    <div class="pct-mini"><div class="pct-mini-fill" style="width:60%; background:var(--red)"></div></div>
+                    <span style="color:var(--red); font-weight:700; font-size:12px">60,0%</span>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td class="td-name">Rafael de Jesus</td>
+                <td class="td-num">1</td>
+                <td class="td-num" style="color:var(--blue)">1</td>
+                <td class="td-num" style="color:var(--red)">0</td>
+                <td>
+                  <div class="pct-bar">
+                    <div class="pct-mini"><div class="pct-mini-fill" style="width:0%; background:var(--green)"></div></div>
+                    <span style="color:var(--green); font-weight:700; font-size:12px">0,0%</span>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="margin-top:14px; padding: 12px 14px; background: var(--bg3); border-radius: var(--radius-sm);">
+          <div style="font-size:12px; color:var(--text2); line-height:1.7;">
+            ⚠ <strong style="color:var(--text)">Atenção Jeferson:</strong> 21 perdas em 35 negócios (60%).
+            Mesma taxa que Hygibras. Ambos apresentam perfil de descarte alto — possível que estejam absorvendo leads desqualificados de canais sem triagem.
+            Fernanda, com 28 de 30 em andamento, demonstra processo mais seletivo na entrada.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. ANÁLISE DE ORIGENS -->
+  <div class="section">
+    <div class="section-title">5 · Análise de Origens</div>
+    <div class="two-col">
+      <div class="chart-card">
+        <h3>Volume e perdas por origem</h3>
+        <canvas id="origensChart" height="200"></canvas>
+      </div>
+      <div class="chart-card">
+        <h3>Taxa de perda por origem</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Origem</th>
+                <th class="td-num">Total</th>
+                <th class="td-num">Perdidos</th>
+                <th>Taxa perda</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="td-name">Outbound</td>
+                <td class="td-num">31</td>
+                <td class="td-num" style="color:var(--red)">2</td>
+                <td>
+                  <div class="pct-bar">
+                    <div class="pct-mini"><div class="pct-mini-fill" style="width:6.5%; background:var(--green)"></div></div>
+                    <span style="color:var(--green); font-weight:700; font-size:12px">6,5%</span>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td class="td-name">RD Station</td>
+                <td class="td-num">8</td>
+                <td class="td-num" style="color:var(--red)">2</td>
+                <td>
+                  <div class="pct-bar">
+                    <div class="pct-mini"><div class="pct-mini-fill" style="width:25%; background:var(--amber)"></div></div>
+                    <span style="color:var(--amber); font-weight:700; font-size:12px">25,0%</span>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td class="td-name">Inbound</td>
+                <td class="td-num">9</td>
+                <td class="td-num" style="color:var(--red)">5</td>
+                <td>
+                  <div class="pct-bar">
+                    <div class="pct-mini"><div class="pct-mini-fill" style="width:55.6%; background:var(--red)"></div></div>
+                    <span style="color:var(--red); font-weight:700; font-size:12px">55,6%</span>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td class="td-name">Freeco</td>
+                <td class="td-num">1</td>
+                <td class="td-num" style="color:var(--green)">0</td>
+                <td>
+                  <div class="pct-bar">
+                    <div class="pct-mini"><div class="pct-mini-fill" style="width:0%; background:var(--green)"></div></div>
+                    <span style="color:var(--green); font-weight:700; font-size:12px">0,0%</span>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td class="td-name" style="color:var(--red)">Sem origem ⚠</td>
+                <td class="td-num">27</td>
+                <td class="td-num" style="color:var(--red)">20</td>
+                <td>
+                  <div class="pct-bar">
+                    <div class="pct-mini"><div class="pct-mini-fill" style="width:74%; background:var(--red)"></div></div>
+                    <span style="color:var(--red); font-weight:700; font-size:12px">74,1%</span>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="margin-top:12px; padding:12px 14px; background: #2a0f0f; border-radius: var(--radius-sm);">
+          <div style="font-size:12px; color:var(--text2); line-height:1.7;">
+            🔴 <strong style="color:var(--red)">Alerta crítico:</strong> "Sem origem" é o segundo maior grupo (27 deals) e tem a pior taxa de perda: <strong style="color:var(--red)">74%</strong>.
+            Esses leads são essencialmente invisíveis no funil e consomem capacidade do time sem dados acionáveis.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. MOTIVOS DE PERDA -->
+  <div class="section">
+    <div class="section-title">6 · Motivos de Perda (29 negócios)</div>
+    <div class="two-col">
+      <div class="chart-card">
+        <h3>Distribuição de motivos</h3>
+        <canvas id="perdasChart" height="200"></canvas>
+      </div>
+      <div class="chart-card">
+        <h3>Ranking detalhado</h3>
+        <div class="loss-grid">
+          <div class="loss-row">
+            <div class="dot" style="background:var(--red)"></div>
+            <div class="loss-label">Cliente fora do perfil</div>
+            <div class="loss-val">15</div>
+            <div class="loss-pct-text">51,7%</div>
+            <div class="loss-bar-wrap"><div class="loss-bar-fill" style="width:100%; background:var(--red)"></div></div>
+          </div>
+          <div class="loss-row">
+            <div class="dot" style="background:var(--amber)"></div>
+            <div class="loss-label">Encaminhado para Higiclear</div>
+            <div class="loss-val">4</div>
+            <div class="loss-pct-text">13,8%</div>
+            <div class="loss-bar-wrap"><div class="loss-bar-fill" style="width:26.7%; background:var(--amber)"></div></div>
+          </div>
+          <div class="loss-row">
+            <div class="dot" style="background:var(--amber)"></div>
+            <div class="loss-label">Licitação / Revenda</div>
+            <div class="loss-val">4</div>
+            <div class="loss-pct-text">13,8%</div>
+            <div class="loss-bar-wrap"><div class="loss-bar-fill" style="width:26.7%; background:var(--amber)"></div></div>
+          </div>
+          <div class="loss-row">
+            <div class="dot" style="background:var(--blue)"></div>
+            <div class="loss-label">Cadastro Duplicado</div>
+            <div class="loss-val">2</div>
+            <div class="loss-pct-text">6,9%</div>
+            <div class="loss-bar-wrap"><div class="loss-bar-fill" style="width:13.3%; background:var(--blue)"></div></div>
+          </div>
+          <div class="loss-row">
+            <div class="dot" style="background:var(--blue)"></div>
+            <div class="loss-label">Fora do estado</div>
+            <div class="loss-val">2</div>
+            <div class="loss-pct-text">6,9%</div>
+            <div class="loss-bar-wrap"><div class="loss-bar-fill" style="width:13.3%; background:var(--blue)"></div></div>
+          </div>
+          <div class="loss-row">
+            <div class="dot" style="background:var(--text3)"></div>
+            <div class="loss-label">Encaminhado para Parceiros</div>
+            <div class="loss-val">1</div>
+            <div class="loss-pct-text">3,4%</div>
+            <div class="loss-bar-wrap"><div class="loss-bar-fill" style="width:6.7%; background:var(--text3)"></div></div>
+          </div>
+          <div class="loss-row">
+            <div class="dot" style="background:var(--text3)"></div>
+            <div class="loss-label">Sem retorno</div>
+            <div class="loss-val">1</div>
+            <div class="loss-pct-text">3,4%</div>
+            <div class="loss-bar-wrap"><div class="loss-bar-fill" style="width:6.7%; background:var(--text3)"></div></div>
+          </div>
+        </div>
+        <div style="margin-top:14px; padding: 12px 14px; background: var(--bg3); border-radius: var(--radius-sm);">
+          <div style="font-size:12px; color:var(--text2); line-height:1.7;">
+            💡 <strong style="color:var(--text)">51,7% das perdas</strong> são por "fora do perfil" — isso não é problema de venda, é <strong style="color:var(--text)">problema de entrada</strong>.
+            Os critérios de ICP precisam ser aplicados antes do cadastro no CRM para não consumir tempo do time.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. PLANO DE AÇÃO -->
+  <div class="section">
+    <div class="section-title">7 · Plano de Ação — Semana 14</div>
+    <div class="action-grid">
+
+      <div class="action-item">
+        <div class="action-num p1">1</div>
+        <div class="action-content">
+          <div class="action-tag tag-urgente">🔴 Urgente</div>
+          <h4>Resolver o deal da Aromitalia — possível duplicata com orçamento preso</h4>
+          <p>Existem 3 registros da Aromitalia no CRM (R$ 787,34 cada). Um foi marcado como "Perdido" em "Gerar Orçamento no Omie", outro como "Em andamento" em "Orçamento Criado".
+          Verificar se são o mesmo negócio, unificar e definir próximo passo — este é o único deal com valor real no pipeline desta semana.</p>
+        </div>
+      </div>
+
+      <div class="action-item">
+        <div class="action-num p1">2</div>
+        <div class="action-content">
+          <div class="action-tag tag-urgente">🔴 Urgente</div>
+          <h4>Preencher origem nos 27 negócios sem fonte registrada</h4>
+          <p>35,5% dos negócios não têm origem. Orientar o time a preencher o campo obrigatoriamente no momento do cadastro.
+          Idealmente, bloquear o CRM para não salvar sem origem selecionada.
+          Sem esse dado, é impossível medir ROI de canal e tomar decisões de alocação de investimento.</p>
+        </div>
+      </div>
+
+      <div class="action-item">
+        <div class="action-num p2">3</div>
+        <div class="action-content">
+          <div class="action-tag tag-esta-semana">⚠ Esta semana</div>
+          <h4>Criar checklist de ICP antes do cadastro para reduzir perdas por "fora do perfil"</h4>
+          <p>51,7% das perdas são por perfil inadequado — o que significa que o time está gastando energia triando prospects que nunca deveriam ter entrado.
+          Definir 3–5 critérios objetivos de qualificação mínima (segmento, porte, estado, tipo de compra) e aplicar antes de criar o deal no CRM.</p>
+        </div>
+      </div>
+
+      <div class="action-item">
+        <div class="action-num p2">4</div>
+        <div class="action-content">
+          <div class="action-tag tag-esta-semana">⚠ Esta semana</div>
+          <h4>Entender o gap de performance entre Jeferson (60% perda) e Fernanda (6,7% perda)</h4>
+          <p>A diferença de taxa de perda entre os dois principais vendedores é enorme.
+          Fazer uma sessão de alinhamento para entender se Jeferson está recebendo leads piores, cadastrando mais rapidamente sem qualificação, ou se há diferença no processo de triagem.
+          Usar o método de Fernanda como referência.</p>
+        </div>
+      </div>
+
+      <div class="action-item">
+        <div class="action-num p3">5</div>
+        <div class="action-content">
+          <div class="action-tag tag-processo">🔵 Processo</div>
+          <h4>Preencher valor em todos os deals em andamento para viabilizar forecast</h4>
+          <p>45 de 47 negócios ativos não têm valor registrado. Sem isso, o pipeline em R$ não pode ser calculado e o forecast comercial fica inviável.
+          Estabelecer SLA: valor deve ser preenchido ao chegar na etapa QUALIFICAÇÃO no máximo.</p>
+        </div>
+      </div>
+
+      <div class="action-item">
+        <div class="action-num p3">6</div>
+        <div class="action-content">
+          <div class="action-tag tag-processo">🔵 Processo</div>
+          <h4>Revisar qualidade dos leads Inbound (55,6% de perda)</h4>
+          <p>O canal Inbound tem perda quase 9× maior que o Outbound. Verificar qual formulário, landing page ou fonte está gerando esses contatos e ajustar a mensagem para atrair o perfil correto.
+          Em paralelo, avaliar se vale a pena manter o volume ou priorizar qualidade.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+// Funnel chart
+const funnelCtx = document.getElementById('funnelChart').getContext('2d');
+new Chart(funnelCtx, {
+  type: 'bar',
+  data: {
+    labels: ['LEADS', 'QUALIFICAÇÃO', 'OPORTUNIDADE', 'Ger. Orçamento', 'Orç. Criado'],
+    datasets: [
+      {
+        label: 'Ativos',
+        data: [28, 17, 1, 0, 1],
+        backgroundColor: '#378ADD',
+        borderRadius: 4,
+      },
+      {
+        label: 'Perdidos',
+        data: [25, 2, 0, 1, 1],
+        backgroundColor: '#E24B4A',
+        borderRadius: 4,
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: true,
+    plugins: {
+      legend: {
+        display: true,
+        labels: { color: '#9aa0b8', font: { size: 11 }, boxWidth: 10, padding: 12 }
+      }
+    },
+    scales: {
+      x: {
+        stacked: false,
+        grid: { color: '#2a2f42' },
+        ticks: { color: '#6b7290', font: { size: 10 }, maxRotation: 30 }
+      },
+      y: {
+        grid: { color: '#2a2f42' },
+        ticks: { color: '#6b7290', font: { size: 11 } }
+      }
+    }
+  }
+});
+
+// Vendedor chart
+const vendCtx = document.getElementById('vendedorChart').getContext('2d');
+new Chart(vendCtx, {
+  type: 'bar',
+  data: {
+    labels: ['Jeferson', 'Fernanda', 'Hygibras', 'Rafael'],
+    datasets: [
+      {
+        label: 'Ativos',
+        data: [14, 28, 4, 1],
+        backgroundColor: '#378ADD',
+        borderRadius: 4,
+      },
+      {
+        label: 'Perdidos',
+        data: [21, 2, 6, 0],
+        backgroundColor: '#E24B4A',
+        borderRadius: 4,
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: true,
+    plugins: {
+      legend: {
+        display: true,
+        labels: { color: '#9aa0b8', font: { size: 11 }, boxWidth: 10, padding: 12 }
+      }
+    },
+    scales: {
+      x: {
+        grid: { color: '#2a2f42' },
+        ticks: { color: '#6b7290', font: { size: 11 } }
+      },
+      y: {
+        grid: { color: '#2a2f42' },
+        ticks: { color: '#6b7290', font: { size: 11 } }
+      }
+    }
+  }
+});
+
+// Origens chart
+const origCtx = document.getElementById('origensChart').getContext('2d');
+new Chart(origCtx, {
+  type: 'bar',
+  data: {
+    labels: ['Outbound', 'Sem origem', 'Inbound', 'RD Station', 'Freeco'],
+    datasets: [
+      {
+        label: 'Ativos',
+        data: [29, 7, 4, 6, 1],
+        backgroundColor: '#378ADD',
+        borderRadius: 4,
+      },
+      {
+        label: 'Perdidos',
+        data: [2, 20, 5, 2, 0],
+        backgroundColor: '#E24B4A',
+        borderRadius: 4,
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: true,
+    plugins: {
+      legend: {
+        display: true,
+        labels: { color: '#9aa0b8', font: { size: 11 }, boxWidth: 10, padding: 12 }
+      }
+    },
+    scales: {
+      x: {
+        grid: { color: '#2a2f42' },
+        ticks: { color: '#6b7290', font: { size: 10 }, maxRotation: 20 }
+      },
+      y: {
+        grid: { color: '#2a2f42' },
+        ticks: { color: '#6b7290', font: { size: 11 } }
+      }
+    }
+  }
+});
+
+// Perdas chart
+const perdasCtx = document.getElementById('perdasChart').getContext('2d');
+new Chart(perdasCtx, {
+  type: 'doughnut',
+  data: {
+    labels: ['Fora do perfil', 'Enc. Higiclear', 'Licitação/Revenda', 'Duplicado', 'Fora do estado', 'Enc. Parceiros', 'Sem retorno'],
+    datasets: [{
+      data: [15, 4, 4, 2, 2, 1, 1],
+      backgroundColor: ['#E24B4A', '#BA7517', '#D97B20', '#378ADD', '#5B8FCC', '#6b7290', '#4a5168'],
+      borderWidth: 2,
+      borderColor: '#181c27',
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: true,
+    cutout: '60%',
+    plugins: {
+      legend: {
+        display: true,
+        position: 'right',
+        labels: { color: '#9aa0b8', font: { size: 10 }, boxWidth: 10, padding: 8 }
+      }
+    }
+  }
+});
+</script>
+</body>
+</html>
