@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard CRM — Hygibras W14</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  :root {
+    --blue: #378ADD; --green: #1D9E75; --amber: #BA7517; --red: #E24B4A;
+    --bg: #0f1117; --bg2: #181c24; --bg3: #1e2330;
+    --border: rgba(255,255,255,0.08); --text: #e8eaf0; --text2: #9aa0b4;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; font-size: 14px; line-height: 1.5; }
+  .container { max-width: 1400px; margin: 0 auto; padding: 24px; }
+  
+  /* HEADER */
+  .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 28px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+  .header-left h1 { font-size: 22px; font-weight: 700; color: var(--text); letter-spacing: -0.3px; }
+  .header-left p { color: var(--text2); margin-top: 4px; font-size: 13px; }
+  .header-badge { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 8px 16px; font-size: 13px; font-weight: 600; color: var(--blue); }
+  
+  /* SECTION TITLE */
+  .section-title { font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--text2); margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  .section { margin-bottom: 28px; }
+  
+  /* KPI CARDS */
+  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .kpi-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; position: relative; overflow: hidden; }
+  .kpi-card::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px; border-radius: 10px 10px 0 0; }
+  .kpi-blue::before { background: var(--blue); }
+  .kpi-red::before { background: var(--red); }
+  .kpi-amber::before { background: var(--amber); }
+  .kpi-green::before { background: var(--green); }
+  .kpi-label { font-size: 11px; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase; color: var(--text2); margin-bottom: 8px; }
+  .kpi-value { font-size: 30px; font-weight: 700; color: var(--text); line-height: 1; margin-bottom: 8px; }
+  .kpi-sub { font-size: 12px; color: var(--text2); }
+  .kpi-badge { display: inline-block; margin-top: 6px; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; }
+  .badge-red { background: rgba(226,75,74,0.2); color: var(--red); }
+  .badge-green { background: rgba(29,158,117,0.2); color: var(--green); }
+  .badge-amber { background: rgba(186,117,23,0.2); color: var(--amber); }
+  .badge-blue { background: rgba(55,138,221,0.2); color: var(--blue); }
+  
+  /* INSIGHTS */
+  .insights-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .insight-item { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; font-size: 13px; display: flex; gap: 10px; align-items: flex-start; }
+  .insight-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+  .insight-text { color: var(--text); line-height: 1.4; }
+  
+  /* CHARTS GRID */
+  .charts-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .charts-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .chart-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 18px; }
+  .chart-card h3 { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text2); margin-bottom: 14px; }
+  .chart-wrap { position: relative; }
+  
+  /* FUNIL BARS */
+  .funil-item { margin-bottom: 10px; }
+  .funil-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--text2); margin-bottom: 4px; }
+  .funil-bar { height: 8px; background: var(--bg3); border-radius: 4px; overflow: hidden; }
+  .funil-fill { height: 100%; border-radius: 4px; background: var(--blue); transition: width 0.3s; }
+  
+  /* VENDEDORES TABLE */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; }
+  th { font-size: 11px; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase; color: var(--text2); padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  td { padding: 10px 12px; font-size: 13px; color: var(--text); border-bottom: 1px solid rgba(255,255,255,0.04); vertical-align: middle; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+  .conv-bar { height: 6px; background: var(--bg3); border-radius: 3px; overflow: hidden; margin-top: 4px; min-width: 60px; }
+  .conv-fill { height: 100%; border-radius: 3px; }
+  .table-note { font-size: 12px; color: var(--text2); margin-top: 12px; padding: 10px 12px; background: var(--bg3); border-radius: 6px; border-left: 3px solid var(--blue); }
+  
+  /* ACTION PLAN */
+  .action-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .action-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+  .action-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+  .action-title.urgent { color: var(--red); }
+  .action-title.important { color: var(--amber); }
+  .action-title.strategic { color: var(--blue); }
+  .action-item { display: flex; gap: 8px; margin-bottom: 10px; font-size: 13px; color: var(--text); line-height: 1.4; }
+  .action-num { flex-shrink: 0; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; margin-top: 1px; }
+  .urgent .action-num { background: rgba(226,75,74,0.2); color: var(--red); }
+  .important .action-num { background: rgba(186,117,23,0.2); color: var(--amber); }
+  .strategic .action-num { background: rgba(55,138,221,0.2); color: var(--blue); }
+  
+  /* EXEC SUMMARY */
+  .exec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .exec-text p { font-size: 14px; color: var(--text); line-height: 1.7; margin-bottom: 14px; }
+  .priority-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 14px; margin-bottom: 10px; }
+  .priority-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text2); margin-bottom: 6px; }
+  .priority-text { font-size: 13px; color: var(--text); line-height: 1.4; }
+  .priority-1 { border-left: 3px solid var(--red); }
+  .priority-2 { border-left: 3px solid var(--amber); }
+  .priority-meta { border-left: 3px solid var(--blue); }
+  
+  /* GARGALO */
+  .gargalo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .analysis-box { background: var(--bg3); border-radius: 6px; padding: 12px; margin-top: 12px; font-size: 12px; color: var(--text2); line-height: 1.6; }
+  .analysis-box strong { color: var(--text); }
+  
+  /* FOOTER */
+  .footer { margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--border); text-align: center; font-size: 12px; color: var(--text2); }
+  
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .charts-grid-3 { grid-template-columns: 1fr; }
+    .charts-grid-2 { grid-template-columns: 1fr; }
+    .action-grid { grid-template-columns: 1fr; }
+    .exec-grid { grid-template-columns: 1fr; }
+    .gargalo-grid { grid-template-columns: 1fr; }
+    .insights-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-left">
+      <h1>Dashboard CRM — Hygibras</h1>
+      <p>Semana 14 &nbsp;•&nbsp; 01/04/2026 a 02/04/2026 &nbsp;•&nbsp; Gerado em 05/04/2026</p>
+    </div>
+    <div class="header-badge">W14 · 2026</div>
+  </div>
+
+  <!-- KPI CARDS -->
+  <div class="section">
+    <div class="section-title">Indicadores da Semana</div>
+    <div class="kpi-grid">
+      <div class="kpi-card kpi-blue">
+        <div class="kpi-label">Total de Negócios</div>
+        <div class="kpi-value">18</div>
+        <div class="kpi-sub">14 em andamento &nbsp;·&nbsp; 4 perdidos &nbsp;·&nbsp; 0 ganhos</div>
+      </div>
+      <div class="kpi-card kpi-red">
+        <div class="kpi-label">Taxa de Conversão</div>
+        <div class="kpi-value">0%</div>
+        <div class="kpi-sub">0 ganhos nesta semana</div>
+        <span class="kpi-badge badge-red">🚨 CRÍTICO</span>
+      </div>
+      <div class="kpi-card kpi-amber">
+        <div class="kpi-label">Taxa de Perda</div>
+        <div class="kpi-value">22,2%</div>
+        <div class="kpi-sub">4 perdidos de 18 negócios</div>
+        <span class="kpi-badge badge-amber">⚠️ MONITORAR</span>
+      </div>
+      <div class="kpi-card kpi-green">
+        <div class="kpi-label">Receita Fechada</div>
+        <div class="kpi-value">R$ 0</div>
+        <div class="kpi-sub">Sem fechamentos nesta semana</div>
+        <span class="kpi-badge badge-blue">Pipeline: R$ 8.386,67</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- INSIGHTS -->
+  <div class="section">
+    <div class="section-title">Principais Insights</div>
+    <div class="insights-grid">
+      <div class="insight-item">
+        <span class="insight-icon">🚨</span>
+        <div class="insight-text"><strong>Zero conversões na semana.</strong> Nenhum negócio foi ganho em W14. O funil está em fase puramente de entrada, sem fechamentos concluídos ainda.</div>
+      </div>
+      <div class="insight-item">
+        <span class="insight-icon">⚠️</span>
+        <div class="insight-text"><strong>Jeferson concentra 67% dos negócios</strong> (12 de 18), com 4 perdas e taxa de conversão 0%. Alta dependência de um único vendedor é risco estrutural.</div>
+      </div>
+      <div class="insight-item">
+        <span class="insight-icon">🚨</span>
+        <div class="insight-text"><strong>88,9% dos negócios estão presos em LEADS.</strong> O funil está entupido na etapa inicial — falta progressão para Oportunidade e Orçamento.</div>
+      </div>
+      <div class="insight-item">
+        <span class="insight-icon">⚠️</span>
+        <div class="insight-text"><strong>"Encaminhado para Higiclear" é o motivo de perda mais frequente</strong> (50% das perdas). Indica oportunidades sendo transferidas para outra unidade sem aproveitamento local.</div>
+      </div>
+      <div class="insight-item">
+        <span class="insight-icon">💡</span>
+        <div class="insight-text"><strong>Maior deal em pipeline: R$ 7.248,23</strong> (Biorigin S.a. — Jeferson). Este deal isolado representa 86% de todo o pipeline — concentração de risco alta.</div>
+      </div>
+      <div class="insight-item">
+        <span class="insight-icon">✅</span>
+        <div class="insight-text"><strong>Inbound e Outbound empatados</strong> com 4 negócios cada. Canais equilibrados, mas RD Station gerou 1 negócio via Google Ads — potencial para ampliar.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FUNIL + GRÁFICOS -->
+  <div class="section">
+    <div class="section-title">Funil de Vendas & Distribuição</div>
+    <div class="charts-grid-3">
+      <div class="chart-card">
+        <h3>Etapas do Funil</h3>
+        <div style="margin-top:8px;">
+          <div class="funil-item">
+            <div class="funil-label"><span>LEADS</span><span>16 · 88,9%</span></div>
+            <div class="funil-bar"><div class="funil-fill" style="width:88.9%;background:var(--blue)"></div></div>
+          </div>
+          <div class="funil-item">
+            <div class="funil-label"><span>QUALIFICAÇÃO</span><span>1 · 5,6%</span></div>
+            <div class="funil-bar"><div class="funil-fill" style="width:5.6%;background:var(--amber)"></div></div>
+          </div>
+          <div class="funil-item">
+            <div class="funil-label"><span>OPORTUNIDADE</span><span>1 · 5,6%</span></div>
+            <div class="funil-bar"><div class="funil-fill" style="width:5.6%;background:var(--green)"></div></div>
+          </div>
+        </div>
+        <div style="margin-top:14px;padding:10px;background:var(--bg3);border-radius:6px;font-size:12px;color:var(--text2)">
+          ⚠️ <strong style="color:var(--text)">Gargalo crítico:</strong> 89% dos negócios parados em LEADS. Nenhum negócio em etapas avançadas de orçamento ou fechamento.
+        </div>
+      </div>
+      <div class="chart-card">
+        <h3>Origens dos Negócios</h3>
+        <div class="chart-wrap" style="height:180px;">
+          <canvas id="origensChart"></canvas>
+        </div>
+      </div>
+      <div class="chart-card">
+        <h3>Motivos de Perda</h3>
+        <div class="chart-wrap" style="height:180px;">
+          <canvas id="perdasChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEGUNDA LINHA DE GRÁFICOS -->
+  <div class="section">
+    <div class="charts-grid-2">
+      <div class="chart-card">
+        <h3>Status dos Negócios</h3>
+        <div class="chart-wrap" style="height:200px;">
+          <canvas id="statusChart"></canvas>
+        </div>
+      </div>
+      <div class="chart-card">
+        <h3>Pipeline por Etapa (R$)</h3>
+        <div class="chart-wrap" style="height:200px;">
+          <canvas id="pipelineChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PERFORMANCE POR VENDEDOR -->
+  <div class="section">
+    <div class="section-title">Performance por Vendedor</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Vendedor</th>
+            <th>Negócios</th>
+            <th>Ganhos</th>
+            <th>Perdidos</th>
+            <th>Em Andamento</th>
+            <th>Taxa Conv.</th>
+            <th>Taxa Perda</th>
+            <th>Receita Fechada</th>
+            <th>Pipeline</th>
+            <th>Alerta</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Jeferson</strong></td>
+            <td>12</td>
+            <td>0</td>
+            <td>4</td>
+            <td>8</td>
+            <td>
+              0%
+              <div class="conv-bar"><div class="conv-fill" style="width:0%;background:var(--red)"></div></div>
+            </td>
+            <td style="color:var(--red)">33,3%</td>
+            <td>R$ 0,00</td>
+            <td>R$ 7.248,23</td>
+            <td><span class="kpi-badge badge-red">CRÍTICO</span></td>
+          </tr>
+          <tr>
+            <td><strong>Debora Bueno</strong></td>
+            <td>1</td>
+            <td>0</td>
+            <td>0</td>
+            <td>1</td>
+            <td>
+              —
+              <div class="conv-bar"><div class="conv-fill" style="width:0%;background:var(--blue)"></div></div>
+            </td>
+            <td>0%</td>
+            <td>R$ 0,00</td>
+            <td>R$ 0,00</td>
+            <td><span class="kpi-badge badge-amber">OBSERVAR</span></td>
+          </tr>
+          <tr>
+            <td><strong>Lauana Ivo</strong></td>
+            <td>1</td>
+            <td>0</td>
+            <td>0</td>
+            <td>1</td>
+            <td>
+              —
+              <div class="conv-bar"><div class="conv-fill" style="width:0%;background:var(--blue)"></div></div>
+            </td>
+            <td>0%</td>
+            <td>R$ 0,00</td>
+            <td>R$ 208,99</td>
+            <td><span class="kpi-badge badge-amber">OBSERVAR</span></td>
+          </tr>
+          <tr>
+            <td><strong>Rafael de Jesus</strong></td>
+            <td>1</td>
+            <td>0</td>
+            <td>0</td>
+            <td>1</td>
+            <td>
+              —
+              <div class="conv-bar"><div class="conv-fill" style="width:0%;background:var(--blue)"></div></div>
+            </td>
+            <td>0%</td>
+            <td>R$ 0,00</td>
+            <td>R$ 230,49</td>
+            <td><span class="kpi-badge badge-amber">OBSERVAR</span></td>
+          </tr>
+          <tr>
+            <td><strong>Viviane</strong></td>
+            <td>1</td>
+            <td>0</td>
+            <td>0</td>
+            <td>1</td>
+            <td>
+              —
+              <div class="conv-bar"><div class="conv-fill" style="width:0%;background:var(--blue)"></div></div>
+            </td>
+            <td>0%</td>
+            <td>R$ 0,00</td>
+            <td>R$ 698,96</td>
+            <td><span class="kpi-badge badge-amber">OBSERVAR</span></td>
+          </tr>
+          <tr>
+            <td><strong>Hygibras</strong></td>
+            <td>2</td>
+            <td>0</td>
+            <td>1</td>
+            <td>1</td>
+            <td>
+              0%
+              <div class="conv-bar"><div class="conv-fill" style="width:0%;background:var(--red)"></div></div>
+            </td>
+            <td style="color:var(--amber)">50%</td>
+            <td>R$ 0,00</td>
+            <td>R$ 0,00</td>
+            <td><span class="kpi-badge badge-red">CRÍTICO</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table-note">
+      📌 <strong>Maior deal em pipeline:</strong> Biorigin S.a. — R$ 7.248,23 (Jeferson) na etapa LEADS. Requer acompanhamento prioritário para avançar no funil esta semana.
+    </div>
+  </div>
+
+  <!-- GARGALOS DO FUNIL -->
+  <div class="section">
+    <div class="section-title">Gargalos do Funil</div>
+    <div class="gargalo-grid">
+      <div class="chart-card">
+        <h3>Negócios por Vendedor (Status)</h3>
+        <div class="chart-wrap" style="height:220px;">
+          <canvas id="vendedoresStackChart"></canvas>
+        </div>
+      </div>
+      <div class="chart-card">
+        <h3>Análise Comparativa — Top Vendedores</h3>
+        <div class="chart-wrap" style="height:180px;">
+          <canvas id="comparativoChart"></canvas>
+        </div>
+        <div class="analysis-box">
+          <strong>Jeferson vs. demais:</strong> Com 12 negócios (67% do total), Jeferson lidera em volume mas registra 4 perdas — todas por "Encaminhado para Higiclear" (2) e "Fora do estado" (2). Os demais vendedores têm carteiras menores, mas sem perdas registradas ainda. <strong>Prioridade:</strong> trabalhar progressão dos 8 negócios de Jeferson em andamento.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PLANO DE AÇÃO -->
+  <div class="section">
+    <div class="section-title">Plano de Ação W15</div>
+    <div class="action-grid">
+      <div class="action-card">
+        <div class="action-title urgent">🚨 Urgente</div>
+        <div class="action-item urgent">
+          <div class="action-num">1</div>
+          <div>Priorizar follow-up no deal Biorigin (R$ 7.248,23) — avançar de LEADS para Oportunidade ainda na semana.</div>
+        </div>
+        <div class="action-item urgent">
+          <div class="action-num">2</div>
+          <div>Revisar critério de encaminhamento para Higiclear — 2 negócios perdidos por esse motivo indicam falta de qualificação prévia.</div>
+        </div>
+        <div class="action-item urgent">
+          <div class="action-num">3</div>
+          <div>Endereçar os 16 negócios em LEADS: definir qual está pronto para avançar e qual deve ser descartado ou qualificado.</div>
+        </div>
+        <div class="action-item urgent">
+          <div class="action-num">4</div>
+          <div>Estabelecer meta de pelo menos 1 fechamento em W15 — semana sem ganhos não pode se repetir.</div>
+        </div>
+      </div>
+      <div class="action-card">
+        <div class="action-title important">⚡ Importante</div>
+        <div class="action-item important">
+          <div class="action-num">1</div>
+          <div>Registrar origens nos 9 negócios sem origem — dado essencial para análise de ROI por canal.</div>
+        </div>
+        <div class="action-item important">
+          <div class="action-num">2</div>
+          <div>Garantir que valores sejam registrados em todos os negócios — 6 deals estão sem valor informado, distorcendo o pipeline.</div>
+        </div>
+        <div class="action-item important">
+          <div class="action-num">3</div>
+          <div>Distribuir melhor a carteira: reduzir concentração em Jeferson (67%) — envolver mais Debora, Rafael e Viviane.</div>
+        </div>
+        <div class="action-item important">
+          <div class="action-num">4</div>
+          <div>Criar processo de qualificação geográfica antes de cadastrar negócios — evitar perdas por "Fora do estado".</div>
+        </div>
+      </div>
+      <div class="action-card">
+        <div class="action-title strategic">📈 Estratégico</div>
+        <div class="action-item strategic">
+          <div class="action-num">1</div>
+          <div>Ampliar uso de RD Station / Google Ads — único canal de mídia paga com negócio registrado nesta semana.</div>
+        </div>
+        <div class="action-item strategic">
+          <div class="action-num">2</div>
+          <div>Mapear critério formal para encaminhamento Hygibras → Higiclear, transformando perdas em transferências com rastreio.</div>
+        </div>
+        <div class="action-item strategic">
+          <div class="action-num">3</div>
+          <div>Implementar SLA por etapa no funil: definir tempo máximo em LEADS antes de avançar ou descartar o negócio.</div>
+        </div>
+        <div class="action-item strategic">
+          <div class="action-num">4</div>
+          <div>Criar dashboard comparativo semanal para acompanhar evolução W13→W14→W15 de forma sistemática.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESUMO EXECUTIVO -->
+  <div class="section">
+    <div class="section-title">Resumo Executivo</div>
+    <div class="exec-grid">
+      <div class="exec-text">
+        <p>A semana 14 de 2026 registrou 18 novos negócios na Hygibras, com dados concentrados nos dias 1 e 2 de abril. O funil encontra-se inteiramente em fase de prospecção: nenhum negócio foi convertido em ganho, e 4 foram perdidos — resultando em taxa de conversão zero e pipeline acumulado de R$ 8.386,67. A concentração de 88,9% dos negócios na etapa LEADS indica que a equipe está gerando volume de entrada, mas enfrenta gargalo severo na progressão para etapas de negociação e fechamento.</p>
+        <p>O vendedor Jeferson responde por 67% da carteira com 12 negócios, mas também acumula todas as perdas da semana (33,3% de taxa de perda). O maior risco imediato é a dependência de um único deal de alto valor (Biorigin, R$ 7.248,23) que representa 86% do pipeline. A higiene de CRM precisa de atenção: 9 negócios sem origem registrada e 6 sem valor informado comprometem a qualidade das análises.</p>
+      </div>
+      <div>
+        <div class="priority-card priority-1">
+          <div class="priority-label">Prioridade #1 — Urgente</div>
+          <div class="priority-text">Avançar Biorigin (R$ 7.248) de LEADS → Oportunidade e garantir ao menos 1 fechamento em W15.</div>
+        </div>
+        <div class="priority-card priority-2">
+          <div class="priority-label">Prioridade #2 — Esta Semana</div>
+          <div class="priority-text">Higienizar o CRM: registrar origens e valores nos negócios abertos para recuperar visibilidade do funil.</div>
+        </div>
+        <div class="priority-card priority-meta">
+          <div class="priority-label">Meta W15</div>
+          <div class="priority-text">Taxa de conversão ≥ 10% e pelo menos 2 negócios avançando para etapa de Orçamento/Oportunidade.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    Hygibras &nbsp;•&nbsp; Análise Semanal CRM W14 2026 &nbsp;•&nbsp; Dados extraídos automaticamente da planilha CRM
+  </div>
+
+</div>
+
+<script>
+Chart.defaults.color = '#9aa0b4';
+Chart.defaults.borderColor = 'rgba(255,255,255,0.07)';
+
+// Origens
+new Chart(document.getElementById('origensChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Sem origem', 'Inbound', 'Outbound', 'RD Station'],
+    datasets: [{
+      data: [9, 4, 4, 1],
+      backgroundColor: ['rgba(154,160,180,0.4)', '#378ADD', '#1D9E75', '#BA7517'],
+      borderWidth: 0,
+      borderRadius: 2
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { position: 'right', labels: { boxWidth: 10, padding: 10, font: { size: 11 } } } }
+  }
+});
+
+// Perdas
+new Chart(document.getElementById('perdasChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Enc. Higiclear', 'Fora do Estado'],
+    datasets: [{
+      data: [2, 2],
+      backgroundColor: ['#E24B4A', '#BA7517'],
+      borderRadius: 4, borderWidth: 0
+    }]
+  },
+  options: {
+    indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: { x: { beginAtZero: true, ticks: { stepSize: 1 } }, y: { ticks: { font: { size: 11 } } } }
+  }
+});
+
+// Status
+new Chart(document.getElementById('statusChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Em Andamento', 'Perdidos', 'Ganhos'],
+    datasets: [{
+      data: [14, 4, 0],
+      backgroundColor: ['#378ADD', '#E24B4A', '#1D9E75'],
+      borderWidth: 0, borderRadius: 2
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'right', labels: { boxWidth: 10, padding: 12, font: { size: 12 } } },
+      tooltip: { callbacks: { label: function(c) { return c.label + ': ' + c.raw + ' negócios'; } } }
+    }
+  }
+});
+
+// Pipeline por etapa
+new Chart(document.getElementById('pipelineChart'), {
+  type: 'bar',
+  data: {
+    labels: ['LEADS', 'QUALIFICAÇÃO', 'OPORTUNIDADE'],
+    datasets: [{
+      label: 'Pipeline (R$)',
+      data: [7457.22, 0, 230.49],
+      backgroundColor: ['#378ADD', '#BA7517', '#1D9E75'],
+      borderRadius: 4, borderWidth: 0
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      y: { beginAtZero: true, ticks: { callback: v => 'R$ ' + v.toLocaleString('pt-BR') } }
+    }
+  }
+});
+
+// Vendedores stacked
+new Chart(document.getElementById('vendedoresStackChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Jeferson', 'Hygibras', 'Debora', 'Lauana', 'Rafael', 'Viviane'],
+    datasets: [
+      { label: 'Em Andamento', data: [8, 1, 1, 1, 1, 1], backgroundColor: '#378ADD', borderRadius: 2, borderWidth: 0 },
+      { label: 'Perdidos', data: [4, 1, 0, 0, 0, 0], backgroundColor: '#E24B4A', borderRadius: 2, borderWidth: 0 },
+      { label: 'Ganhos', data: [0, 0, 0, 0, 0, 0], backgroundColor: '#1D9E75', borderRadius: 2, borderWidth: 0 }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { labels: { boxWidth: 10, font: { size: 11 } } } },
+    scales: { x: { stacked: true }, y: { stacked: true, beginAtZero: true, ticks: { stepSize: 2 } } }
+  }
+});
+
+// Comparativo
+new Chart(document.getElementById('comparativoChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Jeferson', 'Outros (5)'],
+    datasets: [
+      { label: 'Negócios', data: [12, 6], backgroundColor: '#378ADD', borderRadius: 4, borderWidth: 0 },
+      { label: 'Perdas', data: [4, 1], backgroundColor: '#E24B4A', borderRadius: 4, borderWidth: 0 },
+      { label: 'Pipeline (R$)', data: [7248, 1138], backgroundColor: '#1D9E75', borderRadius: 4, borderWidth: 0 }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { labels: { boxWidth: 10, font: { size: 11 } } } },
+    scales: { y: { beginAtZero: true } }
+  }
+});
+</script>
+</body>
+</html>
