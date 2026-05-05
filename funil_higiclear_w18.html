@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Higiclear — Funil de Vendas 2026</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root{
+  --bg:#0A0E1A; --bg-card:#111827; --bg-elev:#1F2937; --bg-hover:#374151;
+  --border:#1F2937; --border-strong:#374151; --text:#F9FAFB; --text-dim:#9CA3AF; --text-mute:#6B7280;
+  --c-leads:#3B82F6; --c-qualif:#8B5CF6; --c-orc:#06B6D4; --c-vendas:#10B981;
+  --c-receita:#F59E0B; --c-ticket:#EC4899; --c-conv-lv:#10B981; --c-conv-qv:#14B8A6;
+  --c-alert:#EF4444; --c-success:#22C55E;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:13px;line-height:1.5}
+.container{max-width:1320px;margin:0 auto;padding:24px 28px 48px}
+.hdr{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:22px;flex-wrap:wrap}
+.hdr h1{font-size:22px;font-weight:700;letter-spacing:-0.01em}
+.hdr .sub{color:var(--text-dim);font-size:13px;margin-top:2px}
+.hdr .right{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.badge-partial{background:#F9731620;color:#FB923C;border:1px solid #F9731640;padding:6px 12px;border-radius:6px;font-size:12px;font-weight:500;display:inline-flex;align-items:center;gap:6px}
+.badge-partial::before{content:"●";color:#F97316}
+.btn{background:var(--c-leads);color:white;border:0;padding:8px 16px;border-radius:6px;font-size:13px;font-weight:500;cursor:pointer;transition:background .15s}
+.btn:hover{background:#2563EB}
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--border-strong);margin-bottom:24px;overflow-x:auto}
+.tab{background:none;border:0;color:var(--text-dim);padding:12px 18px;font-size:13px;font-weight:500;cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap}
+.tab:hover{color:var(--text)}
+.tab.active{color:var(--text);border-bottom-color:var(--c-leads)}
+.card{background:var(--bg-card);border:1px solid var(--border-strong);border-radius:10px;padding:20px 22px;margin-bottom:16px}
+.card h3{font-size:14px;font-weight:600;margin-bottom:14px;color:var(--text)}
+.grid{display:grid;gap:16px}
+.grid-4{grid-template-columns:repeat(4,1fr)}
+.grid-3{grid-template-columns:repeat(3,1fr)}
+.grid-2{grid-template-columns:repeat(2,1fr)}
+.grid-2-1{grid-template-columns:2fr 1fr}
+@media (max-width:900px){.grid-4,.grid-3,.grid-2,.grid-2-1{grid-template-columns:1fr}}
+.ytd{background:linear-gradient(135deg,#111827 0%,#1F2937 100%);border:1px solid #374151;border-radius:12px;padding:22px 26px;margin-bottom:16px;display:grid;grid-template-columns:minmax(180px,auto) 1fr;gap:28px;align-items:center}
+.ytd .label{border-right:1px solid var(--border-strong);padding-right:26px}
+.ytd .label .tag{font-size:11px;font-weight:600;letter-spacing:0.08em;color:var(--text-mute);text-transform:uppercase}
+.ytd .label .period{font-size:20px;font-weight:700;margin-top:4px}
+.ytd .metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
+.ytd .metric .k{font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.06em;font-weight:500}
+.ytd .metric .v{font-size:28px;font-weight:700;margin-top:4px}
+@media (max-width:900px){.ytd{grid-template-columns:1fr}.ytd .label{border-right:0;border-bottom:1px solid var(--border-strong);padding:0 0 18px 0}}
+.kpi{background:var(--bg-card);border:1px solid var(--border-strong);border-left:3px solid var(--text-dim);border-radius:8px;padding:16px 18px;position:relative}
+.kpi .k{font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.06em;font-weight:500}
+.kpi .v{font-size:26px;font-weight:700;margin-top:4px}
+.kpi .sub{font-size:11px;color:var(--text-mute);margin-top:6px}
+.kpi .partial{font-size:10px;color:#FB923C;margin-left:6px;font-weight:500}
+.delta{font-size:11px;font-weight:600;display:inline-block;margin-top:6px;padding:3px 8px;border-radius:10px}
+.delta.up{background:#10B98125;color:#34D399}
+.delta.dn{background:#EF444425;color:#F87171}
+.funnel-row{display:grid;grid-template-columns:120px 1fr 110px;gap:14px;align-items:center;margin-bottom:12px;min-height:30px}
+.funnel-row .lbl{font-size:12px;color:var(--text-dim);font-weight:500}
+.funnel-row .bar{height:30px;border-radius:6px;display:flex;align-items:center;padding:0 12px;color:white;font-weight:600;font-size:13px}
+.funnel-row .pct{text-align:right;font-size:12px;color:var(--text-dim)}
+.funnel-row .pct-stack{display:flex;flex-direction:column;gap:3px;align-items:flex-end}
+.funnel-row .pct-stack span{font-size:11px;font-weight:600;padding:2px 6px;border-radius:10px}
+.insight{border-left:3px solid var(--text-dim);padding:10px 14px;background:var(--bg-elev);border-radius:0 6px 6px 0;margin-bottom:8px}
+.insight .txt{font-size:12px;color:var(--text);line-height:1.5}
+.insight.ok{border-color:var(--c-success)}
+.insight.warn{border-color:var(--c-alert)}
+.insight.info{border-color:var(--c-leads)}
+.insight.up{border-color:var(--c-vendas)}
+.insight.down{border-color:var(--c-alert)}
+.insight.ticket{border-color:var(--c-ticket)}
+.insight.best{border-color:var(--c-receita)}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{color:#E5E7EB;background:#0F1521;text-align:left;padding:10px 8px;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:0.04em;border-bottom:2px solid #374151}
+td{padding:10px 8px;border-bottom:1px solid var(--border);color:var(--text)}
+tr.partial td{color:#D1D5DB;font-style:italic}
+tr.total-row td{background:#0F1521;border-top:2px solid #374151;font-weight:700;color:var(--text);padding:12px 8px}
+tr.best-week td{background:linear-gradient(90deg,#10B98115 0%,transparent 100%);font-weight:600}
+tr.best-week td .star{color:var(--c-receita);margin-right:4px}
+.align-right{text-align:right}
+.pills{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.pill{background:var(--bg-elev);border:1px solid var(--border-strong);color:var(--text-dim);padding:6px 14px;border-radius:16px;font-size:12px;cursor:pointer;transition:all .15s}
+.pill:hover{color:var(--text);background:var(--bg-hover)}
+.pill.active{background:var(--c-leads);color:white;border-color:var(--c-leads)}
+.chart-wrap{position:relative;height:280px}
+.chart-wrap.tall{height:340px}
+.legend{display:flex;gap:14px;margin-bottom:8px;flex-wrap:wrap}
+.legend .item{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--text-dim)}
+.legend .dot{width:10px;height:10px;border-radius:3px;display:inline-block}
+.ranking{display:flex;flex-direction:column;gap:8px}
+.ranking .row{display:grid;grid-template-columns:28px 1fr auto auto;gap:10px;align-items:center;padding:10px 12px;background:var(--bg-elev);border-radius:6px}
+.ranking .medal{font-size:18px}
+.ranking .name{font-weight:600}
+.ranking .info{color:var(--text-dim);font-size:11px}
+.ranking .val{font-weight:700;color:var(--c-receita)}
+.origem-badge{display:inline-block;padding:3px 8px;border-radius:10px;font-size:11px;font-weight:500}
+.spark{height:22px;width:64px;display:inline-block;vertical-align:middle;margin-left:6px}
+.tab-content{display:none}
+.tab-content.active{display:block}
+.section-title{font-size:15px;font-weight:600;margin-bottom:14px}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="hdr">
+    <div>
+      <h1>Dashboard Higiclear — Funil de Vendas 2026</h1>
+      <div class="sub">Atualizado em 2026-05-05 · Dados consolidados Jan → Abr 2026</div>
+    </div>
+    <div class="right">
+      <span id="partialBadge" class="badge-partial hidden"></span>
+      <button class="btn" onclick="exportReport()">↓ Exportar para diretores</button>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="panorama">Panorama</button>
+    <button class="tab" data-tab="semanal">Comparativo Semanal</button>
+    <button class="tab" data-tab="origens">Origens / Canais</button>
+    <button class="tab" data-tab="vendas">Vendas Fechadas</button>
+  </div>
+
+  <div id="panorama" class="tab-content active">
+    <div class="ytd">
+      <div class="label">
+        <div class="tag">YTD</div>
+        <div class="period" id="ytdPeriod">Jan — Abr 2026</div>
+      </div>
+      <div class="metrics" id="ytdMetrics"></div>
+    </div>
+    <div class="grid grid-4" id="kpiCards"></div>
+    <div class="grid grid-2-1" style="margin-top:16px">
+      <div class="card">
+        <h3>Funil consolidado YTD</h3>
+        <div id="funnelYTD"></div>
+      </div>
+      <div class="card">
+        <h3>Insights automáticos</h3>
+        <div id="insights"></div>
+      </div>
+    </div>
+    <div class="grid grid-2" style="margin-top:16px">
+      <div class="card">
+        <h3>Receita mensal</h3>
+        <div class="chart-wrap"><canvas id="chartReceitaMes"></canvas></div>
+      </div>
+      <div class="card">
+        <h3>Leads vs Vendas por mês</h3>
+        <div class="legend">
+          <span class="item"><span class="dot" style="background:#3B82F6"></span>Leads</span>
+          <span class="item"><span class="dot" style="background:#10B981"></span>Vendas</span>
+        </div>
+        <div class="chart-wrap"><canvas id="chartLeadsVsVendas"></canvas></div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <h3>Resumo mensal</h3>
+      <table id="resumoMensal"></table>
+    </div>
+  </div>
+
+  <div id="semanal" class="tab-content">
+    <div class="pills" id="pillsSemanal"></div>
+    <div class="grid grid-2">
+      <div class="card">
+        <h3>Leads vs Vendas por semana</h3>
+        <div class="legend">
+          <span class="item"><span class="dot" style="background:#3B82F6"></span>Leads</span>
+          <span class="item"><span class="dot" style="background:#10B981"></span>Vendas</span>
+        </div>
+        <div class="chart-wrap"><canvas id="chartSemLV"></canvas></div>
+      </div>
+      <div class="card">
+        <h3>Receita por semana</h3>
+        <div class="chart-wrap"><canvas id="chartSemReceita"></canvas></div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <h3 id="tituloSemanal">Detalhamento semanal</h3>
+      <table id="tbSemanal"></table>
+    </div>
+  </div>
+
+  <div id="origens" class="tab-content">
+    <div class="pills" id="pillsOrigens"></div>
+    <div class="grid grid-2">
+      <div class="card">
+        <h3>Volume de leads por canal</h3>
+        <div class="chart-wrap"><canvas id="chartCanalBar"></canvas></div>
+      </div>
+      <div class="card">
+        <h3>Participação dos canais</h3>
+        <div class="chart-wrap"><canvas id="chartCanalDonut"></canvas></div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <h3>Ranking de vendedores</h3>
+      <div id="rankingVend" class="ranking"></div>
+    </div>
+  </div>
+
+  <div id="vendas" class="tab-content">
+    <div class="pills" id="pillsVendas"></div>
+    <div class="grid grid-3" id="kpiVendas"></div>
+    <div class="card" style="margin-top:16px">
+      <h3>Vendas fechadas</h3>
+      <table id="tbVendas"></table>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const MONTHS = [{"month": "Janeiro", "code": "JAN", "partial": false, "weeks": [{"week": "W2", "dias": 5, "leads": 92, "qualif": 3, "orcs": 2, "vendas": 3, "receita": 1649.58}, {"week": "W3", "dias": 5, "leads": 149, "qualif": 6, "orcs": 2, "vendas": 1, "receita": 573.5}, {"week": "W4", "dias": 5, "leads": 125, "qualif": 4, "orcs": 8, "vendas": 2, "receita": 1187.03}, {"week": "W5", "dias": 5, "leads": 145, "qualif": 7, "orcs": 16, "vendas": 3, "receita": 1612.24}], "channels": {"Email": 62, "Krolic": 373, "General Clean": 72, "RD": 4, "Outbound": 0}, "totals": {"dias": 20, "leads": 511, "qualif": 20, "orcs": 28, "vendas": 9, "receita": 5269.75}, "sales": [{"data": "2026-01-07", "cliente": "ALVARO AGUIAR ENGENHARIA E CONSTRUCOES LTDA", "vendedor": "Michelle", "origem": "Site de busca", "valor": 548.08}, {"data": "2026-01-07", "cliente": "RESTAURANTE MANIOCA FARIA LIMA LTDA.", "vendedor": "Michelle", "origem": "Site de busca", "valor": 528}, {"data": "2026-01-08", "cliente": "HORIZONTE AZUL COMERCIO DE PESCADOS", "vendedor": "Michelle", "origem": "General Clean", "valor": 573.5}, {"data": "2026-01-13", "cliente": "SLR CONSTRUCOES E INCORPORACOES LTDA", "vendedor": "Michelle", "origem": "Site de busca", "valor": 820.9}, {"data": "2026-01-21", "cliente": "DOUTOR OPERA MEDICAL LTDA", "vendedor": "Michelle", "origem": "Site de busca", "valor": 660}, {"data": "2026-01-22", "cliente": "FRANZONI E ROSSETTI SERVICOS MEDICOS SS LTDA", "vendedor": "Suely", "origem": "Site de busca", "valor": 527.03}, {"data": "2026-01-26", "cliente": "MANTYCOM COMERCIAL LTDA", "vendedor": "Michelle", "origem": "Indicação", "valor": 122.04}, {"data": "2026-01-27", "cliente": "CONDOMINIO EDIFICIO DINAMARCA", "vendedor": "Michelle", "origem": "Site de busca", "valor": 470.2}, {"data": "2026-01-30", "cliente": "FRANCISCO GEUILSON DO NASCIMENTO", "vendedor": "Michelle", "origem": "Site de busca", "valor": 1020}]}, {"month": "Fevereiro", "code": "FEV", "partial": false, "weeks": [{"week": "W6", "dias": 5, "leads": 105, "qualif": 7, "orcs": 18, "vendas": 4, "receita": 2312.75}, {"week": "W7", "dias": 5, "leads": 140, "qualif": 12, "orcs": 7, "vendas": 1, "receita": 827.3}, {"week": "W8", "dias": 2, "leads": 91, "qualif": 8, "orcs": 7, "vendas": 2, "receita": 1318.17}, {"week": "W9", "dias": 5, "leads": 148, "qualif": 29, "orcs": 15, "vendas": 2, "receita": 2824.37}], "channels": {"Email": 116, "Krolic": 362, "General Clean": 57, "RD": 5, "Outbound": 1}, "totals": {"dias": 17, "leads": 484, "qualif": 56, "orcs": 47, "vendas": 9, "receita": 7282.59}, "sales": [{"data": "2026-02-03", "cliente": "JJ COMERCIO E DISTRIBUIDORA DE ARTEFATOS DE P", "vendedor": "Suely", "origem": "Site de busca", "valor": 1140}, {"data": "2026-02-06", "cliente": "GALVANOBRAS GALVANOPLASTIA DO BRASIL LTDA", "vendedor": "Michelle", "origem": "Site de busca", "valor": 546}, {"data": "2026-02-04", "cliente": "TOP DETAILER SERVICOS DE HIGIENIZACAO LTDA", "vendedor": "Michelle", "origem": "Site de busca", "valor": 274.25}, {"data": "2026-02-02", "cliente": "RAFAEL PASCHOAL BRAGA 33245980876", "vendedor": "Michelle", "origem": "Site de busca", "valor": 352.5}, {"data": "2026-02-11", "cliente": "TRC AGROFLORESTAL LTDA", "vendedor": "Suely", "origem": "Hygibras", "valor": 827.3}, {"data": "2026-02-18", "cliente": "CLAUDIO MARQUES SAMAIA", "vendedor": "Suely", "origem": "General Clean", "valor": 721.78}, {"data": "2026-02-19", "cliente": "METROPOLE GESTAO E APOIO CONDOMINIAL LTDA", "vendedor": "Michelle", "origem": "Site de busca", "valor": 596.39}, {"data": "2026-02-24", "cliente": "PB HALL SAO RAFAEL ACADEMIA DE GINASTICA LTDA", "vendedor": "Suely", "origem": "Captação", "valor": 164.52}, {"data": "2026-02-25", "cliente": "TAUSTE SUPERMERCADOS LTDA", "vendedor": "Suely", "origem": "Site de busca", "valor": 2659.85}]}, {"month": "Março", "code": "MAR", "partial": false, "weeks": [{"week": "W10", "dias": 5, "leads": 159, "qualif": 16, "orcs": 7, "vendas": 6, "receita": 12418.94}, {"week": "W11", "dias": 5, "leads": 178, "qualif": 15, "orcs": 19, "vendas": 5, "receita": 3592.05}, {"week": "W12", "dias": 5, "leads": 172, "qualif": 12, "orcs": 8, "vendas": 4, "receita": 13686.21}, {"week": "W13", "dias": 5, "leads": 170, "qualif": 28, "orcs": 20, "vendas": 5, "receita": 4134.68}, {"week": "W14", "dias": 2, "leads": 60, "qualif": 0, "orcs": 0, "vendas": 2, "receita": 2983.14}], "channels": {"Email": 121, "Krolic": 447, "General Clean": 96, "RD": 67, "Outbound": 8}, "totals": {"dias": 22, "leads": 739, "qualif": 71, "orcs": 54, "vendas": 22, "receita": 36815.02}, "sales": [{"data": "2026-03-02", "cliente": "PCI GASES DO BRASIL LTDA", "vendedor": "Suely", "origem": "Site de busca", "valor": 250.85}, {"data": "2026-03-03", "cliente": "OK. EMPREENDIMENTO CONSTRUÇÕES R SERVIÇOS LTDA", "vendedor": "Michelle", "origem": "Site de busca", "valor": 4558}, {"data": "2026-03-04", "cliente": "EMBRALIMP - EMPRESA BRASILEIRA DE MATERIAL DE", "vendedor": "Michelle", "origem": "Site de busca", "valor": 1680}, {"data": "2026-03-04", "cliente": "LISBOA INGREDIENTES PARA LATICINIOS LTDA", "vendedor": "Michelle", "origem": "Site de busca", "valor": 3526.89}, {"data": "2026-03-05", "cliente": "RR MEDICAL LTDA", "vendedor": "Michelle", "origem": "Site de busca", "valor": 1225.6}, {"data": "2026-03-06", "cliente": "V2F COMERCIO E DISTRIBUICAO DE PRODUTOS ALIME", "vendedor": "Michelle", "origem": "Site de busca", "valor": 1177.6}, {"data": "2026-03-09", "cliente": "BATALHA FABRICA DE PAES LTDA", "vendedor": "Suely", "origem": "Site de busca", "valor": 1341}, {"data": "2026-03-10", "cliente": "P Y SANTANA SERVICOS MEDICOS LTDA", "vendedor": "Suely", "origem": "Site de busca", "valor": 986.57}, {"data": "2026-03-12", "cliente": "CANTINA PIU-FRATELLI LTDA", "vendedor": "Suely", "origem": "Site de busca", "valor": 734.68}, {"data": "2026-03-12", "cliente": "INSTITUTO DE OLHOS PAROLIN LTDA", "vendedor": "Suely", "origem": "Site de busca", "valor": 89.4}, {"data": "2026-03-13", "cliente": "LEVI & ASSERI AUTO PECAS E SERVICOS LTDA", "vendedor": "Suely", "origem": "Captação", "valor": 440.4}, {"data": "2026-03-17", "cliente": "BANN QUIMICA LTDA.", "vendedor": "Michelle", "origem": "Site de busca", "valor": 8426.16}, {"data": "2026-03-18", "cliente": "BANDEIRA IMPORTACAO E COMERCIO LTDA", "vendedor": "Washington", "origem": "Captação", "valor": 430}, {"data": "2026-03-20", "cliente": "CHURRASCARIA PASSO FUNDO LTDA", "vendedor": "Suely", "origem": "Site de busca", "valor": 3153.17}, {"data": "2026-03-20", "cliente": "GAVEA FACILITIES SERVICOS GERAIS LTDA", "vendedor": "Michelle", "origem": "Site de busca", "valor": 1676.88}, {"data": "2026-03-26", "cliente": "CRISTIANE FERREIRA", "vendedor": "Suely", "origem": "Site de busca", "valor": 507.6}, {"data": "2026-03-26", "cliente": "GOLDEN TECHNOLOGY LTDA", "vendedor": "Michelle", "origem": "Site de busca", "valor": 182.76}, {"data": "2026-03-27", "cliente": "59.759.567 ALINE MACIEL DIAS DOS SANTOS", "vendedor": "Suely", "origem": "Site de busca", "valor": 1620}, {"data": "2026-03-27", "cliente": "BENEFICENCIA NIPO BRASILEIRA DE SAO PAULO", "vendedor": "Michelle", "origem": "Site de busca", "valor": 790}, {"data": "2026-03-27", "cliente": "ASSOCIACAO HOSPITALAR OSASCO", "vendedor": "Michelle", "origem": "Site de busca", "valor": 1034.32}, {"data": "2026-03-31", "cliente": "SEMPREL - SERVICOS PARA APOIO E MONITORAMENTO", "vendedor": "Suely", "origem": "Indicação", "valor": 1683.14}, {"data": "2026-03-31", "cliente": "HARAS SANTA MARIA", "vendedor": "Michelle", "origem": "Site de busca", "valor": 1300}]}, {"month": "Abril", "code": "ABR", "partial": false, "weeks": [{"week": "W14", "dias": 2, "leads": 64, "qualif": 4, "orcs": 2, "vendas": 3, "receita": 1898.64}, {"week": "W15", "dias": 5, "leads": 151, "qualif": 16, "orcs": 9, "vendas": 3, "receita": 20085.98}, {"week": "W16", "dias": 5, "leads": 160, "qualif": 25, "orcs": 25, "vendas": 2, "receita": 1819.78}, {"week": "W17", "dias": 4, "leads": 112, "qualif": 14, "orcs": 10, "vendas": 1, "receita": 773.63}, {"week": "W18", "dias": 4, "leads": 110, "qualif": 17, "orcs": 8, "vendas": 2, "receita": 3729.51}], "channels": {"Email": 124, "Krolic": 425, "RD": 47, "General Clean": 99, "Outbound": 1}, "totals": {"dias": 20, "leads": 597, "qualif": 76, "orcs": 54, "vendas": 11, "receita": 28307.54}, "sales": [{"data": "2026-04-02", "cliente": "SHERWIN-WILLIAMS DO BRASIL INDUSTRIA E COMERC", "vendedor": "Suely", "origem": "Site de busca", "valor": 847.44}, {"data": "2026-04-02", "cliente": "33.435.446 MARIA ALICE MARCONDES BAPTISTA", "vendedor": "Michelle", "origem": "General Clean", "valor": 494}, {"data": "2026-04-02", "cliente": "COOPERATIVA DE CREDITO E INVESTIMENTO DE LIVR", "vendedor": "Michelle", "origem": "General Clean", "valor": 557.2}, {"data": "2026-04-06", "cliente": "BASILICA PARTNERS LATIN AMERICA PRIVATE EQUIT", "vendedor": "Suely", "origem": "Site de busca", "valor": 360}, {"data": "2026-04-08", "cliente": "JRF MANUTENCAO E SERVICOS LTDA", "vendedor": "Suely", "origem": "Site de busca", "valor": 15173.54}, {"data": "2026-04-09", "cliente": "CARSTEN SERVICOS E TRANSPORTES S.A.", "vendedor": "Michelle", "origem": "RD Station", "valor": 4552.44}, {"data": "2026-04-17", "cliente": "FUNDICAO REGALI BRASIL LTDA.", "vendedor": "Suely", "origem": "Indicação", "valor": 935.94}, {"data": "2026-04-17", "cliente": "TUVIS DO BRASIL S.A.", "vendedor": "Michelle", "origem": "Site de busca", "valor": 883.84}, {"data": "2026-04-22", "cliente": "CAVAL SOLUCOES EM TECNOLOGIA LTDA", "vendedor": "Suely", "origem": "Site de busca", "valor": 773.63}, {"data": "2026-04-29", "cliente": "PARZIANELLO & CIA LTDA", "vendedor": "Suely", "origem": "RD Station", "valor": 3025.11}, {"data": "2026-04-30", "cliente": "30.428.263 JULIO CESAR ALVES", "vendedor": "Michelle", "origem": "Site de busca", "valor": 704.4}]}];
+const YTD = {"leads": 2331, "qualif": 223, "orcs": 183, "vendas": 51, "receita": 77674.9};
+const GEN_DATE = "2026-05-05";
+
+Chart.defaults.color = "#9CA3AF";
+Chart.defaults.borderColor = "#1F293780";
+Chart.defaults.font.family = "-apple-system, BlinkMacSystemFont, Segoe UI, Roboto";
+Chart.defaults.font.size = 11;
+Chart.defaults.plugins.legend.display = false;
+
+const C = {
+  leads:"#3B82F6", qualif:"#8B5CF6", orc:"#06B6D4", vendas:"#10B981",
+  receita:"#F59E0B", ticket:"#EC4899", convLV:"#10B981", convQV:"#14B8A6",
+  alert:"#EF4444", cat:["#3B82F6","#F59E0B","#10B981","#8B5CF6","#EC4899","#06B6D4","#F97316"],
+};
+
+const fmt = {
+  int: n => (n||0).toLocaleString("pt-BR", {maximumFractionDigits:0}),
+  money: n => "R$ " + (n||0).toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2}),
+  moneyShort: n => {
+    const v = n || 0;
+    if (v >= 1000000) return "R$ " + (v/1000000).toFixed(1).replace(".",",") + "M";
+    if (v >= 1000) return "R$ " + (v/1000).toFixed(1).replace(".",",") + "k";
+    return "R$ " + v.toFixed(0);
+  },
+  pct: n => (n==null || !isFinite(n)) ? "—" : (n*100).toFixed(1).replace(".",",") + "%",
+  delta: (cur, prev) => {
+    if (prev === null || prev === undefined || prev === 0 || !isFinite(prev)) return {val:null, dir:"eq"};
+    const d = (cur - prev) / prev;
+    if (!isFinite(d)) return {val:null, dir:"eq"};
+    return { val: d, dir: d > 0.005 ? "up" : d < -0.005 ? "dn" : "eq" };
+  }
+};
+const dBadge = d => {
+  if (d.val === null || !isFinite(d.val)) return "";
+  if (d.dir === "eq") return "";
+  const pct = Math.abs(d.val * 100);
+  const s = pct.toFixed(1).replace(".", ",");
+  const sign = d.val > 0 ? "↑" : "↓";
+  return "<div class=\"delta " + d.dir + "\">" + sign + " " + s + "%</div>";
+};
+
+document.querySelectorAll(".tab").forEach(t => {
+  t.onclick = () => {
+    document.querySelectorAll(".tab").forEach(x => x.classList.remove("active"));
+    document.querySelectorAll(".tab-content").forEach(x => x.classList.remove("active"));
+    t.classList.add("active");
+    document.getElementById(t.dataset.tab).classList.add("active");
+    setTimeout(resizeCharts, 30);
+  };
+});
+function resizeCharts(){ Object.values(chartRegistry).forEach(c => c && c.resize && c.resize()); }
+const chartRegistry = {};
+function renderChart(id, cfg){
+  if (chartRegistry[id]) chartRegistry[id].destroy();
+  const el = document.getElementById(id);
+  if (!el) return;
+  chartRegistry[id] = new Chart(el, cfg);
+}
+
+const last = MONTHS[MONTHS.length-1];
+if (last.partial) {
+  const b = document.getElementById("partialBadge");
+  b.textContent = last.month + " em andamento";
+  b.classList.remove("hidden");
+}
+
+(function(){
+  const html = [
+    ["Leads", fmt.int(YTD.leads), C.leads],
+    ["Qualificados", fmt.int(YTD.qualif), C.qualif],
+    ["Vendas", fmt.int(YTD.vendas), C.vendas],
+    ["Receita", fmt.moneyShort(YTD.receita), C.receita],
+  ].map(([k,v,c]) => "<div class=\"metric\"><div class=\"k\">"+k+"</div><div class=\"v\" style=\"color:"+c+"\">"+v+"</div></div>").join("");
+  document.getElementById("ytdMetrics").innerHTML = html;
+  const first = MONTHS[0].month.substring(0,3);
+  const lastN = MONTHS[MONTHS.length-1].month.substring(0,3);
+  document.getElementById("ytdPeriod").textContent = first + " — " + lastN + " 2026";
+})();
+
+(function(){
+  const m = MONTHS[MONTHS.length-1];
+  const prev = MONTHS[MONTHS.length-2];
+  const ticket = m.totals.vendas > 0 ? m.totals.receita / m.totals.vendas : 0;
+  const cards = [
+    {k:"Leads", v:fmt.int(m.totals.leads), sub:"no mês", c:C.leads, d:fmt.delta(m.totals.leads, prev.totals.leads)},
+    {k:"Qualificados", v:fmt.int(m.totals.qualif), sub:fmt.pct(m.totals.leads ? m.totals.qualif/m.totals.leads : 0) + " dos leads", c:C.qualif, d:fmt.delta(m.totals.qualif, prev.totals.qualif)},
+    {k:"Vendas", v:fmt.int(m.totals.vendas), sub:fmt.pct(m.totals.leads ? m.totals.vendas/m.totals.leads : 0) + " conv. L→V", c:C.vendas, d:fmt.delta(m.totals.vendas, prev.totals.vendas)},
+    {k:"Receita", v:fmt.moneyShort(m.totals.receita), sub:"ticket " + fmt.moneyShort(ticket), c:C.receita, d:fmt.delta(m.totals.receita, prev.totals.receita)},
+  ];
+  const partialTag = m.partial ? "<span class=\"partial\">(parcial)</span>" : "";
+  document.getElementById("kpiCards").innerHTML = cards.map(c =>
+    "<div class=\"kpi\" style=\"border-left-color:"+c.c+"\">"
+    +"<div class=\"k\">"+c.k+" — "+m.month+partialTag+"</div>"
+    +"<div class=\"v\" style=\"color:"+c.c+"\">"+c.v+"</div>"
+    +"<div class=\"sub\">"+c.sub+"</div>"
+    + dBadge(c.d) +
+    "</div>"
+  ).join("");
+})();
+
+(function(){
+  const Y = YTD;
+  const lMax = Y.leads || 1;
+  function bar(label, val, color, pctLabel){
+    const pct = Math.max(5, (val/lMax)*100);
+    return "<div class=\"funnel-row\">"
+      + "<div class=\"lbl\">"+label+"</div>"
+      + "<div class=\"bar\" style=\"background:"+color+";width:"+pct+"%\">"+fmt.int(val)+"</div>"
+      + "<div class=\"pct\">"+pctLabel+"</div></div>";
+  }
+  const convLV = Y.leads ? Y.vendas/Y.leads : 0;
+  const convQV = Y.qualif ? Y.vendas/Y.qualif : 0;
+  const qualRate = Y.leads ? Y.qualif/Y.leads : 0;
+  const orcRate = Y.qualif ? Y.orcs/Y.qualif : 0;
+  let html = "";
+  html += bar("Leads", Y.leads, C.leads, "100%");
+  html += bar("Qualificados", Y.qualif, C.qualif, fmt.pct(qualRate));
+  html += bar("Orçamentos", Y.orcs, C.orc, fmt.pct(orcRate)+" dos qualif.");
+  const pct = Math.max(5, (Y.vendas/lMax)*100);
+  const stack = "<div class=\"pct-stack\">"
+    + "<span style=\"background:"+C.convLV+"30;color:#34D399\">"+fmt.pct(convLV)+" L→V</span>"
+    + "<span style=\"background:"+C.convQV+"30;color:#5EEAD4\">"+fmt.pct(convQV)+" Q→V</span></div>";
+  html += "<div class=\"funnel-row\">"
+    + "<div class=\"lbl\">Vendas</div>"
+    + "<div class=\"bar\" style=\"background:"+C.vendas+";width:"+pct+"%\">"+fmt.int(Y.vendas)+"</div>"
+    + stack + "</div>";
+  document.getElementById("funnelYTD").innerHTML = html;
+})();
+
+(function(){
+  const Y = YTD;
+  const ins = [];
+  const lastM = MONTHS[MONTHS.length-1];
+  const prevM = MONTHS[MONTHS.length-2];
+  if (lastM.partial) ins.push({cls:"info", t:"● "+lastM.month+" em andamento — "+Math.round(lastM.totals.dias)+" dias úteis apurados, dados parciais"});
+  const qualRate = Y.leads ? Y.qualif/Y.leads : 0;
+  if (qualRate > 0.1) ins.push({cls:"ok", t:"✓ Qualificação saudável no YTD ("+fmt.pct(qualRate)+" dos leads)"});
+  else if (qualRate < 0.05) ins.push({cls:"warn", t:"⚠ Qualificação baixa ("+fmt.pct(qualRate)+") — revisar filtro de leads"});
+  const convLV = Y.leads ? Y.vendas/Y.leads : 0;
+  if (convLV < 0.02) ins.push({cls:"warn", t:"⚠ Conversão L→V baixa ("+fmt.pct(convLV)+") — gargalo no funil"});
+  const convQV = Y.qualif ? Y.vendas/Y.qualif : 0;
+  if (convQV > 0.25) ins.push({cls:"ok", t:"✓ Time comercial fechando bem ("+fmt.pct(convQV)+" Q→V)"});
+  else if (convQV > 0 && convQV < 0.1) ins.push({cls:"warn", t:"⚠ Conv Q→V baixa ("+fmt.pct(convQV)+") — revisar abordagem com qualificados"});
+  if (prevM && prevM.totals.receita > 0) {
+    if (lastM.totals.receita > prevM.totals.receita * 1.3) ins.push({cls:"up", t:"↑ Crescimento expressivo — "+lastM.month+" vs "+prevM.month});
+    if (lastM.totals.receita < prevM.totals.receita * 0.5 && !lastM.partial) ins.push({cls:"down", t:"↓ Queda que requer investigação — "+lastM.month+" vs "+prevM.month});
+  }
+  const tkCur = lastM.totals.vendas > 0 ? lastM.totals.receita / lastM.totals.vendas : 0;
+  const tkPrev = prevM && prevM.totals.vendas > 0 ? prevM.totals.receita / prevM.totals.vendas : 0;
+  if (tkPrev > 0 && tkCur > tkPrev * 1.1) ins.push({cls:"ticket", t:"$ Ticket médio subiu — "+fmt.moneyShort(tkPrev)+" → "+fmt.moneyShort(tkCur)});
+  let best = MONTHS[0];
+  for (const m of MONTHS) if (m.totals.receita > best.totals.receita) best = m;
+  ins.push({cls:"best", t:"★ Melhor mês YTD: "+best.month+" — "+fmt.money(best.totals.receita)+" em "+Math.round(best.totals.vendas)+" vendas"});
+  document.getElementById("insights").innerHTML = ins.map(i => "<div class=\"insight "+i.cls+"\"><div class=\"txt\">"+i.t+"</div></div>").join("");
+})();
+
+renderChart("chartReceitaMes", {
+  type:"bar",
+  data:{
+    labels: MONTHS.map(m => m.month + (m.partial ? " (parc.)" : "")),
+    datasets:[{
+      label:"Receita",
+      data: MONTHS.map(m => m.totals.receita),
+      backgroundColor: MONTHS.map(m => m.partial ? C.receita+"80" : C.receita),
+      borderRadius:6, borderSkipped:false,
+    }]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    scales:{
+      y:{ticks:{callback:v=>fmt.moneyShort(v)}, grid:{color:"#1F293780"}},
+      x:{grid:{display:false}}
+    },
+    plugins:{tooltip:{callbacks:{label:ctx=>"Receita: "+fmt.money(ctx.raw)}}}
+  }
+});
+
+renderChart("chartLeadsVsVendas", {
+  type:"bar",
+  data:{
+    labels: MONTHS.map(m => m.month + (m.partial ? " (parc.)" : "")),
+    datasets:[
+      {label:"Leads", yAxisID:"y", data:MONTHS.map(m=>m.totals.leads), backgroundColor: MONTHS.map(m => m.partial?C.leads+"80":C.leads), borderRadius:6, borderSkipped:false},
+      {label:"Vendas", yAxisID:"y1", data:MONTHS.map(m=>m.totals.vendas), backgroundColor:MONTHS.map(m => m.partial?C.vendas+"80":C.vendas), borderRadius:6, borderSkipped:false},
+    ]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    scales:{
+      y:{ticks:{color:C.leads}, grid:{color:"#1F293780"}, title:{display:true,text:"Leads",color:C.leads}},
+      y1:{position:"right", ticks:{color:C.vendas}, grid:{display:false}, title:{display:true,text:"Vendas",color:C.vendas}},
+      x:{grid:{display:false}}
+    }
+  }
+});
+
+(function(){
+  const rows = MONTHS.map(m => {
+    const t = m.totals;
+    const qualRate = t.leads ? t.qualif/t.leads : 0;
+    const convLV = t.leads ? t.vendas/t.leads : 0;
+    const convQV = t.qualif ? t.vendas/t.qualif : 0;
+    const cls = m.partial ? "partial" : "";
+    return "<tr class=\""+cls+"\"><td>"+m.month+(m.partial?" ●":"")+"</td>"
+      +"<td class=\"align-right\">"+fmt.int(t.leads)+"</td>"
+      +"<td class=\"align-right\">"+fmt.int(t.qualif)+"</td>"
+      +"<td class=\"align-right\">"+fmt.pct(qualRate)+"</td>"
+      +"<td class=\"align-right\">"+fmt.int(t.orcs)+"</td>"
+      +"<td class=\"align-right\">"+fmt.int(t.vendas)+"</td>"
+      +"<td class=\"align-right\" style=\"color:"+C.convLV+"\">"+fmt.pct(convLV)+"</td>"
+      +"<td class=\"align-right\" style=\"color:"+C.convQV+"\">"+fmt.pct(convQV)+"</td>"
+      +"<td class=\"align-right\">"+fmt.money(t.receita)+"</td></tr>";
+  }).join("");
+  const Y = YTD;
+  const yqr = Y.leads ? Y.qualif/Y.leads : 0;
+  const ylv = Y.leads ? Y.vendas/Y.leads : 0;
+  const yqv = Y.qualif ? Y.vendas/Y.qualif : 0;
+  const totalRow = "<tr class=\"total-row\"><td>TOTAL YTD</td>"
+    +"<td class=\"align-right\">"+fmt.int(Y.leads)+"</td>"
+    +"<td class=\"align-right\">"+fmt.int(Y.qualif)+"</td>"
+    +"<td class=\"align-right\">"+fmt.pct(yqr)+"</td>"
+    +"<td class=\"align-right\">"+fmt.int(Y.orcs)+"</td>"
+    +"<td class=\"align-right\">"+fmt.int(Y.vendas)+"</td>"
+    +"<td class=\"align-right\">"+fmt.pct(ylv)+"</td>"
+    +"<td class=\"align-right\">"+fmt.pct(yqv)+"</td>"
+    +"<td class=\"align-right\">"+fmt.money(Y.receita)+"</td></tr>";
+  document.getElementById("resumoMensal").innerHTML =
+    "<thead><tr><th>Mês</th><th class=\"align-right\">Leads</th><th class=\"align-right\">Qualif</th>"
+    +"<th class=\"align-right\">% Qualif</th><th class=\"align-right\">Orçs</th><th class=\"align-right\">Vendas</th>"
+    +"<th class=\"align-right\">L→V</th><th class=\"align-right\">Q→V</th><th class=\"align-right\">Receita</th></tr></thead>"
+    +"<tbody>"+rows+totalRow+"</tbody>";
+})();
+
+let semMonth = MONTHS.length - 1;
+function renderPillsSemanal(){
+  document.getElementById("pillsSemanal").innerHTML = MONTHS.map((m,i)=>
+    "<button class=\"pill "+(i===semMonth?"active":"")+"\" onclick=\"setSem("+i+")\">"+m.month+(m.partial?" ●":"")+"</button>"
+  ).join("");
+}
+function setSem(i){ semMonth = i; renderPillsSemanal(); renderSemanal(); }
+function sparkline(values, color){
+  if (!values.length) return "";
+  const max = Math.max(...values, 1);
+  const points = values.map((v,i) => (i/(values.length-1||1))*60+2 + "," + (20 - (v/max)*18));
+  return "<svg class=\"spark\" viewBox=\"0 0 64 22\"><polyline fill=\"none\" stroke=\""+color+"\" stroke-width=\"1.6\" points=\""+points.join(" ")+"\"/></svg>";
+}
+function renderSemanal(){
+  const m = MONTHS[semMonth];
+  const wks = m.weeks;
+  const leadsArr = wks.map(w=>w.leads);
+  const vendasArr = wks.map(w=>w.vendas);
+  const receitaArr = wks.map(w=>w.receita);
+  renderChart("chartSemLV", {
+    type:"bar",
+    data:{
+      labels: wks.map(w=>w.week),
+      datasets:[
+        {label:"Leads", yAxisID:"y", data:leadsArr, backgroundColor:C.leads, borderRadius:6, borderSkipped:false},
+        {label:"Vendas", yAxisID:"y1", data:vendasArr, backgroundColor:C.vendas, borderRadius:6, borderSkipped:false},
+      ]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      scales:{
+        y:{ticks:{color:C.leads}, grid:{color:"#1F293780"}},
+        y1:{position:"right", ticks:{color:C.vendas}, grid:{display:false}},
+        x:{grid:{display:false}}
+      }
+    }
+  });
+  renderChart("chartSemReceita", {
+    type:"line",
+    data:{
+      labels: wks.map(w=>w.week),
+      datasets:[{label:"Receita", data:receitaArr, borderColor:C.receita, backgroundColor:C.receita+"30", fill:true, tension:0.3, pointRadius:4, pointBackgroundColor:C.receita}]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      scales:{
+        y:{ticks:{color:C.receita, callback:v=>fmt.moneyShort(v)}, grid:{color:"#1F293780"}},
+        x:{grid:{display:false}}
+      },
+      plugins:{tooltip:{callbacks:{label:ctx=>fmt.money(ctx.raw)}}}
+    }
+  });
+  let bestIdx = 0, bestRev = -1;
+  wks.forEach((w,i)=>{ if (w.receita > bestRev){ bestRev = w.receita; bestIdx = i; }});
+  const head = "<thead><tr><th>Semana</th><th class=\"align-right\">Dias</th>"
+    +"<th class=\"align-right\">Leads</th><th class=\"align-right\">Qualif</th><th class=\"align-right\">% Qualif</th>"
+    +"<th class=\"align-right\">Vendas</th>"
+    +"<th class=\"align-right\">Conv L→V</th><th class=\"align-right\">Conv Q→V</th>"
+    +"<th class=\"align-right\">Receita</th><th class=\"align-right\">Ticket</th></tr></thead>";
+  const rows = wks.map((w,i)=>{
+    const qr = w.leads?w.qualif/w.leads:0;
+    const cv = w.leads?w.vendas/w.leads:0;
+    const qv = w.qualif?w.vendas/w.qualif:0;
+    const tk = w.vendas?w.receita/w.vendas:0;
+    const star = i===bestIdx && bestRev>0 ? "<span class=\"star\">★</span>" : "";
+    const cls = i===bestIdx && bestRev>0 ? "best-week" : "";
+    return "<tr class=\""+cls+"\"><td>"+star+w.week+"</td>"
+      +"<td class=\"align-right\">"+fmt.int(w.dias)+"</td>"
+      +"<td class=\"align-right\">"+fmt.int(w.leads)+" "+sparkline(leadsArr, C.leads)+"</td>"
+      +"<td class=\"align-right\">"+fmt.int(w.qualif)+"</td>"
+      +"<td class=\"align-right\">"+fmt.pct(qr)+"</td>"
+      +"<td class=\"align-right\">"+fmt.int(w.vendas)+"</td>"
+      +"<td class=\"align-right\" style=\"color:"+C.convLV+"\">"+fmt.pct(cv)+"</td>"
+      +"<td class=\"align-right\" style=\"color:"+C.convQV+"\">"+fmt.pct(qv)+"</td>"
+      +"<td class=\"align-right\">"+fmt.money(w.receita)+" "+sparkline(receitaArr, C.receita)+"</td>"
+      +"<td class=\"align-right\" style=\"color:"+C.ticket+"\">"+fmt.moneyShort(tk)+"</td></tr>";
+  }).join("");
+  document.getElementById("tituloSemanal").textContent = "Detalhamento semanal — " + m.month;
+  document.getElementById("tbSemanal").innerHTML = head + "<tbody>"+rows+"</tbody>";
+}
+renderPillsSemanal(); renderSemanal();
+
+let origMonth = MONTHS.length - 1;
+function renderPillsOrig(){
+  const pills = ["<button class=\"pill "+(origMonth===-1?"active":"")+"\" onclick=\"setOrig(-1)\">YTD</button>"]
+    .concat(MONTHS.map((m,i)=>
+      "<button class=\"pill "+(i===origMonth?"active":"")+"\" onclick=\"setOrig("+i+")\">"+m.month+(m.partial?" ●":"")+"</button>"
+    ));
+  document.getElementById("pillsOrigens").innerHTML = pills.join("");
+}
+function setOrig(i){ origMonth = i; renderPillsOrig(); renderOrigens(); }
+function renderOrigens(){
+  let ch;
+  if (origMonth === -1) {
+    ch = {};
+    MONTHS.forEach(m => {
+      Object.entries(m.channels).forEach(([k,v]) => { ch[k] = (ch[k]||0) + v; });
+    });
+  } else {
+    ch = MONTHS[origMonth].channels;
+  }
+  const entries = Object.entries(ch).filter(e => e[1]>0).sort((a,b)=>b[1]-a[1]);
+  renderChart("chartCanalBar", {
+    type:"bar",
+    data:{
+      labels: entries.map(e=>e[0]),
+      datasets:[{data: entries.map(e=>e[1]), backgroundColor: entries.map((_,i)=>C.cat[i%C.cat.length]), borderRadius:6, borderSkipped:false}]
+    },
+    options:{
+      indexAxis:"y", responsive:true, maintainAspectRatio:false,
+      scales:{x:{grid:{color:"#1F293780"}}, y:{grid:{display:false}}},
+      plugins:{tooltip:{callbacks:{label:ctx=>fmt.int(ctx.raw)+" leads"}}}
+    }
+  });
+  renderChart("chartCanalDonut", {
+    type:"doughnut",
+    data:{
+      labels: entries.map(e=>e[0]),
+      datasets:[{data: entries.map(e=>e[1]), backgroundColor: entries.map((_,i)=>C.cat[i%C.cat.length]), borderColor:"#111827", borderWidth:2}]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false, cutout:"60%",
+      plugins:{
+        legend:{display:true, position:"bottom", labels:{color:"#9CA3AF", boxWidth:10, padding:10, font:{size:11}}},
+        tooltip:{callbacks:{label:ctx=>ctx.label+": "+fmt.int(ctx.raw)+" ("+((ctx.raw/entries.reduce((s,e)=>s+e[1],0))*100).toFixed(1).replace(".",",")+"%)"}}
+      }
+    }
+  });
+  const pool = origMonth === -1 ? MONTHS.flatMap(m=>m.sales) : MONTHS[origMonth].sales;
+  const agg = {};
+  pool.forEach(s => {
+    agg[s.vendedor] = agg[s.vendedor] || {vendedor:s.vendedor, receita:0, vendas:0};
+    agg[s.vendedor].receita += s.valor;
+    agg[s.vendedor].vendas += 1;
+  });
+  const list = Object.values(agg).sort((a,b)=>b.receita-a.receita);
+  const medals = ["🥇","🥈","🥉"];
+  document.getElementById("rankingVend").innerHTML = list.length ? list.map((r,i)=>
+    "<div class=\"row\">"
+      + "<div class=\"medal\">"+(medals[i]||(i+1))+"</div>"
+      + "<div><div class=\"name\">"+r.vendedor+"</div><div class=\"info\">"+r.vendas+" venda"+(r.vendas===1?"":"s")+" · ticket "+fmt.moneyShort(r.receita/r.vendas)+"</div></div>"
+      + "<div></div>"
+      + "<div class=\"val\">"+fmt.money(r.receita)+"</div>"
+    + "</div>"
+  ).join("") : "<div class=\"info\" style=\"color:var(--text-dim)\">Sem vendas no período.</div>";
+}
+renderPillsOrig(); renderOrigens();
+
+let vendMonth = MONTHS.length - 1;
+function renderPillsVend(){
+  const pills = ["<button class=\"pill "+(vendMonth===-1?"active":"")+"\" onclick=\"setVend(-1)\">YTD</button>"]
+    .concat(MONTHS.map((m,i)=>
+      "<button class=\"pill "+(i===vendMonth?"active":"")+"\" onclick=\"setVend("+i+")\">"+m.month+(m.partial?" ●":"")+"</button>"
+    ));
+  document.getElementById("pillsVendas").innerHTML = pills.join("");
+}
+function setVend(i){ vendMonth = i; renderPillsVend(); renderVendas(); }
+function origBadge(o){
+  const palette = {"Site de busca":C.cat[0],"General Clean":C.cat[2],"RD Station":C.cat[1],"Indicação":C.cat[3],"Captação":C.cat[4],"Hygibras":C.cat[5],"Outbound":C.cat[6],"Outros":C.cat[6]};
+  const c = palette[o] || C.cat[6];
+  return "<span class=\"origem-badge\" style=\"background:"+c+"25;color:"+c+"\">"+o+"</span>";
+}
+function renderVendas(){
+  const list = vendMonth === -1 ? MONTHS.flatMap(m=>m.sales) : MONTHS[vendMonth].sales;
+  const total = list.reduce((s,x)=>s+x.valor,0);
+  const ticket = list.length ? total/list.length : 0;
+  const kpi = [
+    {k:"Total de vendas", v:fmt.int(list.length), c:C.vendas},
+    {k:"Receita fechada", v:fmt.money(total), c:C.receita},
+    {k:"Ticket médio", v:fmt.money(ticket), c:C.ticket},
+  ];
+  document.getElementById("kpiVendas").innerHTML = kpi.map(c =>
+    "<div class=\"kpi\" style=\"border-left-color:"+c.c+"\"><div class=\"k\">"+c.k+"</div><div class=\"v\" style=\"color:"+c.c+"\">"+c.v+"</div></div>"
+  ).join("");
+  const sorted = [...list].sort((a,b)=>(a.data>b.data?1:-1));
+  const head = "<thead><tr><th>Data</th><th>Cliente</th><th>Vendedor</th><th>Origem</th><th class=\"align-right\">Valor</th></tr></thead>";
+  const rows = sorted.map(s => {
+    const d = s.data && s.data.length>=10 ? s.data.substring(0,10).split("-").reverse().join("/") : "—";
+    return "<tr><td>"+d+"</td><td>"+s.cliente+"</td><td>"+s.vendedor+"</td><td>"+origBadge(s.origem)+"</td><td class=\"align-right\" style=\"color:"+C.receita+"\">"+fmt.money(s.valor)+"</td></tr>";
+  }).join("");
+  document.getElementById("tbVendas").innerHTML = head + "<tbody>"+rows+"</tbody>";
+}
+renderPillsVend(); renderVendas();
+
+function exportReport(){
+  const Y = YTD;
+  const ytdTicket = Y.vendas ? Y.receita/Y.vendas : 0;
+  const header = "<!DOCTYPE html><html lang=\"pt-BR\"><head><meta charset=\"UTF-8\"><title>Higiclear — Relatório Diretoria "+GEN_DATE+"</title>"
+    +"<style>body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;background:#f8fafc;color:#0f172a;margin:0;padding:32px}"
+    +"h1{font-size:24px;margin:0 0 4px}h2{font-size:16px;margin:32px 0 12px}.sub{color:#64748b;margin-bottom:24px}"
+    +".grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}"
+    +".card{background:#fff;border-left:4px solid #3B82F6;border-radius:8px;padding:14px 18px;box-shadow:0 1px 2px rgba(0,0,0,0.04)}"
+    +".card .k{font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:0.04em;font-weight:600}"
+    +".card .v{font-size:22px;font-weight:700;margin-top:4px}"
+    +"table{width:100%;border-collapse:collapse;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,0.04);margin-bottom:20px}"
+    +"th{background:#f1f5f9;text-align:left;padding:10px 12px;font-size:11px;text-transform:uppercase;color:#475569;letter-spacing:0.04em}"
+    +"td{padding:10px 12px;border-top:1px solid #e2e8f0;font-size:13px}.align-right{text-align:right}"
+    +"tr.total td{background:#f8fafc;font-weight:700}</style></head><body>"
+    +"<h1>Higiclear — Relatório para Diretoria</h1><div class=\"sub\">Gerado em "+GEN_DATE+" · Período Jan → Abr 2026</div>"
+    +"<h2>KPIs YTD</h2><div class=\"grid\">"
+    + ["Leads|"+fmt.int(Y.leads)+"|#3B82F6", "Qualificados|"+fmt.int(Y.qualif)+"|#8B5CF6",
+       "Vendas|"+fmt.int(Y.vendas)+"|#10B981", "Receita|"+fmt.money(Y.receita)+"|#F59E0B"]
+      .map(s=>{const [k,v,c]=s.split("|"); return "<div class=\"card\" style=\"border-left-color:"+c+"\"><div class=\"k\">"+k+"</div><div class=\"v\" style=\"color:"+c+"\">"+v+"</div></div>";}).join("")
+    +"</div><div class=\"grid\" style=\"grid-template-columns:repeat(3,1fr)\">"
+    +"<div class=\"card\" style=\"border-left-color:#EC4899\"><div class=\"k\">Ticket médio YTD</div><div class=\"v\" style=\"color:#EC4899\">"+fmt.money(ytdTicket)+"</div></div>"
+    +"<div class=\"card\" style=\"border-left-color:#10B981\"><div class=\"k\">Conv L→V</div><div class=\"v\" style=\"color:#10B981\">"+fmt.pct(Y.leads?Y.vendas/Y.leads:0)+"</div></div>"
+    +"<div class=\"card\" style=\"border-left-color:#14B8A6\"><div class=\"k\">Conv Q→V</div><div class=\"v\" style=\"color:#14B8A6\">"+fmt.pct(Y.qualif?Y.vendas/Y.qualif:0)+"</div></div>"
+    +"</div>";
+  let table = "<h2>Resumo por mês</h2><table><thead><tr><th>Mês</th><th class=\"align-right\">Leads</th><th class=\"align-right\">Qualif</th><th class=\"align-right\">Vendas</th><th class=\"align-right\">Receita</th></tr></thead><tbody>";
+  MONTHS.forEach(m => {
+    table += "<tr><td>"+m.month+(m.partial?" (parcial)":"")+"</td><td class=\"align-right\">"+fmt.int(m.totals.leads)+"</td><td class=\"align-right\">"+fmt.int(m.totals.qualif)+"</td><td class=\"align-right\">"+fmt.int(m.totals.vendas)+"</td><td class=\"align-right\">"+fmt.money(m.totals.receita)+"</td></tr>";
+  });
+  table += "<tr class=\"total\"><td>TOTAL YTD</td><td class=\"align-right\">"+fmt.int(Y.leads)+"</td><td class=\"align-right\">"+fmt.int(Y.qualif)+"</td><td class=\"align-right\">"+fmt.int(Y.vendas)+"</td><td class=\"align-right\">"+fmt.money(Y.receita)+"</td></tr></tbody></table>";
+  const footer = "</body></html>";
+  const blob = new Blob([header+table+footer], {type:"text/html"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = "higiclear_relatorio_"+GEN_DATE+".html";
+  document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+}
+</script>
+</body>
+</html>
