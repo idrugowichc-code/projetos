@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="UTF-8">
+<title>Dashboard CRM - Higiclear W18</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>:root{--bg:#0f1117;--bg2:#181c24;--bg3:#1e2330;--blue:#378ADD;--green:#1D9E75;--amber:#BA7517;--red:#E24B4A;--text:#E8EAED;--muted:#8A93A6;--border:#2a3142}*{box-sizing:border-box;margin:0;padding:0}body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.5;padding:24px;max-width:1400px;margin:0 auto}.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}.header h1{font-size:24px;font-weight:700}.header .badge{background:var(--blue);color:#fff;padding:6px 14px;border-radius:6px;font-weight:600;font-size:13px}.section{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:20px}.section h2{font-size:16px;font-weight:600;margin-bottom:16px;color:var(--text);display:flex;align-items:center;gap:8px}.section h2 .dot{width:8px;height:8px;border-radius:50%;background:var(--blue)}.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px}.kpi{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:18px;position:relative;overflow:hidden}.kpi .label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}.kpi .value{font-size:26px;font-weight:700}.kpi .sub{font-size:11px;color:var(--muted);margin-top:6px}.kpi.blue::before,.kpi.green::before,.kpi.amber::before,.kpi.red::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px}.kpi.blue::before{background:var(--blue)}.kpi.green::before{background:var(--green)}.kpi.amber::before{background:var(--amber)}.kpi.red::before{background:var(--red)}.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px}.insights{list-style:none}.insights li{padding:12px 0;border-bottom:1px solid var(--border);font-size:14px}.insights li:last-child{border-bottom:none}.insights li::before{content:"\2192";color:var(--blue);font-weight:bold;margin-right:10px}.funil-row{display:flex;align-items:center;gap:12px;margin-bottom:10px;padding:10px;background:var(--bg3);border-radius:8px}.funil-row .name{width:170px;font-size:13px;font-weight:600}.funil-row .bar-wrap{flex:1;height:24px;background:var(--bg);border-radius:4px;overflow:hidden}.funil-row .bar{height:100%;background:linear-gradient(90deg,var(--blue),#4ea4f0);transition:width .5s}.funil-row .meta{font-size:12px;color:var(--muted);min-width:170px;text-align:right}table{width:100%;border-collapse:collapse}th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--border);font-size:13px}th{background:var(--bg3);color:var(--muted);font-weight:600;text-transform:uppercase;font-size:11px;letter-spacing:.5px}td.right,th.right{text-align:right}.badge-st{padding:3px 8px;border-radius:4px;font-size:11px;font-weight:600}.badge-st.crit{background:rgba(226,75,74,.15);color:var(--red)}.badge-st.alto{background:rgba(186,117,23,.15);color:var(--amber)}.badge-st.medio{background:rgba(55,138,221,.15);color:var(--blue)}.gargalo-card{background:var(--bg3);border-left:3px solid var(--red);border-radius:6px;padding:14px;margin-bottom:10px}.gargalo-card.alto{border-left-color:var(--amber)}.gargalo-card.medio{border-left-color:var(--blue)}.gargalo-card h4{font-size:14px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;gap:10px}.gargalo-card p{font-size:13px;color:var(--muted)}.acao{display:flex;gap:14px;padding:14px;background:var(--bg3);border-radius:8px;margin-bottom:10px;align-items:flex-start}.acao .num{width:32px;height:32px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0}.acao .body{flex:1}.acao h4{font-size:14px;margin-bottom:4px}.acao p{font-size:13px;color:var(--muted);margin-bottom:6px}.acao .meta{display:flex;gap:14px;font-size:11px;color:var(--muted);flex-wrap:wrap}.acao .meta strong{color:var(--text)}.resumo{background:linear-gradient(135deg,#1f4f7a,#2a6fa3);border-radius:12px;padding:24px;margin-top:20px;border:1px solid #4a8fc7}.resumo h2{font-size:18px;margin-bottom:12px;color:#fff}.resumo p{color:#cce5fa;font-size:14px;margin-bottom:8px}.chart-box{position:relative;height:280px}.chart-box-sm{position:relative;height:220px}@media(max-width:900px){.grid-2{grid-template-columns:1fr}}</style></head><body>
+<div class="header"><h1>Dashboard CRM - Higiclear</h1><span class="badge">W18 / 2026</span></div>
+<div class="section"><h2><span class="dot"></span>Indicadores Principais</h2><div class="kpi-grid">
+<div class="kpi blue"><div class="label">Total de Negocios</div><div class="value">156</div><div class="sub">No periodo W18</div></div>
+<div class="kpi green"><div class="label">Em Etapa GANHO</div><div class="value">21</div><div class="sub">R$ 44.076,90 prontos para fechar</div></div>
+<div class="kpi green"><div class="label">Ganhos formalizados</div><div class="value">20</div><div class="sub">Taxa conversao: 25.3%</div></div>
+<div class="kpi red"><div class="label">Perdidos</div><div class="value">59</div><div class="sub">38% do funil</div></div>
+<div class="kpi amber"><div class="label">Pipeline Total</div><div class="value">R$ 411.195,82</div><div class="sub">77 deals em andamento</div></div>
+<div class="kpi red"><div class="label">Deals sem Valor</div><div class="value">49</div><div class="sub">64% dos em andamento</div></div>
+</div></div>
+<div class="grid-2">
+<div class="section"><h2><span class="dot"></span>Principais Insights</h2><ul class="insights">
+<li><strong>Taxa de conversao saudavel:</strong> 20 ganhos x 59 perdas = 25.3% de fechamento na semana.</li>
+<li><strong>Pipeline em GANHO ainda elevado:</strong> 21 deals (R$ 44.076,90) prontos para virar contrato.</li>
+<li><strong>Concentracao em Suely:</strong> 83 dos 156 deals (53%) e 93% do pipeline em valor - risco operacional.</li>
+<li><strong>Michelle com volume alto e ticket baixo:</strong> 65 deals mas pipeline de apenas R$ 9.913,26 - tickets muito pequenos.</li>
+<li><strong>Origem RD precisa filtrar melhor:</strong> 52 leads RD geram 13 perdas por "fora do perfil" (22% da origem).</li>
+<li><strong>64% dos deals em andamento sem valor:</strong> 49 de 77 deals nao tem valor cadastrado, comprometendo forecast.</li>
+<li><strong>Lead quality e o principal motivo de perda:</strong> "Fora do perfil" + "Sem retorno" + "Duplicado" = 31 das 59 perdas (52%).</li>
+</ul></div>
+<div class="section"><h2><span class="dot"></span>Funil Comercial</h2>
+<div class="funil-row"><div class="name">CONTATO INICIAL</div><div class="bar-wrap"><div class="bar" style="width:71.42857142857143%"></div></div><div class="meta">45 deals - R$ 0,00</div></div>
+<div class="funil-row"><div class="name">GANHO</div><div class="bar-wrap"><div class="bar" style="width:33.333333333333336%"></div></div><div class="meta">21 deals - R$ 44.076,90</div></div>
+<div class="funil-row"><div class="name">ORCAMENTO ENVIADO</div><div class="bar-wrap"><div class="bar" style="width:100.0%"></div></div><div class="meta">63 deals - R$ 366.083,72</div></div>
+<div class="funil-row"><div class="name">LEADS</div><div class="bar-wrap"><div class="bar" style="width:19.047619047619047%"></div></div><div class="meta">12 deals - R$ 1.035,20</div></div>
+<div class="funil-row"><div class="name">QUALIFICAÇÃO</div><div class="bar-wrap"><div class="bar" style="width:14.285714285714286%"></div></div><div class="meta">9 deals - R$ 0,00</div></div>
+<div class="funil-row"><div class="name">OPORTUNIDADE</div><div class="bar-wrap"><div class="bar" style="width:9.523809523809524%"></div></div><div class="meta">6 deals - R$ 0,00</div></div>
+<div class="chart-box-sm" style="margin-top:16px"><canvas id="chartFunil"></canvas></div>
+</div></div>
+<div class="section"><h2><span class="dot"></span>Performance por Vendedor</h2>
+<table><thead><tr><th>Vendedor</th><th class="right">Total</th><th class="right">Em Andamento</th><th class="right">Etapa GANHO</th><th class="right">Ganhos</th><th class="right">Perdidos</th><th class="right">Pipeline</th><th class="right">Valor Etapa GANHO</th></tr></thead><tbody>
+<tr><td><strong>Suely</strong></td><td class="right">83</td><td class="right">30</td><td class="right">16</td><td class="right">15</td><td class="right">38</td><td class="right">R$ 381.415,44</td><td class="right">R$ 37.883,64</td></tr>
+<tr><td><strong>Michelle</strong></td><td class="right">65</td><td class="right">43</td><td class="right">5</td><td class="right">5</td><td class="right">17</td><td class="right">R$ 9.913,26</td><td class="right">R$ 6.193,26</td></tr>
+<tr><td><strong>Higiclear</strong></td><td class="right">7</td><td class="right">3</td><td class="right">0</td><td class="right">0</td><td class="right">4</td><td class="right">R$ 19.867,12</td><td class="right">R$ 0,00</td></tr>
+<tr><td><strong>Washigton</strong></td><td class="right">1</td><td class="right">1</td><td class="right">0</td><td class="right">0</td><td class="right">0</td><td class="right">R$ 0,00</td><td class="right">R$ 0,00</td></tr>
+</tbody></table>
+<div class="grid-2" style="margin-top:20px"><div class="chart-box"><canvas id="chartVendPipe"></canvas></div><div class="chart-box"><canvas id="chartVendDeals"></canvas></div></div>
+</div>
+<div class="grid-2">
+<div class="section"><h2><span class="dot"></span>Gargalos do Funil</h2>
+<div class="gargalo-card alto"><h4>Etapa GANHO ainda concentra valor preso <span class="badge-st alto">Alto</span></h4><p>21 deals na etapa GANHO (R$ 44.076,90). Mesmo com 20 fechamentos na semana, o pipeline curto-prazo ainda tem ~R$ 44K para destravar.</p></div>
+<div class="gargalo-card alto"><h4>Orcamento Enviado e o estagio mais carregado <span class="badge-st alto">Alto</span></h4><p>63 deals em "ORCAMENTO ENVIADO" valendo R$ 366.083,72. Cadencia de follow-up e o que separa esse estagio do GANHO.</p></div>
+<div class="gargalo-card medio"><h4>57 leads novos parados em "CONTATO INICIAL" + LEADS <span class="badge-st medio">Medio</span></h4><p>Volume alto de entrada mas pouca movimentacao para etapas adiantadas. Risco de leads esfriarem.</p></div>
+<div class="gargalo-card medio"><h4>Concentracao em Suely <span class="badge-st medio">Medio</span></h4><p>Suely responde por 93% do pipeline em valor (83 deals). Risco operacional se sair de ferias ou ficar doente.</p></div>
+</div>
+<div class="section"><h2><span class="dot"></span>Analise de Origens</h2>
+<div class="chart-box"><canvas id="chartOrigens"></canvas></div>
+<table style="margin-top:14px"><thead><tr><th>Origem</th><th class="right">Deals</th><th class="right">Valor</th></tr></thead><tbody>
+<tr><td>Inbound</td><td class="right">75</td><td class="right">R$ 140.251,73</td></tr>
+<tr><td>RD</td><td class="right">52</td><td class="right">R$ 82.190,75</td></tr>
+<tr><td>Indicação</td><td class="right">11</td><td class="right">R$ 67.019,10</td></tr>
+<tr><td>Hygibras</td><td class="right">8</td><td class="right">R$ 113.029,72</td></tr>
+<tr><td>General Clean</td><td class="right">6</td><td class="right">R$ 7.681,29</td></tr>
+<tr><td>Não informado</td><td class="right">3</td><td class="right">R$ 1.023,23</td></tr>
+<tr><td>Outbound</td><td class="right">1</td><td class="right">R$ 0,00</td></tr>
+</tbody></table></div></div>
+<div class="section"><h2><span class="dot"></span>Motivos de Perda</h2>
+<div class="grid-2"><div class="chart-box"><canvas id="chartMotivos"></canvas></div>
+<div><table><thead><tr><th>Motivo</th><th class="right">Qtde</th><th class="right">% do total</th></tr></thead><tbody>
+<tr><td>Cliente fora do perfil</td><td class="right">13</td><td class="right">22.0%</td></tr>
+<tr><td>Sem Retorno</td><td class="right">11</td><td class="right">18.6%</td></tr>
+<tr><td>Cadastro Duplicado</td><td class="right">7</td><td class="right">11.9%</td></tr>
+<tr><td>Só preço</td><td class="right">6</td><td class="right">10.2%</td></tr>
+<tr><td>Compra Adiada</td><td class="right">5</td><td class="right">8.5%</td></tr>
+<tr><td>Licitação/Revenda</td><td class="right">5</td><td class="right">8.5%</td></tr>
+<tr><td>Fechou com outro fornecedor</td><td class="right">3</td><td class="right">5.1%</td></tr>
+<tr><td>Fora do estado</td><td class="right">3</td><td class="right">5.1%</td></tr>
+<tr><td>Outros</td><td class="right">3</td><td class="right">5.1%</td></tr>
+<tr><td>Sem Interesse</td><td class="right">3</td><td class="right">5.1%</td></tr>
+</tbody></table></div></div></div>
+<div class="section"><h2><span class="dot"></span>Plano de Acao para W19</h2>
+<div class="acao"><div class="num">1</div><div class="body"><h4>Converter os 21 deals na etapa GANHO</h4><p>21 negocios (R$ 44.076,90) estao prontos para virar Ganho formalizado. Suely tem 16, Michelle 5.</p><div class="meta"><span><strong>Responsavel:</strong> Suely + Michelle</span><span><strong>Prazo:</strong> Ate quarta-feira (W19)</span><span><strong>KPI:</strong> Fechar >= 60% dos 21 deals</span></div></div></div>
+<div class="acao"><div class="num">2</div><div class="body"><h4>Atualizar valor dos 49 deals em andamento sem valor</h4><p>64% dos deals em andamento estao sem valor cadastrado. Compromete forecast.</p><div class="meta"><span><strong>Responsavel:</strong> Cada vendedor para sua carteira</span><span><strong>Prazo:</strong> Proxima segunda</span><span><strong>KPI:</strong> Zerar deals em andamento sem valor</span></div></div></div>
+<div class="acao"><div class="num">3</div><div class="body"><h4>Revisar qualificacao da origem RD</h4><p>52 leads RD geraram bom volume mas o motivo "Cliente fora do perfil" (13 perdas) sugere baixa qualificacao.</p><div class="meta"><span><strong>Responsavel:</strong> Pre-vendas + marketing</span><span><strong>Prazo:</strong> Reuniao terca-feira</span><span><strong>KPI:</strong> Reduzir perdas por "fora do perfil" em 50%</span></div></div></div>
+<div class="acao"><div class="num">4</div><div class="body"><h4>Reativar 11 deals "Sem Retorno"</h4><p>Segundo maior motivo de perda. Criar cadencia de 3 toques antes de marcar perdido.</p><div class="meta"><span><strong>Responsavel:</strong> Suely + Michelle</span><span><strong>Prazo:</strong> Durante toda W19</span><span><strong>KPI:</strong> Recuperar >= 4 deals</span></div></div></div>
+<div class="acao"><div class="num">5</div><div class="body"><h4>Limpar cadastros duplicados no Agendor</h4><p>7 perdas por "Cadastro Duplicado" - problema de processo, nao de venda.</p><div class="meta"><span><strong>Responsavel:</strong> Igor + admin CRM</span><span><strong>Prazo:</strong> Quinta-feira</span><span><strong>KPI:</strong> Implementar checagem de CNPJ duplicado</span></div></div></div>
+</div>
+<div class="resumo"><h2>Resumo Executivo W18</h2>
+<p>A semana 18 fechou com 156 negocios no funil, pipeline total de R$ 411.195,82 e taxa de conversao de 25.3% (20 ganhos contra 59 perdas) - patamar saudavel comparado a semanas anteriores.</p>
+<p>O destaque positivo e a recuperacao do fluxo de fechamento: 20 ganhos formalizados na semana. Resta o lote da etapa <strong>GANHO</strong> com 21 deals valendo R$ 44.076,90 - prioridade para destravar na W19.</p>
+<p>Em paralelo, 52% das perdas vem de problemas de qualificacao de lead (fora do perfil, sem retorno, duplicado). Necessario revisar o funil de marketing/RD e o processo de pre-vendas.</p>
+<p><strong>Suely</strong> concentra 93% do pipeline em valor e 16 dos 21 deals em GANHO - foco maximo em destravar o fechamento dela. <strong>Michelle</strong> tem volume (65 deals) mas ticket medio muito baixo - revisitar criterios de qualificacao.</p>
+</div>
+<script>
+Chart.defaults.color="#8A93A6";Chart.defaults.borderColor="#2a3142";
+new Chart(document.getElementById("chartFunil"),{type:"bar",data:{labels:["CONTATO INICIAL", "GANHO", "ORCAMENTO ENVIADO", "LEADS", "QUALIFICAÇÃO", "OPORTUNIDADE"],datasets:[{label:"Negocios",data:[45, 21, 63, 12, 9, 6],backgroundColor:"#378ADD"}]},options:{indexAxis:"y",responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}}});
+new Chart(document.getElementById("chartVendPipe"),{type:"doughnut",data:{labels:["Michelle", "Suely", "Higiclear", "Washigton"],datasets:[{data:[9913.26, 381415.44, 19867.12, 0.0],backgroundColor:['#378ADD','#1D9E75','#BA7517','#E24B4A','#9B59B6','#34495E','#16A085','#E67E22','#7F8C8D','#3498DB']}]},options:{responsive:true,maintainAspectRatio:false,plugins:{title:{display:true,text:"Pipeline em Valor (R$)",color:"#E8EAED"},legend:{position:"bottom"}}}});
+new Chart(document.getElementById("chartVendDeals"),{type:"doughnut",data:{labels:["Michelle", "Suely", "Higiclear", "Washigton"],datasets:[{data:[65, 83, 7, 1],backgroundColor:['#378ADD','#1D9E75','#BA7517','#E24B4A','#9B59B6','#34495E','#16A085','#E67E22','#7F8C8D','#3498DB']}]},options:{responsive:true,maintainAspectRatio:false,plugins:{title:{display:true,text:"Quantidade de Deals",color:"#E8EAED"},legend:{position:"bottom"}}}});
+new Chart(document.getElementById("chartOrigens"),{type:"doughnut",data:{labels:["Inbound", "RD", "Indicação", "Hygibras", "General Clean", "Não informado", "Outbound"],datasets:[{data:[75, 52, 11, 8, 6, 3, 1],backgroundColor:['#378ADD','#1D9E75','#BA7517','#E24B4A','#9B59B6','#34495E','#16A085','#E67E22','#7F8C8D','#3498DB']}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:"bottom"}}}});
+new Chart(document.getElementById("chartMotivos"),{type:"pie",data:{labels:["Cliente fora do perfil", "Sem Retorno", "Cadastro Duplicado", "Só preço", "Compra Adiada", "Licitação/Revenda", "Fechou com outro fornecedor", "Fora do estado", "Outros", "Sem Interesse"],datasets:[{data:[13, 11, 7, 6, 5, 5, 3, 3, 3, 3],backgroundColor:['#378ADD','#1D9E75','#BA7517','#E24B4A','#9B59B6','#34495E','#16A085','#E67E22','#7F8C8D','#3498DB']}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:"bottom"}}}});
+</script>
+</body></html>
