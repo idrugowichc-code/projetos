@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GeoTag — Higiclear & Hygibras</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,800&family=JetBrains+Mono:wght@400;500&family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/piexifjs@1.0.6/piexif.min.js"></script>
+<style>
+  :root {
+    --bg: #0a0d12;
+    --bg-elev: #11151c;
+    --bg-card: #161b24;
+    --border: #232b38;
+    --border-bright: #2f3a4d;
+    --text: #e8ecf2;
+    --text-dim: #8b96a8;
+    --text-mute: #5a6477;
+    --accent: #06B6D4;
+    --accent-glow: rgba(6, 182, 212, 0.15);
+    --higiclear: #378ADD;
+    --hygibras: #BA7517;
+    --success: #1D9E75;
+    --danger: #e85a5a;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter Tight', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    background-image:
+      radial-gradient(circle at 15% 10%, rgba(6, 182, 212, 0.08) 0%, transparent 40%),
+      radial-gradient(circle at 85% 80%, rgba(55, 138, 221, 0.06) 0%, transparent 50%);
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 48px 32px 80px;
+  }
+
+  header {
+    margin-bottom: 56px;
+  }
+
+  .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 52px;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--accent);
+    font-weight: 400;
+  }
+
+  .subtitle {
+    color: var(--text-dim);
+    font-size: 17px;
+    max-width: 620px;
+    line-height: 1.55;
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 32px;
+  }
+
+  @media (max-width: 1100px) {
+    .layout { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 900px) {
+    h1 { font-size: 36px; }
+    .container { padding: 32px 20px 60px; }
+    .panel { padding: 22px; }
+  }
+  @media (max-width: 600px) {
+    .container { padding: 24px 14px 50px; }
+    .panel { padding: 18px; }
+    h1 { font-size: 30px; }
+    .image-card {
+      grid-template-columns: 60px 1fr auto;
+      gap: 10px;
+    }
+    .image-card img { width: 60px; height: 60px; }
+  }
+
+  .panel {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .panel-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: var(--text-mute);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .panel-title::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+  }
+
+  /* --- UPLOAD --- */
+  .dropzone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 2px dashed var(--border-bright);
+    border-radius: 12px;
+    padding: 32px 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: var(--bg-elev);
+    width: 100%;
+  }
+  .dropzone:hover, .dropzone.drag {
+    border-color: var(--accent);
+    background: var(--accent-glow);
+  }
+  .dropzone svg {
+    width: 32px; height: 32px;
+    color: var(--text-mute);
+    margin-bottom: 10px;
+    flex-shrink: 0;
+  }
+  .dropzone p {
+    color: var(--text-dim);
+    font-size: 14px;
+    word-break: break-word;
+    max-width: 100%;
+  }
+  .dropzone p strong { color: var(--text); }
+  .dropzone input { display: none; }
+
+  /* --- CIDADES --- */
+  .city-group {
+    margin-top: 24px;
+  }
+
+  .city-group + .city-group { margin-top: 20px; }
+
+  .group-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .group-label.higiclear { color: var(--higiclear); }
+  .group-label.hygibras { color: var(--hygibras); }
+
+  .group-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .city-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .city-chip {
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    padding: 9px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-family: inherit;
+  }
+  .city-chip:hover {
+    border-color: var(--border-bright);
+    color: var(--text);
+  }
+  .city-chip.active.higiclear {
+    background: var(--higiclear);
+    border-color: var(--higiclear);
+    color: white;
+  }
+  .city-chip.active.hygibras {
+    background: var(--hygibras);
+    border-color: var(--hygibras);
+    color: white;
+  }
+
+  /* --- PREVIEW --- */
+  .preview-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    min-height: 400px;
+    color: var(--text-mute);
+    text-align: center;
+  }
+  .preview-empty svg {
+    width: 48px; height: 48px;
+    margin-bottom: 16px;
+    opacity: 0.4;
+  }
+
+  .image-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .image-card {
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+    display: grid;
+    grid-template-columns: 80px 1fr auto;
+    gap: 14px;
+    align-items: center;
+  }
+
+  .image-card img {
+    width: 80px; height: 80px;
+    object-fit: cover;
+    border-radius: 6px;
+    background: var(--bg);
+  }
+
+  .image-info { min-width: 0; }
+
+  .image-name {
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 4px;
+  }
+
+  .image-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-mute);
+  }
+
+  .image-meta .tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 500;
+    margin-right: 6px;
+  }
+  .tag.higiclear { background: rgba(55, 138, 221, 0.15); color: var(--higiclear); }
+  .tag.hygibras  { background: rgba(186, 117, 23, 0.15); color: var(--hygibras); }
+  .tag.pending   { background: rgba(232, 90, 90, 0.12); color: var(--danger); }
+  .tag.done      { background: rgba(29, 158, 117, 0.15); color: var(--success); }
+
+  .btn {
+    background: transparent;
+    border: 1px solid var(--border-bright);
+    color: var(--text);
+    padding: 8px 14px;
+    border-radius: 7px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s ease;
+  }
+  .btn:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-icon { padding: 8px; }
+  .btn-icon svg { width: 14px; height: 14px; display: block; }
+
+  .actions-bar {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #001215;
+    font-weight: 600;
+    flex: 1;
+    padding: 12px 18px;
+    font-size: 14px;
+  }
+  .btn-primary:hover {
+    background: #08c8e6;
+    border-color: #08c8e6;
+    color: #001215;
+  }
+  .btn-primary:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  /* --- INFO BOX --- */
+  .info-box {
+    margin-top: 24px;
+    padding: 14px 16px;
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-left: 2px solid var(--accent);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.55;
+  }
+  .info-box strong { color: var(--text); }
+
+  /* SEO snippet area */
+  .seo-snippet {
+    margin-top: 12px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    overflow-x: auto;
+    white-space: pre;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="eyebrow">Higiclear · Hygibras · SEO Local</div>
+    <h1>GeoTag <em>de imagens</em></h1>
+    <p class="subtitle">Adiciona coordenadas GPS dentro do EXIF da imagem para reforço de SEO local. Tudo processado no seu navegador — nenhuma imagem é enviada para servidor.</p>
+  </header>
+
+  <div class="layout">
+    <!-- ESQUERDA: controles -->
+    <section class="panel">
+      <div class="panel-title">1 · Imagens</div>
+      <label class="dropzone" id="dropzone">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 16V4m0 0l-4 4m4-4l4 4M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
+        <p><strong>Clique ou arraste</strong> imagens JPG aqui</p>
+        <p style="font-size:12px;margin-top:4px;color:var(--text-mute);">JPEG/JPG · múltiplas imagens</p>
+        <input type="file" id="fileInput" accept="image/jpeg,image/jpg" multiple>
+      </label>
+
+      <div class="panel-title" style="margin-top:32px;">2 · Cidade</div>
+
+      <div class="city-group">
+        <div class="group-label higiclear">Higiclear</div>
+        <div class="city-grid" id="grid-higiclear"></div>
+      </div>
+
+      <div class="city-group">
+        <div class="group-label hygibras">Hygibras</div>
+        <div class="city-grid" id="grid-hygibras"></div>
+      </div>
+
+      <div class="info-box">
+        <strong>Como funciona:</strong> as coordenadas GPS são gravadas nos metadados EXIF (GPSLatitude, GPSLongitude) do arquivo JPG. Mecanismos de busca como Google e Bing leem esses dados e usam como sinal de relevância geográfica.
+      </div>
+    </section>
+
+    <!-- DIREITA: preview / fila -->
+    <section class="panel">
+      <div class="panel-title">3 · Fila de processamento</div>
+      <div id="previewArea">
+        <div class="preview-empty">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+          <p>Suas imagens aparecerão aqui</p>
+          <p style="font-size:12px;margin-top:6px;">Adicione imagens e selecione uma cidade</p>
+        </div>
+      </div>
+
+      <div class="actions-bar" id="actionsBar" style="display:none;">
+        <button class="btn" id="clearBtn">Limpar tudo</button>
+        <button class="btn-primary btn" id="processBtn">Gravar GPS e baixar</button>
+      </div>
+
+      <div id="seoOutput" style="display:none;margin-top:20px;">
+        <div class="panel-title">4 · Snippet HTML para SEO</div>
+        <p style="font-size:13px;color:var(--text-dim);margin-bottom:8px;">Cole no <code style="color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:12px;">&lt;head&gt;</code> ou junto à imagem na sua página para reforço extra:</p>
+        <div class="seo-snippet" id="seoSnippet"></div>
+        <button class="btn" id="copySnippet" style="margin-top:10px;">Copiar snippet</button>
+      </div>
+    </section>
+  </div>
+</div>
+
+<script>
+// =============================================================
+// CIDADES — coordenadas centrais (lat, lng) verificadas
+// =============================================================
+const CIDADES = {
+  higiclear: [
+    { nome: 'Campinas',  lat: -22.9099, lng: -47.0626, uf: 'SP' },
+    { nome: 'Americana', lat: -22.7387, lng: -47.3333, uf: 'SP' },
+    { nome: 'Jundiaí',   lat: -23.1864, lng: -46.8842, uf: 'SP' },
+    { nome: 'Limeira',   lat: -22.5645, lng: -47.4017, uf: 'SP' },
+    { nome: 'São Paulo', lat: -23.5505, lng: -46.6333, uf: 'SP' }
+  ],
+  hygibras: [
+    { nome: 'Ribeirão Preto',       lat: -21.1775, lng: -47.8103, uf: 'SP' },
+    { nome: 'Sertãozinho',          lat: -21.1380, lng: -47.9903, uf: 'SP' },
+    { nome: 'São José do Rio Preto',lat: -20.8197, lng: -49.3794, uf: 'SP' },
+    { nome: 'São Carlos',           lat: -22.0175, lng: -47.8908, uf: 'SP' },
+    { nome: 'Araraquara',           lat: -21.7942, lng: -48.1758, uf: 'SP' }
+  ]
+};
+
+let imagens = [];      // { file, dataUrl, name, processed }
+let cidadeAtual = null; // { nome, lat, lng, marca }
+
+// ---------- Render city chips ----------
+function renderCidades(marca) {
+  const grid = document.getElementById('grid-' + marca);
+  CIDADES[marca].forEach(c => {
+    const btn = document.createElement('button');
+    btn.className = 'city-chip';
+    btn.textContent = c.nome;
+    btn.dataset.marca = marca;
+    btn.dataset.nome = c.nome;
+    btn.onclick = () => selecionarCidade(c, marca, btn);
+    grid.appendChild(btn);
+  });
+}
+renderCidades('higiclear');
+renderCidades('hygibras');
+
+function selecionarCidade(cidade, marca, btnEl) {
+  document.querySelectorAll('.city-chip').forEach(b => b.classList.remove('active','higiclear','hygibras'));
+  btnEl.classList.add('active', marca);
+  cidadeAtual = { ...cidade, marca };
+  renderPreview();
+}
+
+// ---------- File handling ----------
+const dz = document.getElementById('dropzone');
+const fi = document.getElementById('fileInput');
+
+['dragenter','dragover'].forEach(e => dz.addEventListener(e, ev => {
+  ev.preventDefault(); dz.classList.add('drag');
+}));
+['dragleave','drop'].forEach(e => dz.addEventListener(e, ev => {
+  ev.preventDefault(); dz.classList.remove('drag');
+}));
+dz.addEventListener('drop', e => handleFiles(e.dataTransfer.files));
+fi.addEventListener('change', e => handleFiles(e.target.files));
+
+function handleFiles(fileList) {
+  Array.from(fileList).forEach(file => {
+    if (!/jpe?g/i.test(file.type)) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      imagens.push({
+        file,
+        dataUrl: ev.target.result,
+        name: file.name,
+        processed: false
+      });
+      renderPreview();
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+// ---------- Preview ----------
+function renderPreview() {
+  const area = document.getElementById('previewArea');
+  const bar = document.getElementById('actionsBar');
+
+  if (imagens.length === 0) {
+    area.innerHTML = `
+      <div class="preview-empty">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <p>Suas imagens aparecerão aqui</p>
+        <p style="font-size:12px;margin-top:6px;">Adicione imagens e selecione uma cidade</p>
+      </div>`;
+    bar.style.display = 'none';
+    return;
+  }
+
+  bar.style.display = 'flex';
+  const list = document.createElement('div');
+  list.className = 'image-list';
+
+  imagens.forEach((img, idx) => {
+    const card = document.createElement('div');
+    card.className = 'image-card';
+    const tagCidade = cidadeAtual
+      ? `<span class="tag ${cidadeAtual.marca}">${cidadeAtual.nome}</span>`
+      : `<span class="tag pending">Sem cidade</span>`;
+    const tagStatus = img.processed
+      ? `<span class="tag done">✓ GPS gravado</span>`
+      : '';
+    card.innerHTML = `
+      <img src="${img.dataUrl}" alt="">
+      <div class="image-info">
+        <div class="image-name">${img.name}</div>
+        <div class="image-meta">${tagCidade}${tagStatus}${(img.file.size/1024).toFixed(0)} KB</div>
+      </div>
+      <button class="btn btn-icon" data-idx="${idx}" title="Remover">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>`;
+    card.querySelector('button').onclick = () => {
+      imagens.splice(idx, 1);
+      renderPreview();
+    };
+    list.appendChild(card);
+  });
+
+  area.innerHTML = '';
+  area.appendChild(list);
+
+  document.getElementById('processBtn').disabled = !cidadeAtual;
+}
+
+// ---------- Botões ----------
+document.getElementById('clearBtn').onclick = () => {
+  imagens = [];
+  renderPreview();
+  document.getElementById('seoOutput').style.display = 'none';
+};
+
+document.getElementById('processBtn').onclick = processarImagens;
+
+// ---------- EXIF GPS embed ----------
+// Converte decimal para racional EXIF [grau, min, seg]
+function toRational(num) {
+  num = Math.abs(num);
+  const deg = Math.floor(num);
+  const minFloat = (num - deg) * 60;
+  const min = Math.floor(minFloat);
+  const sec = Math.round((minFloat - min) * 60 * 100);
+  return [[deg, 1], [min, 1], [sec, 100]];
+}
+
+function buildGpsExif(lat, lng) {
+  const gps = {};
+  gps[piexif.GPSIFD.GPSLatitudeRef] = lat < 0 ? 'S' : 'N';
+  gps[piexif.GPSIFD.GPSLatitude] = toRational(lat);
+  gps[piexif.GPSIFD.GPSLongitudeRef] = lng < 0 ? 'W' : 'E';
+  gps[piexif.GPSIFD.GPSLongitude] = toRational(lng);
+  gps[piexif.GPSIFD.GPSMapDatum] = 'WGS-84';
+  return gps;
+}
+
+function processarImagens() {
+  if (!cidadeAtual || imagens.length === 0) return;
+
+  const { lat, lng, nome, marca, uf } = cidadeAtual;
+  const gpsIfd = buildGpsExif(lat, lng);
+
+  imagens.forEach(img => {
+    try {
+      // EXIF base com descrição/keywords reforçando SEO
+      const empresa = marca === 'higiclear' ? 'Higiclear' : 'Hygibras';
+      const desc = `${empresa} - ${nome}/${uf} - Produtos de limpeza profissional`;
+      const zerothIfd = {};
+      zerothIfd[piexif.ImageIFD.ImageDescription] = desc;
+      zerothIfd[piexif.ImageIFD.Artist] = empresa;
+      zerothIfd[piexif.ImageIFD.Copyright] = `© ${empresa}`;
+      zerothIfd[piexif.ImageIFD.XPKeywords] = stringToUtf16Bytes(
+        `${empresa};${nome};${uf};limpeza profissional;higiene;${nome} ${uf}`
+      );
+
+      const exifObj = { '0th': zerothIfd, 'GPS': gpsIfd };
+      const exifBytes = piexif.dump(exifObj);
+      const newDataUrl = piexif.insert(exifBytes, img.dataUrl);
+
+      // Download
+      const baseName = img.name.replace(/\.[^.]+$/, '');
+      const slug = nome.toLowerCase()
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+        .replace(/\s+/g, '-');
+      downloadDataUrl(newDataUrl, `${baseName}_${slug}.jpg`);
+      img.processed = true;
+    } catch (e) {
+      console.error('Erro em ' + img.name, e);
+      alert('Erro ao processar ' + img.name + ': ' + e.message);
+    }
+  });
+
+  renderPreview();
+  renderSeoSnippet();
+}
+
+// XPKeywords precisa ser UTF-16LE com null terminator
+function stringToUtf16Bytes(str) {
+  const bytes = [];
+  for (let i = 0; i < str.length; i++) {
+    const code = str.charCodeAt(i);
+    bytes.push(code & 0xff, (code >> 8) & 0xff);
+  }
+  bytes.push(0, 0);
+  return bytes;
+}
+
+function downloadDataUrl(dataUrl, filename) {
+  const a = document.createElement('a');
+  a.href = dataUrl;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+}
+
+// ---------- Snippet HTML SEO ----------
+function renderSeoSnippet() {
+  if (!cidadeAtual) return;
+  const { lat, lng, nome, marca, uf } = cidadeAtual;
+  const empresa = marca === 'higiclear' ? 'Higiclear' : 'Hygibras';
+  const snippet = `<!-- Geo meta tags (SEO local) -->
+<meta name="geo.region" content="BR-${uf}">
+<meta name="geo.placename" content="${nome}">
+<meta name="geo.position" content="${lat};${lng}">
+<meta name="ICBM" content="${lat}, ${lng}">
+
+<!-- Schema.org para a imagem -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ImageObject",
+  "contentLocation": {
+    "@type": "Place",
+    "name": "${nome}, ${uf}",
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": ${lat},
+      "longitude": ${lng}
+    }
+  },
+  "creator": { "@type": "Organization", "name": "${empresa}" },
+  "description": "${empresa} em ${nome}/${uf}"
+}
+<\/script>`;
+  document.getElementById('seoSnippet').textContent = snippet;
+  document.getElementById('seoOutput').style.display = 'block';
+}
+
+document.getElementById('copySnippet').onclick = () => {
+  const txt = document.getElementById('seoSnippet').textContent;
+  navigator.clipboard.writeText(txt).then(() => {
+    const b = document.getElementById('copySnippet');
+    const old = b.textContent;
+    b.textContent = '✓ Copiado!';
+    setTimeout(() => b.textContent = old, 1500);
+  });
+};
+</script>
+</body>
+</html>
