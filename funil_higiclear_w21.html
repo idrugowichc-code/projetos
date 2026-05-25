@@ -31,18 +31,15 @@ html,body{background:var(--bg);color:var(--text);font-family:-apple-system,Blink
 .tab-pane{display:none}
 .tab-pane.active{display:block}
 
-/* YTD CARD */
 .ytd{background:linear-gradient(135deg,#111827 0%,#1F2937 100%);border:1px solid var(--border-strong);border-radius:12px;padding:24px 28px;margin-bottom:20px;display:grid;grid-template-columns:auto 1fr;gap:24px;align-items:center}
 .ytd .label{border-right:1px solid var(--border-strong);padding-right:24px}
 .ytd .label .k{font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px}
 .ytd .label .v{font-size:18px;font-weight:600}
 .ytd .metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
-.ytd .m{}
 .ytd .m .k{font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px}
 .ytd .m .v{font-size:26px;font-weight:700}
 .ytd .m .s{font-size:11px;color:var(--text-mute);margin-top:2px}
 
-/* KPI CARDS */
 .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
 .kpi{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:16px 18px;border-left:3px solid var(--text-dim);position:relative}
 .kpi.leads{border-left-color:var(--c-leads)}
@@ -58,7 +55,6 @@ html,body{background:var(--bg);color:var(--text);font-family:-apple-system,Blink
 .kpi .delta.up{background:#10B98120;color:#34D399}
 .kpi .delta.dn{background:#EF444420;color:#F87171}
 
-/* GRIDS */
 .row{display:grid;gap:16px;margin-bottom:16px}
 .row.r-2{grid-template-columns:1fr 1fr}
 .row.r-21{grid-template-columns:2fr 1fr}
@@ -67,7 +63,6 @@ html,body{background:var(--bg);color:var(--text);font-family:-apple-system,Blink
 .card h3{font-size:13px;font-weight:600;letter-spacing:0.02em;margin-bottom:14px;color:var(--text)}
 .card h3 .sub{font-size:11px;color:var(--text-dim);font-weight:400;margin-left:6px}
 
-/* FUNNEL */
 .funnel{display:flex;flex-direction:column;gap:8px}
 .funnel-step{display:grid;grid-template-columns:120px 1fr 110px;align-items:center;gap:12px}
 .funnel-step .lbl{font-size:12px;color:var(--text-dim)}
@@ -77,7 +72,6 @@ html,body{background:var(--bg);color:var(--text);font-family:-apple-system,Blink
 .funnel-step .pct .pct-line.lv{color:var(--c-conv-lv);font-weight:600}
 .funnel-step .pct .pct-line.qv{color:var(--c-conv-qv);font-weight:600}
 
-/* INSIGHTS */
 .insights{display:flex;flex-direction:column;gap:10px}
 .ins{padding:10px 14px;background:var(--bg-elev);border-radius:8px;font-size:12px;line-height:1.5;border-left:3px solid var(--text-dim)}
 .ins.ok{border-left-color:var(--c-success)}
@@ -88,7 +82,6 @@ html,body{background:var(--bg);color:var(--text);font-family:-apple-system,Blink
 .ins.info{border-left-color:var(--c-leads)}
 .ins b{font-weight:600;color:var(--text)}
 
-/* TABLES */
 .tbl-wrap{overflow-x:auto}
 table{width:100%;border-collapse:collapse;font-size:12px}
 th{text-align:left;padding:10px 8px;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:0.04em;color:#E5E7EB;background:#0F1521;border-bottom:2px solid var(--border-strong)}
@@ -101,7 +94,6 @@ tr.best td{background:linear-gradient(90deg,#10B98115 0%,transparent 100%);font-
 td.num{text-align:right;font-variant-numeric:tabular-nums}
 .badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:500}
 
-/* PILLS */
 .pills{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
 .pill{background:var(--bg-card);border:1px solid var(--border-strong);color:var(--text-dim);padding:6px 14px;border-radius:18px;font-size:12px;cursor:pointer;transition:all .15s}
 .pill:hover{color:var(--text)}
@@ -109,24 +101,21 @@ td.num{text-align:right;font-variant-numeric:tabular-nums}
 .pill .p-tag{font-size:10px;color:#FB923C;margin-left:5px}
 .pill.active .p-tag{color:#FED7AA}
 
-/* CHARTS */
 .chart-box{position:relative;height:260px}
 .chart-box.tall{height:320px}
 .legend-row{display:flex;gap:14px;font-size:11px;color:var(--text-dim);margin-bottom:10px;flex-wrap:wrap}
 .legend-row .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px;vertical-align:middle}
 
-/* SPARKLINE */
 .sparkline{display:inline-flex;align-items:end;gap:1px;height:14px;margin-left:4px;vertical-align:middle}
 .sparkline .sb{width:3px;background:var(--c-leads);min-height:1px;opacity:0.6;border-radius:1px}
 
-/* RANKING */
 .rank{display:flex;flex-direction:column;gap:10px}
 .rank-row{display:grid;grid-template-columns:36px 1fr auto auto;gap:12px;align-items:center;padding:10px 12px;background:var(--bg-elev);border-radius:8px}
 .rank-row .pos{font-size:14px;font-weight:600;color:var(--text-dim);text-align:center}
 .rank-row .name{font-size:13px;font-weight:500}
 .rank-row .v{font-size:12px;color:var(--text-dim);font-variant-numeric:tabular-nums}
 .rank-row .receita{font-size:13px;font-weight:600;color:var(--c-receita);font-variant-numeric:tabular-nums}
-.medal{font-size:18px}
+.medal{font-size:18px;text-align:center}
 
 @media (max-width:900px){
   .row.r-2,.row.r-21{grid-template-columns:1fr}
@@ -144,7 +133,7 @@ td.num{text-align:right;font-variant-numeric:tabular-nums}
 <div class="hdr">
   <div>
     <h1>Dashboard Higiclear — Funil de Vendas 2026</h1>
-    <div class="sub">Acompanhamento de leads, qualificação, orçamentos, vendas e receita</div>
+    <div class="sub">Acompanhamento de leads, qualificação, orçamentos, vendas e receita · Gerado em 25/05/2026</div>
   </div>
   <div class="right">
     <span class="badge-partial">Maio em andamento</span>
@@ -159,9 +148,7 @@ td.num{text-align:right;font-variant-numeric:tabular-nums}
   <button class="tab" data-tab="vendas">Vendas Fechadas</button>
 </div>
 
-<!-- PANORAMA -->
 <div class="tab-pane active" id="panorama">
-
   <div class="ytd">
     <div class="label">
       <div class="k">Acumulado</div>
@@ -169,9 +156,7 @@ td.num{text-align:right;font-variant-numeric:tabular-nums}
     </div>
     <div class="metrics" id="ytd-metrics"></div>
   </div>
-
   <div class="kpis" id="kpis"></div>
-
   <div class="row r-21">
     <div class="card">
       <h3>Funil consolidado YTD <span class="sub">Jan–MAI</span></h3>
@@ -182,7 +167,6 @@ td.num{text-align:right;font-variant-numeric:tabular-nums}
       <div class="insights" id="insights"></div>
     </div>
   </div>
-
   <div class="row r-2">
     <div class="card">
       <h3>Receita mensal <span class="sub">R$</span></h3>
@@ -195,7 +179,6 @@ td.num{text-align:right;font-variant-numeric:tabular-nums}
       <div class="chart-box"><canvas id="ch-leads-vendas-monthly"></canvas></div>
     </div>
   </div>
-
   <div class="card">
     <h3>Resumo mensal</h3>
     <div class="tbl-wrap">
@@ -205,13 +188,10 @@ td.num{text-align:right;font-variant-numeric:tabular-nums}
       </table>
     </div>
   </div>
-
 </div>
 
-<!-- COMPARATIVO SEMANAL -->
 <div class="tab-pane" id="comparativo">
   <div class="pills" id="comp-pills"></div>
-
   <div class="row r-2">
     <div class="card">
       <h3>Leads vs Vendas por semana</h3>
@@ -224,7 +204,6 @@ td.num{text-align:right;font-variant-numeric:tabular-nums}
       <div class="chart-box"><canvas id="ch-week-rev"></canvas></div>
     </div>
   </div>
-
   <div class="card">
     <h3>Detalhamento por semana</h3>
     <div class="tbl-wrap">
@@ -236,10 +215,8 @@ td.num{text-align:right;font-variant-numeric:tabular-nums}
   </div>
 </div>
 
-<!-- ORIGENS -->
 <div class="tab-pane" id="origens">
   <div class="pills" id="org-pills"></div>
-
   <div class="row r-2">
     <div class="card">
       <h3>Volume por canal</h3>
@@ -250,14 +227,12 @@ td.num{text-align:right;font-variant-numeric:tabular-nums}
       <div class="chart-box tall"><canvas id="ch-channel-donut"></canvas></div>
     </div>
   </div>
-
   <div class="card">
     <h3>Ranking de vendedores</h3>
     <div class="rank" id="rank-list"></div>
   </div>
 </div>
 
-<!-- VENDAS FECHADAS -->
 <div class="tab-pane" id="vendas">
   <div class="pills" id="ven-pills"></div>
   <div class="kpis" id="ven-kpis" style="grid-template-columns:repeat(3,1fr)"></div>
@@ -275,8 +250,9 @@ td.num{text-align:right;font-variant-numeric:tabular-nums}
 </div>
 
 <script>
-const MONTHS = [{"sheet": "FUNIL JAN", "name": "Janeiro", "short": "JAN", "partial": false, "weeks": [{"label": "W2", "dias": 5.0, "email": 5.0, "krolic": 82.0, "general_clean": 5.0, "rd": 0.0, "outbound": 0.0, "leads": 92.0, "qualif": 3.0, "vendas": 3.0, "receita": 1649.58, "orcamentos": 2.0}, {"label": "W3", "dias": 5.0, "email": 20.0, "krolic": 100.0, "general_clean": 26.0, "rd": 3.0, "outbound": 0.0, "leads": 149.0, "qualif": 6.0, "vendas": 1.0, "receita": 573.5, "orcamentos": 2.0}, {"label": "W4", "dias": 5.0, "email": 0, "krolic": 102.0, "general_clean": 22.0, "rd": 1.0, "outbound": 0.0, "leads": 125.0, "qualif": 4.0, "vendas": 2.0, "receita": 1187.03, "orcamentos": 8.0}, {"label": "W5", "dias": 5.0, "email": 37.0, "krolic": 89.0, "general_clean": 19.0, "rd": 0.0, "outbound": 0.0, "leads": 145.0, "qualif": 7.0, "vendas": 3.0, "receita": 1612.24, "orcamentos": 16.0}], "totals": {"dias": 20.0, "leads": 511.0, "qualif": 20.0, "orcamentos": 28.0, "vendas": 9, "receita": 5269.75, "email": 62.0, "krolic": 373.0, "general_clean": 72.0, "rd": 4.0, "outbound": 0.0}, "vendas": [{"vendedor": "TLV MICHELLE", "cliente": "ALVARO AGUIAR ENGENHARIA E CONSTRUCOES LTDA", "valor": 548.08, "data": "2026-01-07T00:00:00", "origem": "SITE DE BUSCA"}, {"vendedor": "TLV MICHELLE", "cliente": "RESTAURANTE MANIOCA FARIA LIMA LTDA.", "valor": 528.0, "data": "2026-01-07T00:00:00", "origem": "SITE DE BUSCA"}, {"vendedor": "TLV MICHELLE", "cliente": "HORIZONTE AZUL COMERCIO DE PESCADOS", "valor": 573.5, "data": "2026-01-08T00:00:00", "origem": "SITE GENERAL CLEAN"}, {"vendedor": "TLV MICHELLE", "cliente": "SLR CONSTRUCOES E INCORPORACOES LTDA", "valor": 820.9, "data": "2026-01-13T00:00:00", "origem": "SITE DE BUSCA"}, {"vendedor": "TLV MICHELLE", "cliente": "DOUTOR OPERA MEDICAL LTDA", "valor": 660.0, "data": "2026-01-21T00:00:00", "origem": "SITE DE BUSCA"}, {"vendedor": "TLV HUNTER02  SUELY/RECOMPRA", "cliente": "FRANZONI E ROSSETTI SERVICOS MEDICOS SS LTDA", "valor": 527.03, "data": "2026-01-22T00:00:00", "origem": "SITE DE BUSCA"}, {"vendedor": "TLV MICHELLE", "cliente": "MANTYCOM COMERCIAL LTDA", "valor": 122.04, "data": "2026-01-26T00:00:00", "origem": "INDICACAO"}, {"vendedor": "TLV MICHELLE", "cliente": "CONDOMINIO EDIFICIO DINAMARCA", "valor": 470.2, "data": "2026-01-27T00:00:00", "origem": "SITE DE BUSCA"}, {"vendedor": "TLV MICHELLE", "cliente": "FRANCISCO GEUILSON DO NASCIMENTO", "valor": 1020.0, "data": "2026-01-30T00:00:00", "origem": "SITE DE BUSCA"}]}, {"sheet": "FUNIL FEV", "name": "Fevereiro", "short": "FEV", "partial": false, "weeks": [{"label": "W6", "dias": 5.0, "email": 24.0, "krolic": 79.0, "general_clean": 16.0, "rd": 1.0, "outbound": 1.0, "leads": 105.0, "qualif": 7.0, "vendas": 4.0, "receita": 2312.75, "orcamentos": 18.0}, {"label": "W7", "dias": 5.0, "email": 31.0, "krolic": 107.0, "general_clean": 20.0, "rd": 2.0, "outbound": 0.0, "leads": 140.0, "qualif": 12.0, "vendas": 1.0, "receita": 827.3, "orcamentos": 7.0}, {"label": "W8", "dias": 2.0, "email": 15.0, "krolic": 75.0, "general_clean": 10.0, "rd": 1.0, "outbound": 0.0, "leads": 91.0, "qualif": 8.0, "vendas": 2.0, "receita": 1318.17, "orcamentos": 7.0}, {"label": "W9", "dias": 5.0, "email": 46.0, "krolic": 101.0, "general_clean": 11.0, "rd": 1.0, "outbound": 0.0, "leads": 148.0, "qualif": 29.0, "vendas": 2.0, "receita": 2824.37, "orcamentos": 15.0}], "totals": {"dias": 17.0, "leads": 484.0, "qualif": 56.0, "orcamentos": 47.0, "vendas": 9.0, "receita": 7282.59, "email": 116.0, "krolic": 362.0, "general_clean": 57.0, "rd": 5.0, "outbound": 1.0}, "vendas": [{"vendedor": "TLV HUNTER02  SUELY/RECOMPRA", "cliente": "JJ COMERCIO E DISTRIBUIDORA DE ARTEFATOS DE P", "valor": 1140.0, "data": "2026-02-03T00:00:00", "origem": "SITE DE BUSCA"}, {"vendedor": "TLV MICHELLE", "cliente": "GALVANOBRAS GALVANOPLASTIA DO BRASIL LTDA", "valor": 546.0, "data": "2026-02-06T00:00:00", "origem": "SITE DE BUSCA"}, {"vendedor": "TLV MICHELLE", "cliente": "TOP DETAILER SERVICOS DE HIGIENIZACAO LTDA", "valor": 274.25, "data": "2026-02-04T00:00:00", "origem": "SITE DE BUSCA"}, {"vendedor": "TLV MICHELLE", "cliente": "RAFAEL PASCHOAL BRAGA 33245980876", "valor": 352.5, "data": "2026-02-02T00:00:00", "origem": "SITE DE BUSCA"}, {"vendedor": "TLV HUNTER02  SUELY/RECOMPRA", "cliente": "TRC AGROFLORESTAL LTDA", "valor": 827.3, "data": "2026-02-11T00:00:00", "origem": "HYGIBRAS"}, {"vendedor": "TLV HUNTER02 SUELY/RECOMPRA", "cliente": "CLAUDIO MARQUES SAMAIA", "valor": 721.78, "data": "2026-02-18T00:00:00", "origem": "SITE GC P/ HIGI"}, {"vendedor": "TLV MICHELLE", "cliente": "METROPOLE GESTAO E APOIO CONDOMINIAL LTDA", "valor": 596.39, "data": "2026-02-19T00:00:00", "origem": "SITE DE BUSCA"}, {"vendedor": "TLV HUNTER02 SUELY/RECOMPRA", "cliente": "PB HALL SAO RAFAEL ACADEMIA DE GINASTICA LTDA", "valor": 164.52, "data": "2026-02-24T00:00:00", "origem": "CAPTACAO VENDEDOR"}, {"vendedor": "TLV HUNTER02 SUELY/RECOMPRA", "cliente": "TAUSTE SUPERMERCADOS LTDA", "valor": 2659.85, "data": "2026-02-25T00:00:00", "origem": "SITE DE BUSCA"}]}, {"sheet": "FUNIL MAR", "name": "Março", "short": "MAR", "partial": false, "weeks": [{"label": "W10", "dias": 5.0, "email": 24.0, "krolic": 93.0, "general_clean": 16.0, "rd": 21.0, "outbound": 5.0, "leads": 159.0, "qualif": 16.0, "vendas": 6.0, "receita": 12418.94, "orcamentos": 7.0}, {"label": "W11", "dias": 5.0, "email": 36.0, "krolic": 106.0, "general_clean": 16.0, "rd": 19.0, "outbound": 1.0, "leads": 178.0, "qualif": 15.0, "vendas": 5.0, "receita": 3592.05, "orcamentos": 19.0}, {"label": "W12", "dias": 5.0, "email": 24.0, "krolic": 108.0, "general_clean": 26.0, "rd": 12.0, "outbound": 2.0, "leads": 172.0, "qualif": 12.0, "vendas": 4.0, "receita": 13686.21, "orcamentos": 8.0}, {"label": "W13", "dias": 5.0, "email": 18.0, "krolic": 106.0, "general_clean": 35.0, "rd": 11.0, "outbound": 0.0, "leads": 170.0, "qualif": 28.0, "vendas": 5.0, "receita": 4134.68, "orcamentos": 20.0}, {"label": "W14", "dias": 2.0, "email": 19.0, "krolic": 34.0, "general_clean": 3.0, "rd": 4.0, "outbound": 0.0, "leads": 60.0, "qualif": 0.0, "vendas": 2.0, "receita": 2983.14, "orcamentos": 0.0}], "totals": {"dias": 22.0, "leads": 739.0, "qualif": 71.0, "orcamentos": 54.0, "vendas": 22.0, "receita": 36815.020000000004, "email": 121.0, "krolic": 447.0, "general_clean": 96.0, "rd": 67.0, "outbound": 8.0}, "vendas": [{"vendedor": "TLV HUNTER02 SUELY/RECOMPRA", "cliente": "PCI GASES DO BRASIL LTDA", "valor": 250.85, "data": "2026-03-02T00:00:00", "origem": "SITE DE BUSCA"}, {"vendedor": "TLV MICHELLE", "cliente": "OK. EMPREENDIMENTO CONSTRUÇÕES R SERVIÇOS LTDA", "valor": 4558.0, "data": "2026-03-03T00:00:00", "origem": "SITE DE BUSCA"}, {"vendedor": "TLV MICHELLE", "cliente": "EMBRALIMP - EMPRESA BRASILEIRA DE MATERIAL DE", "valor": 1680.0, "data": "2026-03-04T00:00:00", "origem": "SITE DE BUSCA"}, {"vendedor": "TLV MICHELLE", "cliente": "LISBOA INGREDIENTES PARA LATICINIOS LTDA", "valor": 3526.89, "data": "2026-03-04T00:00:00", "origem": "SITE DE BUSCA"}, {"vendedor": "TLV MICHELLE", "cliente": "RR MEDICAL LTDA", "valor": 1225.6, "data": "2026-03-05T00:00:00", "origem": "SITE DE BUSCA"}, {"vendedor": "TLV MICHELLE", "cliente": "V2F COMERCIO E DISTRIBUICAO DE PRODUTOS ALIME", "valor": 1177.6, "data": "2026-03-06T00:00:00", "origem": "SITE DE BUSCA"}, {"vendedor": "TLV HUNTER02 SUELY/RECOMPRA", "cliente": "BATALHA FABRICA DE PAES LTDA", "valor": 1341.0, "data": "2026-03-09T00:00:00", "origem": "SITE DE BUSCA"}, {"vendedor": "TLV HUNTER02 SUELY/RECOMPRA", "cliente": "P Y SANTANA SERVICOS MEDICOS LTDA", "valor": 986.57, "data": "2026-03-10T00:00:00", "origem": "SITE DE BUSCA"}, {"vendedor": "TLV HUNTER02 SUELY/RECOMPRA", "cliente": "CANTINA PIU-FRATELLI LTDA", "valor": 734.68, "data": "2026-03-12T00:00:00", "origem": "SITE DE BUSCA"}, {"vendedor": "TLV HUNTER02 SUELY/RECOMPRA", "cliente": "INSTITUTO DE OLHOS PAROLIN LTDA", "valor": 89.4, "data": "2026-03-12T00:00:00", "origem": "SITE DE BUSCA"}, {"vendedor": "TLV HUNTER02 SUELY/RECOMPRA", "cliente": "LEVI & ASSERI AUTO PECAS E SERVICOS LTDA", "valor": 440.4, "data": "2026-03-13T00:00:00", "origem": "CAPTACAO VENDEDOR"}, {"vendedor": "TLV MICHELLE", "cliente": "BANN QUIMICA LTDA.", "valor": 8426.16, "data": "2026-03-17T00:00:00", "origem": "SITE DE BUSCA"}, {"vendedor": "TLV HUNTER01 WASHINGTON", "cliente": "BANDEIRA IMPORTACAO E COMERCIO LTDA", "valor": 430.0, "data": "2026-03-18T00:00:00", "origem": "CAPTACAO GERENTE"}, {"vendedor": "TLV HUNTER02 SUELY/RECOMPRA", "cliente": "CHURRASCARIA PASSO FUNDO LTDA", "valor": 3153.17, "data": "2026-03-20T00:00:00", "origem": "SITE DE BUSCA"}, {"vendedor": "TLV MICHELLE", "cliente": "GAVEA FACILITIES SERVICOS GERAIS LTDA", "valor": 1676.88, "data": "2026-03-20T00:00:00", "origem": "SITE DE BUSCA"}, {"vendedor": "TLV HUNTER02 SUELY/RECOMPRA", "cliente": "CRISTIANE FERREIRA", "valor": 507.6, "data": "2026-03-26T00:00:00", "origem": "SITE DE BUSCA"}, {"vendedor": "TLV MICHELLE", "cliente": "GOLDEN TECHNOLOGY LTDA", "valor": 182.76, "data": "2026-03-26T00:00:00", "origem": "SITE DE BUSCA"}, {"vendedor": "TLV HUNTER02 SUELY/RECOMPRA", "cliente": "59.759.567 ALINE MACIEL DIAS DOS SANTOS", "valor": 1620.0, "data": "2026-03-27T00:00:00", "origem": "SITE DE BUSCA"}, {"vendedor": "TLV MICHELLE", "cliente": "BENEFICENCIA NIPO BRASILEIRA DE SAO PAULO", "valor": 790.0, "data": "2026-03-27T00:00:00", "origem": "SITE DE BUSCA"}, {"vendedor": "TLV MICHELLE", "cliente": "ASSOCIACAO HOSPITALAR OSASCO", "valor": 1034.32, "data": "2026-03-27T00:00:00", "origem": "SITE DE BUSCA"}, {"vendedor": "TLV HUNTER02 SUELY/RECOMPRA", "cliente": "SEMPREL - SERVICOS PARA APOIO E MONITORAMENTO", "valor": 1683.14, "data": "2026-03-31T00:00:00", "origem": "INDICACAO"}, {"vendedor": "TLV MICHELLE", "cliente": "HARAS SANTA MARIA", "valor": 1300.0, "data": "2026-03-31T00:00:00", "origem": "SITE DE BUSCA"}]}, {"sheet": "FUNIL ABR", "name": "Abril", "short": "ABR", "partial": false, "weeks": [{"label": "W14", "dias": 2.0, "email": 10.0, "krolic": 52.0, "rd": 2.0, "general_clean": 10.0, "outbound": 0.0, "leads": 74.0, "qualif": 4.0, "orcamentos": 2.0, "vendas": 3.0, "receita": 1898.64}, {"label": "W15", "dias": 5.0, "email": 32.0, "krolic": 102.0, "rd": 17.0, "general_clean": 26.0, "outbound": 0.0, "leads": 177.0, "qualif": 16.0, "orcamentos": 9.0, "vendas": 3.0, "receita": 20085.98}, {"label": "W16", "dias": 5.0, "email": 30.0, "krolic": 115.0, "rd": 15.0, "general_clean": 16.0, "outbound": 0.0, "leads": 176.0, "qualif": 25.0, "orcamentos": 25.0, "vendas": 2.0, "receita": 1819.7800000000002}, {"label": "W17", "dias": 4.0, "email": 21.0, "krolic": 85.0, "rd": 6.0, "general_clean": 22.0, "outbound": 0.0, "leads": 134.0, "qualif": 14.0, "orcamentos": 10.0, "vendas": 1.0, "receita": 773.63}, {"label": "W18", "dias": 4.0, "email": 31.0, "krolic": 71.0, "rd": 7.0, "general_clean": 25.0, "outbound": 1.0, "leads": 135.0, "qualif": 17.0, "orcamentos": 8.0, "vendas": 2.0, "receita": 3729.51}], "totals": {"dias": 20.0, "leads": 696.0, "qualif": 76.0, "orcamentos": 54.0, "vendas": 11.0, "receita": 28307.54, "email": 124.0, "krolic": 425.0, "general_clean": 99.0, "rd": 47.0, "outbound": 1.0}, "vendas": [{"vendedor": "TLV HUNTER02 SUELY/RECOMPRA", "cliente": "SHERWIN-WILLIAMS DO BRASIL INDUSTRIA E COMERC", "valor": 847.44, "data": "2026-04-02T00:00:00", "origem": "SITE DE BUSCA"}, {"vendedor": "TLV MICHELLE", "cliente": "33.435.446 MARIA ALICE MARCONDES BAPTISTA", "valor": 494.0, "data": "2026-04-02T00:00:00", "origem": "SITE GC P/ HIGI"}, {"vendedor": "TLV MICHELLE", "cliente": "COOPERATIVA DE CREDITO E INVESTIMENTO DE LIVR", "valor": 557.2, "data": "2026-04-02T00:00:00", "origem": "SITE GENERAL CLEAN"}, {"vendedor": "TLV HUNTER02 SUELY/RECOMPRA", "cliente": "BASILICA PARTNERS LATIN AMERICA PRIVATE EQUIT", "valor": 360.0, "data": "2026-04-06T00:00:00", "origem": "SITE DE BUSCA"}, {"vendedor": "TLV HUNTER02 SUELY/RECOMPRA", "cliente": "JRF MANUTENCAO E SERVICOS LTDA", "valor": 15173.54, "data": "2026-04-08T00:00:00", "origem": "SITE DE BUSCA"}, {"vendedor": "TLV MICHELLE", "cliente": "CARSTEN SERVICOS E TRANSPORTES S.A.", "valor": 4552.44, "data": "2026-04-09T00:00:00", "origem": "RD STATION"}, {"vendedor": "TLV HUNTER02 SUELY/RECOMPRA", "cliente": "FUNDICAO REGALI BRASIL LTDA.", "valor": 935.94, "data": "2026-04-17T00:00:00", "origem": "INDICACOES"}, {"vendedor": "TLV MICHELLE", "cliente": "TUVIS DO BRASIL S.A.", "valor": 883.84, "data": "2026-04-17T00:00:00", "origem": "SITE DE BUSCA"}, {"vendedor": "TLV HUNTER02 SUELY/RECOMPRA", "cliente": "CAVAL SOLUCOES EM TECNOLOGIA LTDA", "valor": 773.63, "data": "2026-04-22T00:00:00", "origem": "SITE DE BUSCA"}, {"vendedor": "TLV HUNTER02 SUELY/RECOMPRA", "cliente": "PARZIANELLO & CIA LTDA", "valor": 3025.11, "data": "2026-04-29T00:00:00", "origem": "RD STATION"}, {"vendedor": "TLV MICHELLE", "cliente": "30.428.263 JULIO CESAR ALVES", "valor": 704.4, "data": "2026-04-30T00:00:00", "origem": "SITE DE BUSCA"}]}, {"sheet": "FUNIL MAI", "name": "Maio", "short": "MAI", "partial": true, "weeks": [{"label": "W19", "dias": 5.0, "email": 27.0, "krolic": 98.0, "rd": 6.0, "general_clean": 26.0, "outbound": 0.0, "leads": 157.0, "qualif": 25.0, "orcamentos": 14.0, "vendas": 4.0, "receita": 5930.05}], "totals": {"dias": 5.0, "leads": 157.0, "qualif": 25.0, "orcamentos": 14.0, "vendas": 5, "receita": 5930.05, "email": 27.0, "krolic": 98.0, "general_clean": 26.0, "rd": 6.0, "outbound": 0.0}, "vendas": [{"vendedor": "TLV HUNTER01  WASHINGTON", "cliente": "FIORI PASTIFICIO ALIMENTOS LTDA", "valor": 2062.2, "data": "2026-05-04T00:00:00", "origem": "SITE DE BUSCA"}, {"vendedor": "TLV MICHELLE", "cliente": "CONDOMINIO VISTA FARIA LIMA", "valor": 1981.25, "data": "2026-05-04T00:00:00", "origem": "SITE GENERAL CLEAN"}, {"vendedor": "TLV MICHELLE", "cliente": "CLINICA DE PODOLOGIA SANTANA LTDA", "valor": 738.0, "data": "2026-05-04T00:00:00", "origem": "SITE GENERAL CLEAN"}, {"vendedor": "TLV MICHELLE", "cliente": "TELLERINA COMERCIO DE PRESENTES E ARTIGOS PAR", "valor": 539.6, "data": "2026-05-05T00:00:00", "origem": "SITE GENERAL CLEAN"}, {"vendedor": "TLV MICHELLE", "cliente": "YAKISOBA DO JAPA - VOVO DA MELIA LTDA", "valor": 609.0, "data": "2026-05-06T00:00:00", "origem": "HYGIBRAS"}]}];
-const YTD = {"leads": 2587.0, "qualif": 248.0, "orcamentos": 197.0, "vendas": 56.0, "receita": 83604.95};
+const DATA = {"MONTHS": [{"name": "Janeiro", "short": "JAN", "partial": false, "weeks": [{"label": "W2", "dias": 5, "email": 5, "krolic": 82, "general_clean": 5, "rd": 0, "outbound": 0, "leads": 92, "qualif": 3, "vendas": 3, "receita": 1649.58, "orcamentos": 2}, {"label": "W3", "dias": 5, "email": 20, "krolic": 100, "general_clean": 26, "rd": 3, "outbound": 0, "leads": 149, "qualif": 6, "vendas": 1, "receita": 573.5, "orcamentos": 2}, {"label": "W4", "dias": 5, "email": 0, "krolic": 102, "general_clean": 22, "rd": 1, "outbound": 0, "leads": 125, "qualif": 4, "vendas": 2, "receita": 1187.03, "orcamentos": 8}, {"label": "W5", "dias": 5, "email": 37, "krolic": 89, "general_clean": 19, "rd": 0, "outbound": 0, "leads": 145, "qualif": 7, "vendas": 3, "receita": 1612.24, "orcamentos": 16}], "totals": {"dias": 20, "leads": 511, "qualif": 20, "orcamentos": 28, "vendas": 9, "receita": 5269.75, "email": 62, "krolic": 373, "general_clean": 72, "rd": 4, "outbound": 0}, "vendas": [{"data": "2026-01-07", "cliente": "ALVARO AGUIAR ENGENHARIA E CONSTRUCOES LTDA", "vendedor": "TLV MICHELLE", "origem": "SITE DE BUSCA", "valor": 548.08}, {"data": "2026-01-07", "cliente": "RESTAURANTE MANIOCA FARIA LIMA LTDA.", "vendedor": "TLV MICHELLE", "origem": "SITE DE BUSCA", "valor": 528.0}, {"data": "2026-01-08", "cliente": "HORIZONTE AZUL COMERCIO DE PESCADOS", "vendedor": "TLV MICHELLE", "origem": "SITE GENERAL CLEAN", "valor": 573.5}, {"data": "2026-01-13", "cliente": "SLR CONSTRUCOES E INCORPORACOES LTDA", "vendedor": "TLV MICHELLE", "origem": "SITE DE BUSCA", "valor": 820.9}, {"data": "2026-01-21", "cliente": "DOUTOR OPERA MEDICAL LTDA", "vendedor": "TLV MICHELLE", "origem": "SITE DE BUSCA", "valor": 660.0}, {"data": "2026-01-22", "cliente": "FRANZONI E ROSSETTI SERVICOS MEDICOS SS LTDA", "vendedor": "TLV HUNTER02  SUELY/RECOMPRA", "origem": "SITE DE BUSCA", "valor": 527.03}, {"data": "2026-01-26", "cliente": "MANTYCOM COMERCIAL LTDA", "vendedor": "TLV MICHELLE", "origem": "INDICACAO", "valor": 122.04}, {"data": "2026-01-27", "cliente": "CONDOMINIO EDIFICIO DINAMARCA", "vendedor": "TLV MICHELLE", "origem": "SITE DE BUSCA", "valor": 470.2}, {"data": "2026-01-30", "cliente": "FRANCISCO GEUILSON DO NASCIMENTO", "vendedor": "TLV MICHELLE", "origem": "SITE DE BUSCA", "valor": 1020.0}]}, {"name": "Fevereiro", "short": "FEV", "partial": false, "weeks": [{"label": "W6", "dias": 5, "email": 24, "krolic": 79, "general_clean": 16, "rd": 1, "outbound": 1, "leads": 105, "qualif": 7, "vendas": 4, "receita": 2312.75, "orcamentos": 18}, {"label": "W7", "dias": 5, "email": 31, "krolic": 107, "general_clean": 20, "rd": 2, "outbound": 0, "leads": 140, "qualif": 12, "vendas": 1, "receita": 827.3, "orcamentos": 7}, {"label": "W8", "dias": 2, "email": 15, "krolic": 75, "general_clean": 10, "rd": 1, "outbound": 0, "leads": 91, "qualif": 8, "vendas": 2, "receita": 1318.17, "orcamentos": 7}, {"label": "W9", "dias": 5, "email": 46, "krolic": 101, "general_clean": 11, "rd": 1, "outbound": 0, "leads": 148, "qualif": 29, "vendas": 2, "receita": 2824.37, "orcamentos": 15}], "totals": {"dias": 17, "leads": 484, "qualif": 56, "orcamentos": 47, "vendas": 9, "receita": 7282.59, "email": 116, "krolic": 362, "general_clean": 57, "rd": 5, "outbound": 1}, "vendas": [{"data": "2026-02-03", "cliente": "JJ COMERCIO E DISTRIBUIDORA DE ARTEFATOS DE P", "vendedor": "TLV HUNTER02  SUELY/RECOMPRA", "origem": "SITE DE BUSCA", "valor": 1140.0}, {"data": "2026-02-06", "cliente": "GALVANOBRAS GALVANOPLASTIA DO BRASIL LTDA", "vendedor": "TLV MICHELLE", "origem": "SITE DE BUSCA", "valor": 546.0}, {"data": "2026-02-04", "cliente": "TOP DETAILER SERVICOS DE HIGIENIZACAO LTDA", "vendedor": "TLV MICHELLE", "origem": "SITE DE BUSCA", "valor": 274.25}, {"data": "2026-02-02", "cliente": "RAFAEL PASCHOAL BRAGA 33245980876", "vendedor": "TLV MICHELLE", "origem": "SITE DE BUSCA", "valor": 352.5}, {"data": "2026-02-11", "cliente": "TRC AGROFLORESTAL LTDA", "vendedor": "TLV HUNTER02  SUELY/RECOMPRA", "origem": "HYGIBRAS", "valor": 827.3}, {"data": "2026-02-18", "cliente": "CLAUDIO MARQUES SAMAIA", "vendedor": "TLV HUNTER02 SUELY/RECOMPRA", "origem": "SITE GC P/ HIGI", "valor": 721.78}, {"data": "2026-02-19", "cliente": "METROPOLE GESTAO E APOIO CONDOMINIAL LTDA", "vendedor": "TLV MICHELLE", "origem": "SITE DE BUSCA", "valor": 596.39}, {"data": "2026-02-24", "cliente": "PB HALL SAO RAFAEL ACADEMIA DE GINASTICA LTDA", "vendedor": "TLV HUNTER02 SUELY/RECOMPRA", "origem": "CAPTACAO VENDEDOR", "valor": 164.52}, {"data": "2026-02-25", "cliente": "TAUSTE SUPERMERCADOS LTDA", "vendedor": "TLV HUNTER02 SUELY/RECOMPRA", "origem": "SITE DE BUSCA", "valor": 2659.85}]}, {"name": "Março", "short": "MAR", "partial": false, "weeks": [{"label": "W10", "dias": 5, "email": 24, "krolic": 93, "general_clean": 16, "rd": 21, "outbound": 5, "leads": 159, "qualif": 16, "vendas": 6, "receita": 12418.94, "orcamentos": 7}, {"label": "W11", "dias": 5, "email": 36, "krolic": 106, "general_clean": 16, "rd": 19, "outbound": 1, "leads": 178, "qualif": 15, "vendas": 5, "receita": 3592.05, "orcamentos": 19}, {"label": "W12", "dias": 5, "email": 24, "krolic": 108, "general_clean": 26, "rd": 12, "outbound": 2, "leads": 172, "qualif": 12, "vendas": 4, "receita": 13686.21, "orcamentos": 8}, {"label": "W13", "dias": 5, "email": 18, "krolic": 106, "general_clean": 35, "rd": 11, "outbound": 0, "leads": 170, "qualif": 28, "vendas": 5, "receita": 4134.68, "orcamentos": 20}, {"label": "W14", "dias": 2, "email": 19, "krolic": 34, "general_clean": 3, "rd": 4, "outbound": 0, "leads": 60, "qualif": 0, "vendas": 2, "receita": 2983.14, "orcamentos": 0}], "totals": {"dias": 22, "leads": 739, "qualif": 71, "orcamentos": 54, "vendas": 22, "receita": 36815.02, "email": 121, "krolic": 447, "general_clean": 96, "rd": 67, "outbound": 8}, "vendas": [{"data": "2026-03-02", "cliente": "PCI GASES DO BRASIL LTDA", "vendedor": "TLV HUNTER02 SUELY/RECOMPRA", "origem": "SITE DE BUSCA", "valor": 250.85}, {"data": "2026-03-03", "cliente": "OK. EMPREENDIMENTO CONSTRUÇÕES R SERVIÇOS LTDA", "vendedor": "TLV MICHELLE", "origem": "SITE DE BUSCA", "valor": 4558.0}, {"data": "2026-03-04", "cliente": "EMBRALIMP - EMPRESA BRASILEIRA DE MATERIAL DE", "vendedor": "TLV MICHELLE", "origem": "SITE DE BUSCA", "valor": 1680.0}, {"data": "2026-03-04", "cliente": "LISBOA INGREDIENTES PARA LATICINIOS LTDA", "vendedor": "TLV MICHELLE", "origem": "SITE DE BUSCA", "valor": 3526.89}, {"data": "2026-03-05", "cliente": "RR MEDICAL LTDA", "vendedor": "TLV MICHELLE", "origem": "SITE DE BUSCA", "valor": 1225.6}, {"data": "2026-03-06", "cliente": "V2F COMERCIO E DISTRIBUICAO DE PRODUTOS ALIME", "vendedor": "TLV MICHELLE", "origem": "SITE DE BUSCA", "valor": 1177.6}, {"data": "2026-03-09", "cliente": "BATALHA FABRICA DE PAES LTDA", "vendedor": "TLV HUNTER02 SUELY/RECOMPRA", "origem": "SITE DE BUSCA", "valor": 1341.0}, {"data": "2026-03-10", "cliente": "P Y SANTANA SERVICOS MEDICOS LTDA", "vendedor": "TLV HUNTER02 SUELY/RECOMPRA", "origem": "SITE DE BUSCA", "valor": 986.57}, {"data": "2026-03-12", "cliente": "CANTINA PIU-FRATELLI LTDA", "vendedor": "TLV HUNTER02 SUELY/RECOMPRA", "origem": "SITE DE BUSCA", "valor": 734.68}, {"data": "2026-03-12", "cliente": "INSTITUTO DE OLHOS PAROLIN LTDA", "vendedor": "TLV HUNTER02 SUELY/RECOMPRA", "origem": "SITE DE BUSCA", "valor": 89.4}, {"data": "2026-03-13", "cliente": "LEVI & ASSERI AUTO PECAS E SERVICOS LTDA", "vendedor": "TLV HUNTER02 SUELY/RECOMPRA", "origem": "CAPTACAO VENDEDOR", "valor": 440.4}, {"data": "2026-03-17", "cliente": "BANN QUIMICA LTDA.", "vendedor": "TLV MICHELLE", "origem": "SITE DE BUSCA", "valor": 8426.16}, {"data": "2026-03-18", "cliente": "BANDEIRA IMPORTACAO E COMERCIO LTDA", "vendedor": "TLV HUNTER01 WASHINGTON", "origem": "CAPTACAO GERENTE", "valor": 430.0}, {"data": "2026-03-20", "cliente": "CHURRASCARIA PASSO FUNDO LTDA", "vendedor": "TLV HUNTER02 SUELY/RECOMPRA", "origem": "SITE DE BUSCA", "valor": 3153.17}, {"data": "2026-03-20", "cliente": "GAVEA FACILITIES SERVICOS GERAIS LTDA", "vendedor": "TLV MICHELLE", "origem": "SITE DE BUSCA", "valor": 1676.88}, {"data": "2026-03-26", "cliente": "CRISTIANE FERREIRA", "vendedor": "TLV HUNTER02 SUELY/RECOMPRA", "origem": "SITE DE BUSCA", "valor": 507.6}, {"data": "2026-03-26", "cliente": "GOLDEN TECHNOLOGY LTDA", "vendedor": "TLV MICHELLE", "origem": "SITE DE BUSCA", "valor": 182.76}, {"data": "2026-03-27", "cliente": "59.759.567 ALINE MACIEL DIAS DOS SANTOS", "vendedor": "TLV HUNTER02 SUELY/RECOMPRA", "origem": "SITE DE BUSCA", "valor": 1620.0}, {"data": "2026-03-27", "cliente": "BENEFICENCIA NIPO BRASILEIRA DE SAO PAULO", "vendedor": "TLV MICHELLE", "origem": "SITE DE BUSCA", "valor": 790.0}, {"data": "2026-03-27", "cliente": "ASSOCIACAO HOSPITALAR OSASCO", "vendedor": "TLV MICHELLE", "origem": "SITE DE BUSCA", "valor": 1034.32}, {"data": "2026-03-31", "cliente": "SEMPREL - SERVICOS PARA APOIO E MONITORAMENTO", "vendedor": "TLV HUNTER02 SUELY/RECOMPRA", "origem": "INDICACAO", "valor": 1683.14}, {"data": "2026-03-31", "cliente": "HARAS SANTA MARIA", "vendedor": "TLV MICHELLE", "origem": "SITE DE BUSCA", "valor": 1300.0}]}, {"name": "Abril", "short": "ABR", "partial": false, "weeks": [{"label": "W14", "dias": 2, "email": 10, "krolic": 52, "rd": 2, "general_clean": 10, "outbound": 0, "leads": 74, "qualif": 4, "orcamentos": 2, "vendas": 3, "receita": 1898.64}, {"label": "W15", "dias": 5, "email": 32, "krolic": 102, "rd": 17, "general_clean": 26, "outbound": 0, "leads": 177, "qualif": 16, "orcamentos": 9, "vendas": 3, "receita": 20085.98}, {"label": "W16", "dias": 5, "email": 30, "krolic": 115, "rd": 15, "general_clean": 16, "outbound": 0, "leads": 176, "qualif": 25, "orcamentos": 25, "vendas": 2, "receita": 1819.7800000000002}, {"label": "W17", "dias": 4, "email": 21, "krolic": 85, "rd": 6, "general_clean": 22, "outbound": 0, "leads": 134, "qualif": 14, "orcamentos": 10, "vendas": 1, "receita": 773.63}, {"label": "W18", "dias": 4, "email": 31, "krolic": 71, "rd": 7, "general_clean": 25, "outbound": 1, "leads": 135, "qualif": 17, "orcamentos": 8, "vendas": 2, "receita": 3729.51}], "totals": {"dias": 20, "leads": 696, "qualif": 76, "orcamentos": 54, "vendas": 11, "receita": 28307.54, "email": 124, "krolic": 425, "general_clean": 99, "rd": 47, "outbound": 1}, "vendas": [{"data": "2026-04-02", "cliente": "SHERWIN-WILLIAMS DO BRASIL INDUSTRIA E COMERC", "vendedor": "TLV HUNTER02 SUELY/RECOMPRA", "origem": "SITE DE BUSCA", "valor": 847.44}, {"data": "2026-04-02", "cliente": "33.435.446 MARIA ALICE MARCONDES BAPTISTA", "vendedor": "TLV MICHELLE", "origem": "SITE GC P/ HIGI", "valor": 494.0}, {"data": "2026-04-02", "cliente": "COOPERATIVA DE CREDITO E INVESTIMENTO DE LIVR", "vendedor": "TLV MICHELLE", "origem": "SITE GENERAL CLEAN", "valor": 557.2}, {"data": "2026-04-06", "cliente": "BASILICA PARTNERS LATIN AMERICA PRIVATE EQUIT", "vendedor": "TLV HUNTER02 SUELY/RECOMPRA", "origem": "SITE DE BUSCA", "valor": 360.0}, {"data": "2026-04-08", "cliente": "JRF MANUTENCAO E SERVICOS LTDA", "vendedor": "TLV HUNTER02 SUELY/RECOMPRA", "origem": "SITE DE BUSCA", "valor": 15173.54}, {"data": "2026-04-09", "cliente": "CARSTEN SERVICOS E TRANSPORTES S.A.", "vendedor": "TLV MICHELLE", "origem": "RD STATION", "valor": 4552.44}, {"data": "2026-04-17", "cliente": "FUNDICAO REGALI BRASIL LTDA.", "vendedor": "TLV HUNTER02 SUELY/RECOMPRA", "origem": "INDICACOES", "valor": 935.94}, {"data": "2026-04-17", "cliente": "TUVIS DO BRASIL S.A.", "vendedor": "TLV MICHELLE", "origem": "SITE DE BUSCA", "valor": 883.84}, {"data": "2026-04-22", "cliente": "CAVAL SOLUCOES EM TECNOLOGIA LTDA", "vendedor": "TLV HUNTER02 SUELY/RECOMPRA", "origem": "SITE DE BUSCA", "valor": 773.63}, {"data": "2026-04-29", "cliente": "PARZIANELLO & CIA LTDA", "vendedor": "TLV HUNTER02 SUELY/RECOMPRA", "origem": "RD STATION", "valor": 3025.11}, {"data": "2026-04-30", "cliente": "30.428.263 JULIO CESAR ALVES", "vendedor": "TLV MICHELLE", "origem": "SITE DE BUSCA", "valor": 704.4}]}, {"name": "Maio", "short": "MAI", "partial": true, "weeks": [{"label": "W19", "dias": 5, "email": 27, "krolic": 98, "rd": 6, "general_clean": 26, "outbound": 0, "leads": 157, "qualif": 25, "orcamentos": 14, "vendas": 5, "receita": 6827.05}, {"label": "W20", "dias": 5, "email": 38, "krolic": 76, "rd": 5, "general_clean": 11, "outbound": 0, "leads": 130, "qualif": 19, "orcamentos": 16, "vendas": 1, "receita": 1598.22}, {"label": "W21", "dias": 5, "email": 34, "krolic": 72, "rd": 4, "general_clean": 13, "outbound": 2, "leads": 125, "qualif": 18, "orcamentos": 11, "vendas": 8, "receita": 9854.41}], "totals": {"dias": 15, "leads": 412, "qualif": 62, "orcamentos": 41, "vendas": 14, "receita": 18279.679999999997, "email": 99, "krolic": 246, "general_clean": 50, "rd": 15, "outbound": 2}, "vendas": [{"data": "2026-05-04", "cliente": "FIORI PASTIFICIO ALIMENTOS LTDA", "vendedor": "TLV HUNTER01  WASHINGTON", "origem": "SITE DE BUSCA", "valor": 2959.2}, {"data": "2026-05-04", "cliente": "CONDOMINIO VISTA FARIA LIMA", "vendedor": "TLV MICHELLE", "origem": "SITE GENERAL CLEAN", "valor": 1981.25}, {"data": "2026-05-04", "cliente": "CLINICA DE PODOLOGIA SANTANA LTDA", "vendedor": "TLV MICHELLE", "origem": "SITE GENERAL CLEAN", "valor": 738.0}, {"data": "2026-05-05", "cliente": "TELLERINA COMERCIO DE PRESENTES E ARTIGOS PAR", "vendedor": "TLV MICHELLE", "origem": "SITE GENERAL CLEAN", "valor": 539.6}, {"data": "2026-05-06", "cliente": "YAKISOBA DO JAPA - VOVO DA MELIA LTDA", "vendedor": "TLV MICHELLE", "origem": "HYGIBRAS", "valor": 609.0}, {"data": "2026-05-14", "cliente": "VIVIANE F P DA SILVA E CIA LTDA", "vendedor": "TLV HUNTER01  WASHINGTON", "origem": "SITE DE BUSCA", "valor": 1598.22}, {"data": "2026-05-18", "cliente": "EDSON SOARES BEZERRA", "vendedor": "TLV MICHELLE", "origem": "SITE DE BUSCA", "valor": 931.14}, {"data": "2026-05-18", "cliente": "P L S SOARES LTDA", "vendedor": "TLV MICHELLE", "origem": "SITE GENERAL CLEAN", "valor": 2220.0}, {"data": "2026-05-19", "cliente": "SERVICO NACIONAL DE APRENDIZAGEM INDUSTRIAL", "vendedor": "TLV HUNTER02  SUELY/RECOMPRA", "origem": "SITE DE BUSCA", "valor": 1028.8}, {"data": "2026-05-19", "cliente": "VERDE CAFE COMERCIO EXPORTACAO E IMPORTACAO D", "vendedor": "TLV MICHELLE", "origem": "HYGIBRAS", "valor": 397.0}, {"data": "2026-05-20", "cliente": "INSTITUTO LARI VENANCIO LTDA", "vendedor": "TLV MICHELLE", "origem": "RD STATION", "valor": 1875.55}, {"data": "2026-05-21", "cliente": "LIDERANCA LIMPEZA E CONSERVACAO LTDA", "vendedor": "TLV HUNTER02  SUELY/RECOMPRA", "origem": "SITE DE BUSCA", "valor": 926.18}, {"data": "2026-05-22", "cliente": "SNOWBIRD MASTER FUNDO DE INVESTIMENTO IMOBILI", "vendedor": "TLV HUNTER02  SUELY/RECOMPRA", "origem": "INDICACOES", "valor": 1936.14}, {"data": "2026-05-22", "cliente": "TELLERINA COMERCIO DE PRESENTES E ARTIGOS PAR", "vendedor": "TLV MICHELLE", "origem": "SITE DE BUSCA", "valor": 539.6}]}], "YTD": {"leads": 2842, "qualif": 285, "orcamentos": 224, "vendas": 65, "receita": 95954.57999999999}};
+const MONTHS = DATA.MONTHS;
+const YTD = DATA.YTD;
 
 const C = {
   leads:'#3B82F6', qualif:'#8B5CF6', orc:'#06B6D4', vendas:'#10B981',
@@ -289,13 +265,10 @@ Chart.defaults.borderColor = '#1F293780';
 Chart.defaults.font.family = '-apple-system,BlinkMacSystemFont,Segoe UI,Roboto';
 Chart.defaults.font.size = 11;
 
-// --- helpers
 const fmt = {
   n: v => (v||0).toLocaleString('pt-BR'),
   m: v => 'R$ ' + (v||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}),
-  mk: v => 'R$ ' + (Math.round((v||0)/100)/10).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1}) + 'k',
   p: v => ((v||0)*100).toFixed(1).replace('.', ',') + '%',
-  p1: v => ((v||0)*100).toFixed(2).replace('.', ',') + '%',
 };
 
 const delta = (cur, prev) => {
@@ -314,7 +287,28 @@ const dBadge = d => {
   return `<div class="delta ${d.dir}">${sign} ${s}%</div>`;
 };
 
-// --- YTD metrics
+function normalizeSeller(name){
+  if (!name) return 'Desconhecido';
+  const s = (name+'').toUpperCase();
+  if (s.includes('MICHELLE')) return 'Michelle';
+  if (s.includes('HUNTER02') || s.includes('SUELY')) return 'Suely (Hunter02)';
+  if (s.includes('HUNTER01') || s.includes('WASHINGTON')) return 'Washington (Hunter01)';
+  return name;
+}
+
+function normalizeOrigem(o){
+  if (!o) return 'Outros';
+  const s = (o+'').toUpperCase();
+  if (s.includes('SITE DE BUSCA') || s.includes('SITE BUSCA')) return 'Site de Busca';
+  if (s.includes('GENERAL CLEAN') || s.includes('GC P/') || s.includes('SITE GC')) return 'General Clean';
+  if (s.includes('RD STATION') || s === 'RD') return 'RD Station';
+  if (s.includes('INDICA')) return 'Indicação';
+  if (s.includes('CAPTACAO') || s.includes('CAPTAÇÃO') || s.includes('OUTBOUND')) return 'Outbound';
+  if (s.includes('HYGIBRAS')) return 'Hygibras';
+  return o;
+}
+
+// YTD metrics
 document.getElementById('ytd-metrics').innerHTML = [
   ['Leads', fmt.n(YTD.leads), '#3B82F6'],
   ['Qualificados', fmt.n(YTD.qualif), '#8B5CF6'],
@@ -322,10 +316,10 @@ document.getElementById('ytd-metrics').innerHTML = [
   ['Receita', fmt.m(YTD.receita), '#F59E0B'],
 ].map(([k,v,c]) => `<div class="m"><div class="k">${k}</div><div class="v" style="color:${c}">${v}</div></div>`).join('');
 
-// --- KPI cards (last month vs prev)
+// KPI cards
 function renderKpis(){
   const last = MONTHS[MONTHS.length-1];
-  const prev = MONTHS[MONTHS.length-2] || {totals:{leads:0,qualif:0,vendas:0,receita:0}};
+  const prev = MONTHS[MONTHS.length-2] || {totals:{leads:0,qualif:0,vendas:0,receita:0}, short:'—'};
   const lt = last.totals, pt = prev.totals;
   const partial = last.partial ? '<span class="partial">PARCIAL</span>' : '';
   const items = [
@@ -344,9 +338,7 @@ function renderKpis(){
     </div>`;
   }).join('');
 }
-renderKpis();
 
-// --- Funil YTD
 function renderFunnelYtd(){
   const steps = [
     {lbl:'Leads', val:YTD.leads, c:C.leads},
@@ -358,15 +350,12 @@ function renderFunnelYtd(){
   const html = steps.map((s,i)=>{
     const w = Math.max(5, (s.val/max)*100);
     let pctHtml = '';
-    if (i === 0) {
-      pctHtml = `<span class="pct-line">100%</span>`;
-    } else if (i === steps.length-1) {
+    if (i === 0) pctHtml = `<span class="pct-line">100%</span>`;
+    else if (i === steps.length-1) {
       const lv = YTD.vendas/YTD.leads;
       const qv = YTD.vendas/YTD.qualif;
       pctHtml = `<span class="pct-line lv">${fmt.p(lv)} L→V</span><span class="pct-line qv">${fmt.p(qv)} Q→V</span>`;
-    } else {
-      pctHtml = `<span class="pct-line">${fmt.p(s.val/max)}</span>`;
-    }
+    } else pctHtml = `<span class="pct-line">${fmt.p(s.val/max)}</span>`;
     return `<div class="funnel-step">
       <div class="lbl">${s.lbl}</div>
       <div class="bar" style="background:${s.c};width:${w}%">${fmt.n(s.val)}</div>
@@ -375,17 +364,13 @@ function renderFunnelYtd(){
   }).join('');
   document.getElementById('funnel-ytd').innerHTML = html;
 }
-renderFunnelYtd();
 
-// --- Insights
 function renderInsights(){
   const last = MONTHS[MONTHS.length-1];
   const prev = MONTHS[MONTHS.length-2];
   const lt = last.totals;
   const out = [];
-  if (last.partial) {
-    out.push({cls:'info', html:`<b>● ${last.name} em andamento</b> — ${lt.dias} dias úteis trabalhados, dados parciais`});
-  }
+  if (last.partial) out.push({cls:'info', html:`<b>● ${last.name} em andamento</b> — ${lt.dias} dias úteis trabalhados, dados parciais`});
   const qualRate = lt.leads ? lt.qualif/lt.leads : 0;
   if (qualRate > 0.1) out.push({cls:'ok', html:`✓ <b>Qualificação saudável</b> — ${fmt.p(qualRate)} dos leads em ${last.short} foram qualificados`});
   else if (qualRate > 0 && qualRate < 0.05) out.push({cls:'warn', html:`⚠ <b>Qualificação baixa</b> em ${last.short} (${fmt.p(qualRate)}) — revisar pré-qualificação`});
@@ -394,23 +379,19 @@ function renderInsights(){
   const convQV = lt.qualif ? lt.vendas/lt.qualif : 0;
   if (convQV > 0.25) out.push({cls:'ok', html:`✓ <b>Time comercial fechando bem</b> — ${fmt.p(convQV)} dos qualificados viraram venda em ${last.short}`});
   else if (convQV > 0 && convQV < 0.1) out.push({cls:'warn', html:`⚠ <b>Conv Q→V baixa</b> (${fmt.p(convQV)}) — revisar abordagem comercial`});
-  if (prev && !last.partial) {
+  if (prev) {
     if (lt.receita > prev.totals.receita * 1.3) out.push({cls:'up', html:`↑ <b>Crescimento expressivo</b> — receita ${last.short} ${fmt.p(lt.receita/prev.totals.receita - 1)} acima de ${prev.short}`});
-    if (lt.receita < prev.totals.receita * 0.5) out.push({cls:'bad', html:`↓ <b>Queda forte</b> — receita ${last.short} ${fmt.p(1 - lt.receita/prev.totals.receita)} abaixo de ${prev.short}`});
+    if (lt.receita < prev.totals.receita * 0.5 && !last.partial) out.push({cls:'bad', html:`↓ <b>Queda forte</b> — receita ${last.short} ${fmt.p(1 - lt.receita/prev.totals.receita)} abaixo de ${prev.short}`});
     if (lt.vendas && prev.totals.vendas) {
       const ticketC = lt.receita/lt.vendas, ticketP = prev.totals.receita/prev.totals.vendas;
       if (ticketC > ticketP * 1.1) out.push({cls:'up', html:`$ <b>Ticket médio subiu</b> — ${fmt.m(ticketC)} em ${last.short} (${fmt.p(ticketC/ticketP-1)} vs ${prev.short})`});
     }
   }
-  // Melhor mês YTD
   const best = MONTHS.reduce((b,m)=> m.totals.receita > b.totals.receita ? m : b, MONTHS[0]);
   out.push({cls:'star', html:`★ <b>Melhor mês YTD</b> — ${best.name} com ${fmt.m(best.totals.receita)} em ${best.totals.vendas} vendas`});
-
   document.getElementById('insights').innerHTML = out.map(i=>`<div class="ins ${i.cls}">${i.html}</div>`).join('');
 }
-renderInsights();
 
-// --- Monthly charts
 function chartRevMonthly(){
   const labels = MONTHS.map(m=>m.short);
   const data = MONTHS.map(m=>m.totals.receita);
@@ -418,12 +399,11 @@ function chartRevMonthly(){
   new Chart(document.getElementById('ch-rev-monthly'), {
     type:'bar',
     data:{labels, datasets:[{label:'Receita', data, backgroundColor:colors, borderRadius:6, borderSkipped:false}]},
-    options:{
-      maintainAspectRatio:false, plugins:{legend:{display:false}, tooltip:{callbacks:{label:c=>fmt.m(c.parsed.y)}}},
-      scales:{y:{beginAtZero:true, ticks:{callback:v=>'R$ '+(v/1000)+'k'}}}
-    }
+    options:{maintainAspectRatio:false, plugins:{legend:{display:false}, tooltip:{callbacks:{label:c=>fmt.m(c.parsed.y)}}},
+      scales:{y:{beginAtZero:true, ticks:{callback:v=>'R$ '+(v/1000)+'k'}}}}
   });
 }
+
 function chartLeadsVendasMonthly(){
   const labels = MONTHS.map(m=>m.short);
   const leads = MONTHS.map(m=>m.totals.leads);
@@ -436,19 +416,14 @@ function chartLeadsVendasMonthly(){
       {label:'Leads', data:leads, backgroundColor:lcolor, yAxisID:'y1', borderRadius:6, borderSkipped:false},
       {label:'Vendas', data:vendas, backgroundColor:vcolor, yAxisID:'y2', borderRadius:6, borderSkipped:false},
     ]},
-    options:{
-      maintainAspectRatio:false, plugins:{legend:{display:false}},
+    options:{maintainAspectRatio:false, plugins:{legend:{display:false}},
       scales:{
         y1:{position:'left', beginAtZero:true, ticks:{color:C.leads}, grid:{display:true}},
         y2:{position:'right', beginAtZero:true, ticks:{color:C.vendas}, grid:{display:false}}
-      }
-    }
+      }}
   });
 }
-chartRevMonthly();
-chartLeadsVendasMonthly();
 
-// --- Monthly table
 function renderMonthlyTable(){
   const tbody = document.querySelector('#tbl-monthly tbody');
   const rows = MONTHS.map(m=>{
@@ -486,9 +461,8 @@ function renderMonthlyTable(){
   </tr>`);
   tbody.innerHTML = rows.join('');
 }
-renderMonthlyTable();
 
-// =================== COMPARATIVO SEMANAL ===================
+// COMPARATIVO SEMANAL
 let currentMonth = MONTHS.length - 1;
 function renderCompPills(){
   document.getElementById('comp-pills').innerHTML = MONTHS.map((m,i)=>{
@@ -511,7 +485,6 @@ function renderCompCharts(){
   const leads = m.weeks.map(w=>w.leads);
   const vendas = m.weeks.map(w=>w.vendas);
   const receita = m.weeks.map(w=>w.receita);
-
   if (chWeekLV) chWeekLV.destroy();
   chWeekLV = new Chart(document.getElementById('ch-week-lv'),{
     type:'bar',
@@ -523,16 +496,14 @@ function renderCompCharts(){
       scales:{
         y1:{position:'left', beginAtZero:true, ticks:{color:C.leads}},
         y2:{position:'right', beginAtZero:true, ticks:{color:C.vendas}, grid:{display:false}}
-      }
-    }
+      }}
   });
   if (chWeekRev) chWeekRev.destroy();
   chWeekRev = new Chart(document.getElementById('ch-week-rev'),{
     type:'line',
     data:{labels, datasets:[{label:'Receita', data:receita, borderColor:C.receita, backgroundColor:C.receita+'30', tension:0.3, fill:true, pointRadius:5, pointBackgroundColor:C.receita}]},
     options:{maintainAspectRatio:false, plugins:{legend:{display:false}, tooltip:{callbacks:{label:c=>fmt.m(c.parsed.y)}}},
-      scales:{y:{beginAtZero:true, ticks:{callback:v=>'R$ '+(v/1000).toFixed(1)+'k'}}}
-    }
+      scales:{y:{beginAtZero:true, ticks:{callback:v=>'R$ '+(v/1000).toFixed(1)+'k'}}}}
   });
 }
 function sparkBar(values, max, color){
@@ -544,7 +515,6 @@ function sparkBar(values, max, color){
 function renderCompTable(){
   const m = MONTHS[currentMonth];
   const tbody = document.querySelector('#tbl-week tbody');
-  // best week by receita
   const bestIdx = m.weeks.reduce((bi,w,i,arr)=> w.receita > arr[bi].receita ? i : bi, 0);
   const maxL = Math.max(...m.weeks.map(w=>w.leads), 1);
   const maxR = Math.max(...m.weeks.map(w=>w.receita), 1);
@@ -571,11 +541,8 @@ function renderCompTable(){
   });
   tbody.innerHTML = rows.join('');
 }
-renderCompPills();
-renderCompCharts();
-renderCompTable();
 
-// =================== ORIGENS ===================
+// ORIGENS
 let orgMonth = MONTHS.length - 1;
 function renderOrgPills(){
   document.getElementById('org-pills').innerHTML = MONTHS.map((m,i)=>{
@@ -608,8 +575,7 @@ function renderOrgCharts(){
     type:'bar',
     data:{labels, datasets:[{label:'Leads', data, backgroundColor:C.cat.slice(0,labels.length), borderRadius:6, borderSkipped:false}]},
     options:{indexAxis:'y', maintainAspectRatio:false, plugins:{legend:{display:false}},
-      scales:{x:{beginAtZero:true}}
-    }
+      scales:{x:{beginAtZero:true}}}
   });
   if (chChannelDonut) chChannelDonut.destroy();
   chChannelDonut = new Chart(document.getElementById('ch-channel-donut'),{
@@ -620,7 +586,6 @@ function renderOrgCharts(){
 }
 function renderRanking(){
   const m = MONTHS[orgMonth];
-  // group vendas by vendedor
   const groups = {};
   for (const v of m.vendas) {
     const seller = normalizeSeller(v.vendedor);
@@ -640,19 +605,8 @@ function renderRanking(){
     </div>`;
   }).join('') : '<div style="color:#9CA3AF;padding:14px 4px">Sem vendas registradas para este mês.</div>';
 }
-function normalizeSeller(name){
-  if (!name) return 'Desconhecido';
-  const s = name.toUpperCase();
-  if (s.includes('MICHELLE')) return 'Michelle';
-  if (s.includes('HUNTER02') || s.includes('SUELY')) return 'Suely (Hunter02)';
-  if (s.includes('HUNTER01') || s.includes('WASHINGTON')) return 'Washington (Hunter01)';
-  return name;
-}
-renderOrgPills();
-renderOrgCharts();
-renderRanking();
 
-// =================== VENDAS FECHADAS ===================
+// VENDAS
 let venMonth = MONTHS.length - 1;
 function renderVenPills(){
   document.getElementById('ven-pills').innerHTML = MONTHS.map((m,i)=>{
@@ -680,26 +634,24 @@ function renderVendas(){
   const tbody = document.querySelector('#tbl-vendas tbody');
   const sorted = [...m.vendas].sort((a,b)=> a.data.localeCompare(b.data));
   const originColors = {
-    'SITE DE BUSCA':'#3B82F6', 'SITE GENERAL CLEAN':'#10B981', 'RD STATION':'#8B5CF6',
-    'INDICACAO':'#EC4899', 'INDICACOES':'#EC4899', 'HYGIBRAS':'#F97316', 'OUTBOUND':'#F59E0B',
-    'SITE GC P/ HIGI':'#06B6D4', 'CAPTACAO VENDEDOR':'#F59E0B', 'CAPTACAO GERENTE':'#F59E0B'
+    'Site de Busca':'#3B82F6', 'General Clean':'#10B981', 'RD Station':'#8B5CF6',
+    'Indicação':'#EC4899', 'Hygibras':'#F97316', 'Outbound':'#F59E0B'
   };
   tbody.innerHTML = sorted.length ? sorted.map(v=>{
-    const c = originColors[v.origem] || '#6B7280';
+    const origem = normalizeOrigem(v.origem);
+    const c = originColors[origem] || '#6B7280';
     const dt = v.data.substring(0,10).split('-').reverse().join('/');
     return `<tr>
       <td>${dt}</td>
       <td>${v.cliente}</td>
       <td>${normalizeSeller(v.vendedor)}</td>
-      <td><span class="badge" style="background:${c}22;color:${c};border:1px solid ${c}44">${v.origem||'—'}</span></td>
+      <td><span class="badge" style="background:${c}22;color:${c};border:1px solid ${c}44">${origem}</span></td>
       <td class="num" style="color:#10B981;font-weight:600">${fmt.m(v.valor)}</td>
     </tr>`;
   }).join('') : `<tr><td colspan="5" style="text-align:center;color:#9CA3AF;padding:20px">Sem vendas registradas para este mês.</td></tr>`;
 }
-renderVenPills();
-renderVendas();
 
-// =================== TABS ===================
+// TABS
 document.querySelectorAll('.tab').forEach(t=>{
   t.addEventListener('click', ()=>{
     document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
@@ -709,7 +661,7 @@ document.querySelectorAll('.tab').forEach(t=>{
   });
 });
 
-// =================== EXPORT ===================
+// EXPORT
 document.getElementById('export-btn').addEventListener('click', ()=>{
   const ytdLV = YTD.leads ? YTD.vendas/YTD.leads : 0;
   const ytdQV = YTD.qualif ? YTD.vendas/YTD.qualif : 0;
@@ -769,6 +721,20 @@ document.getElementById('export-btn').addEventListener('click', ()=>{
   document.body.appendChild(a); a.click(); a.remove();
 });
 
+renderKpis();
+renderFunnelYtd();
+renderInsights();
+chartRevMonthly();
+chartLeadsVendasMonthly();
+renderMonthlyTable();
+renderCompPills();
+renderCompCharts();
+renderCompTable();
+renderOrgPills();
+renderOrgCharts();
+renderRanking();
+renderVenPills();
+renderVendas();
 </script>
 </body>
 </html>
