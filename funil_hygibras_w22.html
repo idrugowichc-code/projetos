@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Dashboard Hygibras — 25/05/2026</title>
+<title>Dashboard Hygibras — 01/06/2026</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
 :root {
@@ -75,7 +75,6 @@ body {
 .grid-2-1 { grid-template-columns: 2fr 1fr; }
 .grid-3 { grid-template-columns: 1fr 1fr 1fr; }
 .grid-5 { grid-template-columns: repeat(5, 1fr); }
-
 .card {
   background: var(--bg-card);
   border: 1px solid var(--border);
@@ -86,8 +85,6 @@ body {
   font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em;
   color: var(--text-dim); margin-bottom: 14px; font-weight: 600;
 }
-
-/* YTD card */
 .ytd {
   background: linear-gradient(135deg, #111827 0%, #1F2937 100%);
   border: 1px solid var(--border-strong);
@@ -102,8 +99,6 @@ body {
 .ytd-metrics { display: grid; grid-template-columns: repeat(5, 1fr); gap: 18px; }
 .ytd-metric .ml { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-dim); margin-bottom: 6px; font-weight: 600; }
 .ytd-metric .mv { font-size: 22px; font-weight: 700; }
-
-/* KPI cards */
 .kpi {
   background: var(--bg-card);
   border: 1px solid var(--border);
@@ -126,8 +121,6 @@ body {
 }
 .delta.up { background: rgba(16,185,129,0.15); color: #34D399; }
 .delta.dn { background: rgba(239,68,68,0.15); color: #F87171; }
-
-/* Funil consolidado */
 .funil-row {
   display: grid; grid-template-columns: 120px 1fr 130px;
   align-items: center; gap: 14px; margin-bottom: 10px;
@@ -145,16 +138,12 @@ body {
 .funil-pct { font-size: 13px; text-align: right; font-weight: 700; color: var(--text); }
 .funil-pct-stack { display: flex; flex-direction: column; gap: 4px; }
 .funil-pct-line { display: flex; justify-content: flex-end; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; }
-
-/* Insights */
 .insights { display: flex; flex-direction: column; gap: 8px; }
 .insight {
   background: var(--bg-elev); border-left: 3px solid var(--clr, var(--c-leads));
   padding: 10px 14px; border-radius: 4px; font-size: 12px; color: var(--text);
 }
 .insight strong { color: var(--clr, var(--c-leads)); }
-
-/* Tabela */
 table { width: 100%; border-collapse: collapse; font-size: 12px; }
 th {
   color: #E5E7EB; background: #0F1521;
@@ -178,8 +167,6 @@ tr.best td {
 }
 .star { color: var(--c-receita); margin-right: 4px; }
 .num { text-align: right; font-variant-numeric: tabular-nums; }
-
-/* Pills */
 .pills { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
 .pill {
   background: var(--bg-elev); border: 1px solid var(--border-strong);
@@ -189,16 +176,12 @@ tr.best td {
 }
 .pill:hover { color: var(--text); border-color: var(--c-leads); }
 .pill.active { background: var(--c-leads); color: white; border-color: var(--c-leads); }
-
-/* Chart */
 .chart-wrap { position: relative; height: 280px; }
 .chart-legend {
   display: flex; gap: 16px; font-size: 11px; color: var(--text-dim);
   margin-bottom: 8px; flex-wrap: wrap;
 }
 .chart-legend .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 5px; vertical-align: middle; }
-
-/* Visit cards */
 .visita-card {
   background: var(--bg-elev); border-radius: 8px;
   padding: 12px 14px; margin-bottom: 8px;
@@ -213,8 +196,6 @@ tr.best td {
 .b-ok { background: rgba(34,197,94,0.18); color: #4ADE80; }
 .b-pend { background: rgba(249,115,22,0.18); color: #FB923C; }
 .b-info { background: rgba(59,130,246,0.18); color: #60A5FA; }
-
-/* Ranking */
 .rank-row {
   display: flex; justify-content: space-between; align-items: center;
   padding: 10px 0; border-bottom: 1px solid var(--border);
@@ -224,11 +205,7 @@ tr.best td {
 .rank-medal { font-size: 16px; margin-right: 8px; }
 .rank-name { flex: 1; font-weight: 600; }
 .rank-val { font-weight: 700; color: var(--c-vendas); }
-
 h2.section { font-size: 14px; font-weight: 700; color: var(--text); margin: 24px 0 10px; }
-
-/* Sparkline */
-.spark { display: inline-block; vertical-align: middle; }
 </style>
 </head>
 <body>
@@ -236,9 +213,9 @@ h2.section { font-size: 14px; font-weight: 700; color: var(--text); margin: 24px
 <div class="header">
   <div>
     <h1>Dashboard Hygibras 2026
-      <span class="badge-partial">● Maio em andamento</span>
+      
     </h1>
-    <div class="sub">Funil de vendas — atualizado em 25/05/2026</div>
+    <div class="sub">Funil de vendas — atualizado em 01/06/2026</div>
   </div>
   <button class="btn-export" onclick="exportarDiretores()">↓ Exportar para diretores</button>
 </div>
@@ -251,7 +228,6 @@ h2.section { font-size: 14px; font-weight: 700; color: var(--text); margin: 24px
   <button class="tab" data-tab="vendas">Vendas Fechadas</button>
 </div>
 
-<!-- PANORAMA -->
 <div class="pane active" id="pane-panorama">
   <div class="ytd">
     <div class="ytd-label">
@@ -259,11 +235,12 @@ h2.section { font-size: 14px; font-weight: 700; color: var(--text); margin: 24px
       <div class="per">Jan — Mai 2026</div>
     </div>
     <div class="ytd-metrics">
-      <div class="ytd-metric"><div class="ml">Leads</div><div class="mv" style="color: var(--c-leads)">1,535</div></div>
-      <div class="ytd-metric"><div class="ml">Qualificados</div><div class="mv" style="color: var(--c-qualif)">173</div></div>
+      <div class="ytd-metric"><div class="ml">Leads</div><div class="mv" style="color: var(--c-leads)">1.676</div></div>
+      <div class="ytd-metric"><div class="ml">Qualificados</div><div class="mv" style="color: var(--c-qualif)">204</div></div>
       <div class="ytd-metric"><div class="ml">Visitas</div><div class="mv" style="color: var(--c-visitas)">32</div></div>
-      <div class="ytd-metric"><div class="ml">Vendas</div><div class="mv" style="color: var(--c-vendas)">23</div></div>
-      <div class="ytd-metric"><div class="ml">Receita</div><div class="mv" style="color: var(--c-receita)">R$ 49,638.89</div></div>
+      <div class="ytd-metric"><div class="ml">Vendas</div><div class="mv" style="color: var(--c-vendas)">24</div></div>
+      <div class="ytd-metric"><div class="ml">Receita</div><div class="mv" style="color: var(--c-receita)">R$ 50.313,85</div></div>
+
     </div>
   </div>
 
@@ -300,7 +277,6 @@ h2.section { font-size: 14px; font-weight: 700; color: var(--text); margin: 24px
   </div>
 </div>
 
-<!-- SEMANAL -->
 <div class="pane" id="pane-semanal">
   <div class="pills" id="pills-semanal"></div>
   <div class="grid grid-2">
@@ -320,7 +296,6 @@ h2.section { font-size: 14px; font-weight: 700; color: var(--text); margin: 24px
   </div>
 </div>
 
-<!-- ORIGENS -->
 <div class="pane" id="pane-origens">
   <div class="pills" id="pills-origens"></div>
   <div class="grid grid-2">
@@ -339,7 +314,6 @@ h2.section { font-size: 14px; font-weight: 700; color: var(--text); margin: 24px
   </div>
 </div>
 
-<!-- VISITAS -->
 <div class="pane" id="pane-visitas">
   <div class="pills" id="pills-visitas"></div>
   <div class="grid grid-3" id="kpis-visitas"></div>
@@ -347,7 +321,6 @@ h2.section { font-size: 14px; font-weight: 700; color: var(--text); margin: 24px
   <div id="lista-visitas"></div>
 </div>
 
-<!-- VENDAS FECHADAS -->
 <div class="pane" id="pane-vendas">
   <div class="pills" id="pills-vendas"></div>
   <div class="grid grid-3" id="kpis-vendas"></div>
@@ -358,9 +331,9 @@ h2.section { font-size: 14px; font-weight: 700; color: var(--text); margin: 24px
 </div>
 
 <script>
-const MONTHS = [{"key": "FUNIL JAN", "name": "Janeiro", "short": "Jan", "partial": false, "weeks": [{"label": "05 a 09", "dias_uteis": 5.0, "email": 5.0, "krolic": 49.0, "rd": 4.0, "outbound": 2.0, "leads": 60.0, "qualif": 3.0, "vendas": 0.0, "receita": 0.0}, {"label": "12 a 16", "dias_uteis": 5.0, "email": 3.0, "krolic": 51.0, "rd": 9.0, "outbound": 10.0, "leads": 73.0, "qualif": 8.0, "vendas": 0.0, "receita": 0.0}, {"label": "19 a 23", "dias_uteis": 5.0, "email": 3.0, "krolic": 41.0, "rd": 3.0, "outbound": 18.0, "leads": 65.0, "qualif": 13.0, "vendas": 0.0, "receita": 0.0}, {"label": "26 a 30", "dias_uteis": 5.0, "email": 5.0, "krolic": 38.0, "rd": 7.0, "outbound": 9.0, "leads": 59.0, "qualif": 11.0, "vendas": 1.0, "receita": 693.24}], "totals": {"dias_uteis": 20.0, "email": 11.0, "krolic": 141.0, "rd": 16.0, "outbound": 30.0, "leads": 257.0, "qualif": 24.0, "vendas": 1.0, "receita": 693.24, "orcamentos": 7.0}, "visitas_total": 8.0, "visitas_list": [{"cliente": "01-2026 - Maria Eduarda (COPECAR INDUSTRIA E COMERCIO DE PECAS AGRICOLAS)", "status": "ok"}, {"cliente": "89279 - Walter (Lukros Distribuidora | Ribeirão Prêto SP)", "status": "ok"}, {"cliente": "89890 - Ulysses (Inbrasc Indústria Brasileira Componentes Ltda)", "status": "higiclear"}, {"cliente": "89829 - Leandro (Gota Dourada Cosméticos)", "status": "pendente"}, {"cliente": "01-2026 - LAÍSSA TUBESTEEL SERTAOZINHO", "status": "pendente"}, {"cliente": "89620 - RD STATION - Luana (LongPing - 08.864.422/0003-89)", "status": "ok"}, {"cliente": "89320 - Marcelo (Husqvarna - 04.098.470/0001-90)", "status": "ok"}, {"cliente": "94336 - KAROL - USINA SÃO LUIZ S.A.", "status": "pendente"}], "vendas_fechadas": []}, {"key": "FUNIL FEV", "name": "Fevereiro", "short": "Fev", "partial": false, "weeks": [{"label": "02 a 06", "dias_uteis": 5.0, "email": 5.0, "krolic": 20.0, "rd": 4.0, "outbound": 27.0, "leads": 56.0, "qualif": 11.0, "vendas": 7.0, "receita": 12497.779999999999}, {"label": "09 a 13", "dias_uteis": 5.0, "email": 3.0, "krolic": 38.0, "rd": 8.0, "outbound": 49.0, "leads": 98.0, "qualif": 3.0, "vendas": 1.0, "receita": 0.0}, {"label": "16 a 20", "dias_uteis": 2.0, "email": 1.0, "krolic": 21.0, "rd": 4.0, "outbound": 21.0, "leads": 47.0, "qualif": 7.0, "vendas": 1.0, "receita": 0.0}, {"label": "26 a 27", "dias_uteis": 5.0, "email": 10.0, "krolic": 36.0, "rd": 6.0, "outbound": 11.0, "leads": 63.0, "qualif": 4.0, "vendas": 1.0, "receita": 6533.65}], "totals": {"dias_uteis": 17.0, "email": 19.0, "krolic": 115.0, "rd": 22.0, "outbound": 108.0, "leads": 264.0, "qualif": 25.0, "vendas": 10.0, "receita": 19031.43, "orcamentos": 13.0}, "visitas_total": 3.0, "visitas_list": [{"cliente": "94351 - Júnior/ Paola (KSW Automotive)", "status": "ok"}, {"cliente": "Maycon/ Júlio (MAGISTER EQUIPAMENTOS INDUSTRIAIS LTDA)", "status": "ok"}, {"cliente": "94641 - Rafael (Zanco)", "status": "Pendente"}], "vendas_fechadas": [{"data": "02/02/2026", "cliente": "BISPADO DE RIO PRETO", "origem": "INBOUND", "vendedor": "JEFERSON TOZZO", "valor": 1738.64}, {"data": "04/02/2026", "cliente": "CONSTRUTORA PAGANO S/A", "origem": "INBOUND", "vendedor": "JEFERSON TOZZO", "valor": 719.95}, {"data": "05/02/2026", "cliente": "HUSQVARNA DO BRASIL INDUSTRIA E COMERCIO DE PRODUTOS PARA FL", "origem": "OUTBOUND", "vendedor": "RAFAEL DE JESUS", "valor": 4433.43}, {"data": "05/02/2026", "cliente": "IRMANDADE SAO JOSE DE NOVO HORIZONTE", "origem": "INBOUND", "vendedor": "JEFERSON TOZZO", "valor": 483.98}, {"data": "05/02/2026", "cliente": "LEFF NATURAL PETS LTDA", "origem": "INBOUND", "vendedor": "JEFERSON TOZZO", "valor": 257.35}, {"data": "06/02/2026", "cliente": "LONDRA ACUCAR E ALCOOL LTDA", "origem": "OUTBOUND", "vendedor": "RAFAEL DE JESUS", "valor": 222.6}, {"data": "06/02/2026", "cliente": "LOPES COMERCIO DE PECAS E RECONDICIONAMENTO DE MATERIAL RODA", "origem": "OUTBOUND", "vendedor": "RAFAEL DE JESUS", "valor": 1208.24}, {"data": "09/02/2026", "cliente": "MUNICIPIO DE DUMONT", "origem": "INBOUND", "vendedor": "JEFERSON TOZZO", "valor": 925.8}, {"data": "18/02/2026", "cliente": "RIMA COMERCIO DE PECAS LTDA", "origem": "INBOUND", "vendedor": "RAFAEL DE JESUS", "valor": 2507.79}, {"data": "24/02/2026", "cliente": "SKYFIT ACADEMIA - FRANCISCO JUNQUEIRA LTDA", "origem": "OUTBOUND", "vendedor": "RAFAEL DE JESUS", "valor": 6533.65}]}, {"key": "FUNIL MAR", "name": "Março", "short": "Mar", "partial": false, "weeks": [{"label": "02 a 06", "dias_uteis": 5.0, "email": 4.0, "krolic": 39.0, "rd": 11.0, "outbound": 24.0, "leads": 78.0, "qualif": 11.0, "vendas": 2.0, "receita": 4799.43}, {"label": "09 a 13", "dias_uteis": 5.0, "email": 5.0, "krolic": 46.0, "rd": 8.0, "outbound": 23.0, "leads": 82.0, "qualif": 9.0, "vendas": 2.0, "receita": 1135.4}, {"label": "16 a 20", "dias_uteis": 5.0, "email": 9.0, "krolic": 44.0, "rd": 10.0, "outbound": 16.0, "leads": 79.0, "qualif": 17.0, "vendas": 0.0, "receita": 0.0}, {"label": "26 a 27", "dias_uteis": 5.0, "email": 7.0, "krolic": 42.0, "rd": 8.0, "outbound": 31.0, "leads": 88.0, "qualif": 19.0, "vendas": 0.0, "receita": 0.0}, {"label": "30 e 31", "dias_uteis": 2.0, "email": 3.0, "krolic": 18.0, "rd": 1.0, "outbound": 10.0, "leads": 32.0, "qualif": 1.0, "vendas": 0.0, "receita": 0.0}], "totals": {"dias_uteis": 20.0, "email": 25.0, "krolic": 189.0, "rd": 37.0, "outbound": 94.0, "leads": 359.0, "qualif": 56.0, "vendas": 4.0, "receita": 5934.83, "orcamentos": 12.0}, "visitas_total": 12.0, "visitas_list": [{"cliente": "96656 - RD STATION - Ryan Q, CERD", "status": ""}, {"cliente": "03-2026 - UNITHER INDUSTRIA FARMACEUTICA LTDA.", "status": ""}, {"cliente": "96650 - Fernando - COLAG 06.224.894/0001-80", "status": ""}, {"cliente": "03-2026 - Lívia (Tracan Ribeirão Preto)", "status": ""}, {"cliente": "96766 - RD STATION - Nicole, Acomecerp", "status": ""}, {"cliente": "96767 - Natália (Clínca Olhos Coronado Antunes - 05.075.025/0001-78)", "status": ""}, {"cliente": "Álvaro (CONSTRUTORA INDUSTRIAL E COMERCIAL SAID LTDA)", "status": ""}, {"cliente": "RD STATION - Vanilde,", "status": ""}, {"cliente": "RD STATION - Felipe Mariano, - Metropolitana", "status": ""}, {"cliente": "COLEGIO PEQUENO PRINCIPE-56.013.931/0001-89", "status": ""}, {"cliente": "Erica (Colégio Santa Úrsula - 56.011.026/0001-90)", "status": ""}, {"cliente": "Isabela (Marispan)", "status": ""}], "vendas_fechadas": [{"data": "03/03/2026", "cliente": "COOPERATIVA DOS ANESTESIOLOGISTAS DE RIBEIRAO PRETO - COOPAN", "origem": "INBOUND", "vendedor": "JEFERSON TOZZO", "valor": 4645.05}, {"data": "06/03/2026", "cliente": "ADVOCACIA NUNES E FERNANDES", "origem": "INBOUND", "vendedor": "JEFERSON TOZZO", "valor": 154.38}, {"data": "11/03/2026", "cliente": "SANTA CASA DE MISERICORDIA DE VOTUPORANGA", "origem": "INBOUND", "vendedor": "JEFERSON TOZZO", "valor": 958.4}, {"data": "09/03/2026", "cliente": "ZANCO PRODUTOS ALIMENTICIOS LTDA", "origem": "OUTBOUND", "vendedor": "RAFAEL DE JESUS", "valor": 177.0}]}, {"key": "FUNIL ABR", "name": "Abril", "short": "Abr", "partial": false, "weeks": [{"label": "Sem 1", "dias_uteis": 2.0, "email": 4.0, "krolic": 17.0, "rd": 1.0, "outbound": 4.0, "leads": 26.0, "qualif": 2.0, "vendas": 0.0, "receita": 0.0}, {"label": "Sem 2", "dias_uteis": 5.0, "email": 8.0, "krolic": 44.0, "rd": 14.0, "outbound": 53.0, "leads": 119.0, "qualif": 29.0, "vendas": 2.0, "receita": 8330.03}, {"label": "Sem 3", "dias_uteis": 5.0, "email": 4.0, "krolic": 41.0, "rd": 9.0, "outbound": 25.0, "leads": 79.0, "qualif": 7.0, "vendas": 1.0, "receita": 3225.96}, {"label": "Sem 4", "dias_uteis": 4.0, "email": 8.0, "krolic": 30.0, "rd": 8.0, "outbound": 42.0, "leads": 88.0, "qualif": 6.0, "vendas": 3.0, "receita": 3030.58}, {"label": "Sem 5", "dias_uteis": 4.0, "email": 9.0, "krolic": 30.0, "rd": 3.0, "outbound": 37.0, "leads": 79.0, "qualif": 4.0, "vendas": 1.0, "receita": 6218.2}], "totals": {"dias_uteis": 20.0, "email": 33.0, "krolic": 162.0, "rd": 35.0, "outbound": 161.0, "leads": 391.0, "qualif": 48.0, "orcamentos": 11.0, "vendas": 7.0, "receita": 20804.77}, "visitas_total": 7.0, "visitas_list": [{"cliente": "Rodrigo (Suporte Rei)", "status": ""}, {"cliente": "99850 - Rafaella (Ativa Locação)", "status": ""}, {"cliente": "PROIMAGEM DIAGNOSTICOS MEDICOS", "status": ""}, {"cliente": "100068 - Atri Comercial LTDA", "status": ""}, {"cliente": "Deliz Restaurante LTDA - 62.317.065/0001-12", "status": ""}, {"cliente": "M. S. Serralheria Artística LTDA - 04.354.818/0001-63", "status": ""}, {"cliente": "Gdu Jk Esmalteria LTDA - 36.571.709/0001-94", "status": ""}], "vendas_fechadas": [{"data": "06/04/2026", "cliente": "CASA PAVAO DECORACOES LTDA", "origem": "OUTBOUND", "vendedor": "RAFAEL DE JESUS", "valor": 542.63}, {"data": "07/04/2026", "cliente": "METROPOLITAN EDUCACAO LTDA.", "origem": "RD STATION", "vendedor": "RAFAEL DE JESUS", "valor": 7444.09}, {"data": "09/04/2026", "cliente": "SANI - SERVICO DE ANESTESIOLOGIA INTEGRADA LTDA", "origem": "INBOUND", "vendedor": "JEFERSON TOZZO", "valor": 885.94}, {"data": "14/04/2026", "cliente": "LOPES COMERCIO DE PECAS E RECONDICIONAMENTO DE MATERIAL RODA", "origem": "OUTBOUND", "vendedor": "RAFAEL DE JESUS", "valor": 442.17}, {"data": "14/04/2026", "cliente": "SKYFIT ACADEMIA - FRANCISCO JUNQUEIRA LTDA", "origem": "OUTBOUND", "vendedor": "RAFAEL DE JESUS", "valor": 588.06}, {"data": "16/04/2026", "cliente": "CONCEPTT SERVICOS TERCEIRIZADOS LTDA", "origem": "INBOUND", "vendedor": "JEFERSON TOZZO", "valor": 3225.96}, {"data": "16/04/2026", "cliente": "ERA ANESTESIA ESPECIALIZADA LTDA", "origem": "INBOUND", "vendedor": "RAFAEL DE JESUS", "valor": 189.37}, {"data": "16/04/2026", "cliente": "RIMA COMERCIO DE PECAS LTDA", "origem": "INBOUND", "vendedor": "RAFAEL DE JESUS", "valor": 1537.45}, {"data": "17/04/2026", "cliente": "HUSQVARNA DO BRASIL INDUSTRIA E COMERCIO DE PRODUTOS PARA FL", "origem": "OUTBOUND", "vendedor": "RAFAEL DE JESUS", "valor": 3826.63}, {"data": "22/04/2026", "cliente": "FUNDACAO PADRE ALBINO", "origem": "INBOUND", "vendedor": "JEFERSON TOZZO", "valor": 983.26}, {"data": "24/04/2026", "cliente": "CENTRO DE SAUDE BUCAL NADIA ABDALLAH ZORKOT LTDA", "origem": "INBOUND", "vendedor": "JEFERSON TOZZO", "valor": 1788.27}, {"data": "27/04/2026", "cliente": "ASSOCIACAO DOS COMERC.DO MERC.CENTRAL DE RIBEIRAO PRETO", "origem": "RD STATION", "vendedor": "VIVIANE DE CASSIA BOTELHO DONIZETE", "valor": 259.05}, {"data": "29/04/2026", "cliente": "CLINICA MEDICA OFTALMOLOGICA BLUMENAU LTDA", "origem": "REATIVAÇÃO", "vendedor": "JEFERSON TOZZO", "valor": 1112.65}, {"data": "30/04/2026", "cliente": "INSTITUTO SAO PAULO ESPECIALIDADES MEDICAS S/S LTDA", "origem": "RD STATION", "vendedor": "VIVIANE DE CASSIA BOTELHO DONIZETE", "valor": 6218.2}]}, {"key": "FUNIL MAI", "name": "Maio", "short": "Mai", "partial": true, "weeks": [{"label": "Sem 1", "dias_uteis": 5.0, "email": 9.0, "krolic": 56.0, "rd": 10.0, "outbound": 26.0, "leads": 101.0, "qualif": 11.0, "vendas": 0.0, "receita": 0}, {"label": "Sem 2", "dias_uteis": 5.0, "email": 11.0, "krolic": 33.0, "rd": 3.0, "outbound": 50.0, "leads": 97.0, "qualif": 5.0, "vendas": 0.0, "receita": 0.0}, {"label": "Sem 3", "dias_uteis": 5.0, "email": 4.0, "krolic": 32.0, "rd": 3.0, "outbound": 27.0, "leads": 66.0, "qualif": 4.0, "vendas": 1.0, "receita": 3174.62}], "totals": {"dias_uteis": 20.0, "email": 24.0, "krolic": 121.0, "rd": 16.0, "outbound": 103.0, "leads": 264.0, "qualif": 20.0, "orcamentos": 4.0, "vendas": 1.0, "receita": 3174.62}, "visitas_total": 2.0, "visitas_list": [{"cliente": "ARTUR EDUARDO ( FAZENDA PEROBAS)", "status": ""}, {"cliente": "SUPERMERCADOS GRICKI LTDA.-06.171.020/0009-69", "status": ""}], "vendas_fechadas": [{"data": "21/05/2026", "cliente": "CONDOMINIO COMPLEXO IGUATEMI RIBEIRAO PRETO", "origem": "INBOUND", "vendedor": "JEFERSON TOZZO", "valor": 3174.62}, {"data": "19/05/2026", "cliente": "RIMA COMERCIO DE PECAS LTDA", "origem": "INBOUND", "vendedor": "RAFAEL DE JESUS", "valor": 1868.06}]}];
-const YTD = {"leads": 1535.0, "qualif": 173.0, "orcamentos": 47.0, "visitas": 32.0, "vendas": 23.0, "receita": 49638.89000000001, "email": 112.0, "krolic": 728.0, "rd": 126.0, "outbound": 496.0};
-const TODAY = "25/05/2026";
+const MONTHS = [{"key": "FUNIL JAN", "name": "Janeiro", "short": "Jan", "partial": false, "weeks": [{"label": "05 a 09", "dias_uteis": 5, "email": 0, "krolic": 0, "rd": 0, "outbound": 0, "leads": 60, "qualif": 3, "vendas": 0, "receita": 0}, {"label": "12 a 16", "dias_uteis": 5, "email": 0, "krolic": 0, "rd": 0, "outbound": 0, "leads": 73, "qualif": 8, "vendas": 0, "receita": 0}, {"label": "19 a 23", "dias_uteis": 5, "email": 0, "krolic": 0, "rd": 0, "outbound": 0, "leads": 65, "qualif": 13, "vendas": 0, "receita": 0}, {"label": "26 a 30", "dias_uteis": 5, "email": 0, "krolic": 0, "rd": 0, "outbound": 0, "leads": 59, "qualif": 11, "vendas": 1, "receita": 693.24}], "totals": {"dias_uteis": 20, "email": 11, "krolic": 141, "rd": 16, "outbound": 30, "leads": 257, "qualif": 24, "orcamentos": 14, "vendas": 1, "receita": 693.24}, "visitas_total": 8, "visitas_list": [{"cliente": "01-2026 - Maria Eduarda (COPECAR INDUSTRIA E COMERCIO DE PECAS AGRICOLAS)", "status": "ok"}, {"cliente": "89279 - Walter (Lukros Distribuidora | Ribeirão Prêto SP)", "status": "ok"}, {"cliente": "89890 - Ulysses (Inbrasc Indústria Brasileira Componentes Ltda)", "status": "higiclear"}, {"cliente": "89829 - Leandro (Gota Dourada Cosméticos)", "status": "pendente"}, {"cliente": "01-2026 - LAÍSSA TUBESTEEL SERTAOZINHO", "status": "pendente"}, {"cliente": "89620 - RD STATION - Luana (LongPing - 08.864.422/0003-89)", "status": "ok"}, {"cliente": "89320 - Marcelo (Husqvarna - 04.098.470/0001-90)", "status": "ok"}, {"cliente": "94336 - KAROL - USINA SÃO LUIZ S.A.", "status": "pendente"}], "vendas_fechadas": []}, {"key": "FUNIL FEV", "name": "Fevereiro", "short": "Fev", "partial": false, "weeks": [{"label": "02 a 06", "dias_uteis": 5, "email": 0, "krolic": 0, "rd": 0, "outbound": 0, "leads": 56, "qualif": 11, "vendas": 7, "receita": 12497.779999999999}, {"label": "09 a 13", "dias_uteis": 5, "email": 0, "krolic": 0, "rd": 0, "outbound": 0, "leads": 98, "qualif": 3, "vendas": 1, "receita": 0}, {"label": "16 a 20", "dias_uteis": 2, "email": 0, "krolic": 0, "rd": 0, "outbound": 0, "leads": 47, "qualif": 7, "vendas": 1, "receita": 0}, {"label": "26 a 27", "dias_uteis": 5, "email": 0, "krolic": 0, "rd": 0, "outbound": 0, "leads": 63, "qualif": 4, "vendas": 1, "receita": 6533.65}], "totals": {"dias_uteis": 17, "email": 19, "krolic": 115, "rd": 22, "outbound": 108, "leads": 264, "qualif": 25, "orcamentos": 26, "vendas": 10, "receita": 19031.43}, "visitas_total": 3, "visitas_list": [{"cliente": "94351 - Júnior/ Paola (KSW Automotive)", "status": "ok"}, {"cliente": "Maycon/ Júlio (MAGISTER EQUIPAMENTOS INDUSTRIAIS LTDA)", "status": "ok"}, {"cliente": "94641 - Rafael (Zanco)", "status": "Pendente"}], "vendas_fechadas": [{"data": "02/02/2026", "cliente": "BISPADO DE RIO PRETO", "origem": "INBOUND", "vendedor": "Jeferson Tozzo", "valor": 1738.64}, {"data": "04/02/2026", "cliente": "CONSTRUTORA PAGANO S/A", "origem": "INBOUND", "vendedor": "Jeferson Tozzo", "valor": 719.95}, {"data": "05/02/2026", "cliente": "HUSQVARNA DO BRASIL INDUSTRIA E COMERCIO DE PRODUTOS PARA FL", "origem": "OUTBOUND", "vendedor": "Rafael de Jesus", "valor": 4433.43}, {"data": "05/02/2026", "cliente": "IRMANDADE SAO JOSE DE NOVO HORIZONTE", "origem": "INBOUND", "vendedor": "Jeferson Tozzo", "valor": 483.98}, {"data": "05/02/2026", "cliente": "LEFF NATURAL PETS LTDA", "origem": "INBOUND", "vendedor": "Jeferson Tozzo", "valor": 257.35}, {"data": "06/02/2026", "cliente": "LONDRA ACUCAR E ALCOOL LTDA", "origem": "OUTBOUND", "vendedor": "Rafael de Jesus", "valor": 222.6}, {"data": "06/02/2026", "cliente": "LOPES COMERCIO DE PECAS E RECONDICIONAMENTO DE MATERIAL RODA", "origem": "OUTBOUND", "vendedor": "Rafael de Jesus", "valor": 1208.24}, {"data": "09/02/2026", "cliente": "MUNICIPIO DE DUMONT", "origem": "INBOUND", "vendedor": "Jeferson Tozzo", "valor": 925.8}, {"data": "18/02/2026", "cliente": "RIMA COMERCIO DE PECAS LTDA", "origem": "INBOUND", "vendedor": "Rafael de Jesus", "valor": 2507.79}, {"data": "24/02/2026", "cliente": "SKYFIT ACADEMIA - FRANCISCO JUNQUEIRA LTDA", "origem": "OUTBOUND", "vendedor": "Rafael de Jesus", "valor": 6533.65}]}, {"key": "FUNIL MAR", "name": "Março", "short": "Mar", "partial": false, "weeks": [{"label": "02 a 06", "dias_uteis": 5, "email": 0, "krolic": 0, "rd": 0, "outbound": 0, "leads": 78, "qualif": 11, "vendas": 2, "receita": 4799.43}, {"label": "09 a 13", "dias_uteis": 5, "email": 0, "krolic": 0, "rd": 0, "outbound": 0, "leads": 82, "qualif": 9, "vendas": 2, "receita": 1135.4}, {"label": "16 a 20", "dias_uteis": 5, "email": 0, "krolic": 0, "rd": 0, "outbound": 0, "leads": 79, "qualif": 17, "vendas": 0, "receita": 0}, {"label": "26 a 27", "dias_uteis": 5, "email": 0, "krolic": 0, "rd": 0, "outbound": 0, "leads": 88, "qualif": 19, "vendas": 0, "receita": 0}, {"label": "30 e 31", "dias_uteis": 2, "email": 0, "krolic": 0, "rd": 0, "outbound": 0, "leads": 32, "qualif": 1, "vendas": 0, "receita": 0}], "totals": {"dias_uteis": 20, "email": 25, "krolic": 189, "rd": 37, "outbound": 94, "leads": 359, "qualif": 56, "orcamentos": 24, "vendas": 4, "receita": 5934.83}, "visitas_total": 12, "visitas_list": [{"cliente": "96656 - RD STATION - Ryan Q, CERD", "status": ""}, {"cliente": "03-2026 - UNITHER INDUSTRIA FARMACEUTICA LTDA.", "status": ""}, {"cliente": "96650 - Fernando - COLAG 06.224.894/0001-80", "status": ""}, {"cliente": "03-2026 - Lívia (Tracan Ribeirão Preto)", "status": ""}, {"cliente": "96766 - RD STATION - Nicole, Acomecerp", "status": ""}, {"cliente": "96767 - Natália (Clínca Olhos Coronado Antunes - 05.075.025/0001-78)", "status": ""}, {"cliente": "Álvaro (CONSTRUTORA INDUSTRIAL E COMERCIAL SAID LTDA)", "status": ""}, {"cliente": "RD STATION - Vanilde,", "status": ""}, {"cliente": "RD STATION - Felipe Mariano, - Metropolitana", "status": ""}, {"cliente": "COLEGIO PEQUENO PRINCIPE-56.013.931/0001-89", "status": ""}, {"cliente": "Erica (Colégio Santa Úrsula - 56.011.026/0001-90)", "status": ""}, {"cliente": "Isabela (Marispan)", "status": ""}], "vendas_fechadas": [{"data": "03/03/2026", "cliente": "COOPERATIVA DOS ANESTESIOLOGISTAS DE RIBEIRAO PRETO - COOPAN", "origem": "INBOUND", "vendedor": "Jeferson Tozzo", "valor": 4645.05}, {"data": "06/03/2026", "cliente": "ADVOCACIA NUNES E FERNANDES", "origem": "INBOUND", "vendedor": "Jeferson Tozzo", "valor": 154.38}, {"data": "11/03/2026", "cliente": "SANTA CASA DE MISERICORDIA DE VOTUPORANGA", "origem": "INBOUND", "vendedor": "Jeferson Tozzo", "valor": 958.4}, {"data": "09/03/2026", "cliente": "ZANCO PRODUTOS ALIMENTICIOS LTDA", "origem": "OUTBOUND", "vendedor": "Rafael de Jesus", "valor": 177}]}, {"key": "FUNIL ABR", "name": "Abril", "short": "Abr", "partial": false, "weeks": [{"label": "W14", "dias_uteis": 2, "email": 0, "krolic": 0, "rd": 0, "outbound": 0, "leads": 26, "qualif": 2, "vendas": 0, "receita": 0}, {"label": "W15", "dias_uteis": 5, "email": 0, "krolic": 0, "rd": 0, "outbound": 0, "leads": 119, "qualif": 29, "vendas": 2, "receita": 8330.03}, {"label": "W16", "dias_uteis": 5, "email": 0, "krolic": 0, "rd": 0, "outbound": 0, "leads": 79, "qualif": 7, "vendas": 1, "receita": 3225.96}, {"label": "W17", "dias_uteis": 4, "email": 0, "krolic": 0, "rd": 0, "outbound": 0, "leads": 88, "qualif": 6, "vendas": 3, "receita": 3030.58}, {"label": "W18", "dias_uteis": 4, "email": 0, "krolic": 0, "rd": 0, "outbound": 0, "leads": 79, "qualif": 4, "vendas": 1, "receita": 6218.2}], "totals": {"dias_uteis": 20, "email": 33, "krolic": 162, "rd": 35, "outbound": 161, "leads": 391, "qualif": 48, "orcamentos": 11, "vendas": 7, "receita": 20804.77}, "visitas_total": 7, "visitas_list": [{"cliente": "Rodrigo (Suporte Rei)", "status": "ok"}, {"cliente": "99850 - Rafaella (Ativa Locação)", "status": "ok"}, {"cliente": "PROIMAGEM DIAGNOSTICOS MEDICOS", "status": "ok"}, {"cliente": "100068 - Atri Comercial LTDA", "status": "ok"}, {"cliente": "Deliz Restaurante LTDA - 62.317.065/0001-12", "status": "ok"}, {"cliente": "M. S. Serralheria Artística LTDA - 04.354.818/0001-63", "status": "ok"}, {"cliente": "Gdu Jk Esmalteria LTDA - 36.571.709/0001-94", "status": "ok"}], "vendas_fechadas": [{"data": "06/04/2026", "cliente": "CASA PAVAO DECORACOES LTDA", "origem": "OUTBOUND", "vendedor": "Rafael de Jesus", "valor": 542.63}, {"data": "07/04/2026", "cliente": "METROPOLITAN EDUCACAO LTDA.", "origem": "RD STATION", "vendedor": "Rafael de Jesus", "valor": 7444.09}, {"data": "09/04/2026", "cliente": "SANI - SERVICO DE ANESTESIOLOGIA INTEGRADA LTDA", "origem": "INBOUND", "vendedor": "Jeferson Tozzo", "valor": 885.94}, {"data": "14/04/2026", "cliente": "LOPES COMERCIO DE PECAS E RECONDICIONAMENTO DE MATERIAL RODA", "origem": "OUTBOUND", "vendedor": "Rafael de Jesus", "valor": 442.17}, {"data": "14/04/2026", "cliente": "SKYFIT ACADEMIA - FRANCISCO JUNQUEIRA LTDA", "origem": "OUTBOUND", "vendedor": "Rafael de Jesus", "valor": 588.06}, {"data": "16/04/2026", "cliente": "CONCEPTT SERVICOS TERCEIRIZADOS LTDA", "origem": "INBOUND", "vendedor": "Jeferson Tozzo", "valor": 3225.96}, {"data": "16/04/2026", "cliente": "ERA ANESTESIA ESPECIALIZADA LTDA", "origem": "INBOUND", "vendedor": "Rafael de Jesus", "valor": 189.37}, {"data": "16/04/2026", "cliente": "RIMA COMERCIO DE PECAS LTDA", "origem": "INBOUND", "vendedor": "Rafael de Jesus", "valor": 1537.45}, {"data": "17/04/2026", "cliente": "HUSQVARNA DO BRASIL INDUSTRIA E COMERCIO DE PRODUTOS PARA FL", "origem": "OUTBOUND", "vendedor": "Rafael de Jesus", "valor": 3826.63}, {"data": "22/04/2026", "cliente": "FUNDACAO PADRE ALBINO", "origem": "INBOUND", "vendedor": "Jeferson Tozzo", "valor": 983.26}, {"data": "24/04/2026", "cliente": "CENTRO DE SAUDE BUCAL NADIA ABDALLAH ZORKOT LTDA", "origem": "INBOUND", "vendedor": "Jeferson Tozzo", "valor": 1788.27}, {"data": "27/04/2026", "cliente": "ASSOCIACAO DOS COMERC.DO MERC.CENTRAL DE RIBEIRAO PRETO", "origem": "RD STATION", "vendedor": "Viviane", "valor": 259.05}, {"data": "29/04/2026", "cliente": "CLINICA MEDICA OFTALMOLOGICA BLUMENAU LTDA", "origem": "REATIVAÇÃO", "vendedor": "Jeferson Tozzo", "valor": 1112.65}, {"data": "30/04/2026", "cliente": "INSTITUTO SAO PAULO ESPECIALIDADES MEDICAS S/S LTDA", "origem": "RD STATION", "vendedor": "Viviane", "valor": 6218.2}]}, {"key": "FUNIL MAI", "name": "Maio", "short": "Mai", "partial": false, "weeks": [{"label": "W19", "dias_uteis": 5, "email": 0, "krolic": 0, "rd": 0, "outbound": 0, "leads": 101, "qualif": 11, "vendas": 0, "receita": 0}, {"label": "W20", "dias_uteis": 5, "email": 0, "krolic": 0, "rd": 0, "outbound": 0, "leads": 97, "qualif": 5, "vendas": 0, "receita": 0}, {"label": "W21", "dias_uteis": 5, "email": 0, "krolic": 0, "rd": 0, "outbound": 0, "leads": 66, "qualif": 4, "vendas": 1, "receita": 3174.62}, {"label": "W22", "dias_uteis": 5, "email": 0, "krolic": 0, "rd": 0, "outbound": 0, "leads": 141, "qualif": 31, "vendas": 1, "receita": 674.96}], "totals": {"dias_uteis": 20, "email": 37, "krolic": 162, "rd": 19, "outbound": 187, "leads": 405, "qualif": 51, "orcamentos": 5, "vendas": 2, "receita": 3849.58}, "visitas_total": 2, "visitas_list": [{"cliente": "ARTUR EDUARDO ( FAZENDA PEROBAS)", "status": "ok"}, {"cliente": "SUPERMERCADOS GRICKI LTDA.-06.171.020/0009-69", "status": "ok"}], "vendas_fechadas": [{"data": "19/05/2026", "cliente": "RIMA COMERCIO DE PECAS LTDA", "origem": "INBOUND", "vendedor": "Rafael de Jesus", "valor": 1868.06}, {"data": "21/05/2026", "cliente": "CONDOMINIO COMPLEXO IGUATEMI RIBEIRAO PRETO", "origem": "INBOUND", "vendedor": "Jeferson Tozzo", "valor": 3174.62}, {"data": "29/05/2026", "cliente": "ARTUR EDUARDO MONASSI", "origem": "OUTBOUND", "vendedor": "Viviane", "valor": 674.96}]}];
+const YTD = {"leads": 1676, "qualif": 204, "orcamentos": 80, "visitas": 32, "vendas": 24, "receita": 50313.850000000006, "email": 125, "krolic": 769, "rd": 129, "outbound": 580};
+const TODAY = "01/06/2026";
 
 const COLORS = {
   leads: '#3B82F6', qualif: '#8B5CF6', visitas: '#F97316', orc: '#06B6D4',
@@ -374,7 +347,6 @@ Chart.defaults.borderColor = '#1F293780';
 Chart.defaults.font.family = '-apple-system, BlinkMacSystemFont, Segoe UI, Roboto';
 Chart.defaults.font.size = 11;
 
-// Helpers
 const fmt = {
   int: n => Math.round(n).toLocaleString('pt-BR'),
   money: n => 'R$ ' + n.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2}),
@@ -399,7 +371,6 @@ const dBadge = d => {
   return `<div class="delta ${d.dir}">${sign} ${s}%</div>`;
 };
 
-// Tabs
 document.querySelectorAll('.tab').forEach(t => {
   t.onclick = () => {
     document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
@@ -409,7 +380,6 @@ document.querySelectorAll('.tab').forEach(t => {
   };
 });
 
-// PANORAMA — KPIs do mês corrente
 function buildKpisMes() {
   const cur = MONTHS[MONTHS.length - 1];
   const prev = MONTHS[MONTHS.length - 2];
@@ -433,7 +403,6 @@ function buildKpisMes() {
   }).join('');
 }
 
-// Funil consolidado YTD
 function buildFunil() {
   const max = YTD.leads;
   const steps = [
@@ -467,7 +436,6 @@ function buildFunil() {
   document.getElementById('funil-cons').innerHTML = html;
 }
 
-// Insights
 function buildInsights() {
   const last = MONTHS[MONTHS.length - 1];
   const prev = MONTHS[MONTHS.length - 2];
@@ -475,7 +443,6 @@ function buildInsights() {
   const qualRate = YTD.qualif / YTD.leads;
   const convLV = YTD.vendas / YTD.leads;
   const convQV = YTD.vendas / YTD.qualif;
-  const ticket = YTD.vendas > 0 ? YTD.receita / YTD.vendas : 0;
 
   if (last.partial) {
     out.push({c: COLORS.visitas, t: `● <strong>${last.name} em andamento</strong> — ${last.totals.dias_uteis||0} dias úteis, dados parciais`});
@@ -504,7 +471,6 @@ function buildInsights() {
     out.push({c: COLORS.visitas, t: `○ <strong>${fmt.pct(visPct)} dos qualificados foram visitados</strong> (${YTD.visitas} visitas YTD)`});
   }
 
-  // Melhor mês YTD
   let best = MONTHS[0];
   MONTHS.forEach(m => { if (!m.partial && m.totals.receita > best.totals.receita) best = m; });
   out.push({c: COLORS.receita, t: `★ <strong>Melhor mês YTD: ${best.name}</strong> — ${fmt.money(best.totals.receita)} com ${fmt.int(best.totals.vendas)} vendas`});
@@ -514,7 +480,6 @@ function buildInsights() {
   ).join('');
 }
 
-// Receita chart
 let chartsCreated = {};
 function buildReceitaChart() {
   const ctx = document.getElementById('ch-receita').getContext('2d');
@@ -542,7 +507,6 @@ function buildReceitaChart() {
 }
 
 function buildVolumeChart() {
-  // legend HTML
   document.getElementById('legend-vol').innerHTML = `
     <span><span class="dot" style="background:${COLORS.leads}"></span>Leads</span>
     <span><span class="dot" style="background:${COLORS.visitas}"></span>Visitas</span>
@@ -613,7 +577,6 @@ function buildResumo() {
   document.getElementById('tbl-resumo').innerHTML = html;
 }
 
-// SEMANAL
 let semanalIdx = MONTHS.length - 1;
 function buildPillsSemanal() {
   document.getElementById('pills-semanal').innerHTML = MONTHS.map((m, i) =>
@@ -672,7 +635,6 @@ function renderSemanal() {
     }
   });
 
-  // Melhor semana (por receita)
   let bestW = m.weeks[0];
   m.weeks.forEach(w => { if (w.receita > (bestW?.receita||0)) bestW = w; });
 
@@ -704,7 +666,6 @@ function renderSemanal() {
   document.getElementById('tbl-semanal').innerHTML = html;
 }
 
-// ORIGENS
 let origensIdx = MONTHS.length - 1;
 function buildPillsOrigens() {
   document.getElementById('pills-origens').innerHTML = MONTHS.map((m, i) =>
@@ -742,7 +703,6 @@ function renderOrigens() {
     }
   });
 
-  // Ranking vendedores
   const sellers = {};
   m.vendas_fechadas.forEach(v => {
     const k = (v.vendedor||'').trim().toUpperCase() || 'N/A';
@@ -772,7 +732,6 @@ function renderOrigens() {
   document.getElementById('ranking').innerHTML = html;
 }
 
-// VISITAS
 let visitasIdx = MONTHS.length - 1;
 function buildPillsVisitas() {
   document.getElementById('pills-visitas').innerHTML = MONTHS.map((m, i) =>
@@ -823,7 +782,6 @@ function renderVisitas() {
   }).join('');
 }
 
-// VENDAS FECHADAS
 let vendasIdx = MONTHS.length - 1;
 function buildPillsVendas() {
   document.getElementById('pills-vendas').innerHTML = MONTHS.map((m, i) =>
@@ -874,7 +832,6 @@ function renderVendas() {
   document.getElementById('tbl-vendas').innerHTML = html;
 }
 
-// Export
 function exportarDiretores() {
   const ytdTicket = YTD.vendas > 0 ? YTD.receita / YTD.vendas : 0;
   const ytdQR = YTD.leads > 0 ? YTD.qualif / YTD.leads : 0;
@@ -910,11 +867,10 @@ function exportarDiretores() {
   const blob = new Blob([html], {type: 'text/html'});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = 'hygibras_relatorio_$2026-05-25.html';
+  a.download = 'hygibras_relatorio_' + TODAY.replace(/\//g, '-') + '.html';
   a.click();
 }
 
-// Init
 buildKpisMes();
 buildFunil();
 buildInsights();
