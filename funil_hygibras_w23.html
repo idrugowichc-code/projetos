@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Dashboard Hygibras 2026</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root {
+  --c-leads: #3B82F6; --c-qualif: #8B5CF6; --c-visitas: #F97316;
+  --c-orc: #06B6D4; --c-vendas: #10B981; --c-receita: #F59E0B;
+  --c-ticket: #EC4899; --c-conv-lv: #10B981; --c-conv-qv: #14B8A6;
+  --c-alert: #EF4444; --c-success: #22C55E;
+  --bg: #0A0E1A; --bg-card: #111827; --bg-elev: #1F2937;
+  --bg-hover: #374151; --border: #1F2937; --border-strong: #374151;
+  --text: #F9FAFB; --text-dim: #9CA3AF; --text-mute: #6B7280;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; padding: 28px;
+  background: var(--bg); color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 13px; line-height: 1.5;
+}
+.header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
+.header h1 { font-size: 22px; font-weight: 700; margin: 0 0 4px; }
+.header .sub { font-size: 12px; color: var(--text-dim); }
+.badge-partial {
+  display: inline-block; margin-left: 12px;
+  background: rgba(249,115,22,0.18); color: #FB923C;
+  font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 999px;
+  vertical-align: middle;
+}
+.btn-export {
+  background: var(--c-leads); color: white; border: none;
+  padding: 10px 18px; border-radius: 8px; font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: background 0.15s;
+}
+.btn-export:hover { background: #2563EB; }
+.tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border-strong); margin-bottom: 24px; flex-wrap: wrap; }
+.tab {
+  background: none; border: none; color: var(--text-dim);
+  padding: 12px 20px; font-size: 13px; font-weight: 600; cursor: pointer;
+  border-bottom: 2px solid transparent; transition: all 0.15s; margin-bottom: -1px;
+}
+.tab:hover { color: var(--text); }
+.tab.active { color: var(--c-leads); border-bottom-color: var(--c-leads); }
+.panel { display: none; }
+.panel.active { display: block; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
+.grid-2-1 { display: grid; grid-template-columns: 2fr 1fr; gap: 18px; }
+.card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 18px; }
+.card-title { font-size: 13px; font-weight: 700; color: var(--text); margin: 0 0 14px; }
+
+/* YTD card */
+.ytd { background: linear-gradient(135deg, #111827 0%, #1F2937 100%); border: 1px solid #374151; border-radius: 12px; padding: 22px 26px; margin-bottom: 22px; display: grid; grid-template-columns: 200px 1fr; gap: 28px; align-items: center; }
+.ytd-label { border-right: 1px solid #374151; padding-right: 24px; }
+.ytd-label .ttl { font-size: 11px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em; }
+.ytd-label .per { font-size: 15px; color: var(--text); margin-top: 6px; font-weight: 600; }
+.ytd-metrics { display: grid; grid-template-columns: repeat(5, 1fr); gap: 18px; }
+.ytd-metric .ml { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-dim); margin-bottom: 6px; font-weight: 600; }
+.ytd-metric .mv { font-size: 22px; font-weight: 700; }
+
+/* KPI cards */
+.kpi { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; position: relative; overflow: hidden; }
+.kpi::before { content:''; position: absolute; left:0; top:0; bottom:0; width:3px; background: var(--clr, var(--c-leads)); }
+.kpi .lbl { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-dim); font-weight: 600; }
+.kpi .val { font-size: 26px; font-weight: 700; color: var(--clr, var(--c-leads)); margin-top: 4px; }
+.kpi .sub { font-size: 11px; color: var(--text-mute); margin-top: 4px; }
+.delta { display: inline-block; margin-top: 8px; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 6px; }
+.delta.up { background: rgba(16,185,129,0.15); color: #34D399; }
+.delta.dn { background: rgba(239,68,68,0.15); color: #F87171; }
+
+/* Funil */
+.funil-row { display: grid; grid-template-columns: 130px 1fr 140px; align-items: center; gap: 14px; margin-bottom: 10px; }
+.funil-label { font-size: 12px; font-weight: 600; color: var(--text); }
+.funil-bar { background: var(--bg-elev); border-radius: 6px; overflow: hidden; height: 32px; display: flex; align-items: center; }
+.funil-fill { height: 100%; border-radius: 6px; display: flex; align-items: center; padding-left: 12px; font-size: 12px; font-weight: 700; color: white; min-width: 5%; transition: width 0.3s; }
+.funil-pct { font-size: 13px; text-align: right; font-weight: 700; color: var(--text); }
+.funil-pct-stack { display: flex; flex-direction: column; gap: 4px; }
+.funil-pct-line { display: flex; justify-content: flex-end; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; }
+
+/* Insights */
+.insights { display: flex; flex-direction: column; gap: 8px; }
+.insight { background: var(--bg-elev); border-left: 3px solid var(--clr, var(--c-leads)); padding: 10px 14px; border-radius: 4px; font-size: 12px; color: var(--text); }
+.insight strong { color: var(--clr, var(--c-leads)); }
+
+/* Tabela */
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
+th { color: #E5E7EB; background: #0F1521; border-bottom: 2px solid #374151; padding: 10px 8px; text-align: left; font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; }
+td { padding: 9px 8px; border-bottom: 1px solid var(--border); color: var(--text); }
+tr:hover td { background: rgba(55,65,81,0.25); }
+tr.partial td { color: #D1D5DB; font-style: italic; }
+tr.total-row td { background: #0F1521; border-top: 2px solid #374151; font-weight: 700; color: #F9FAFB; padding: 12px 8px; border-bottom: none; }
+tr.best td { background: linear-gradient(90deg, rgba(16,185,129,0.10) 0%, transparent 100%); font-weight: 600; }
+.star { color: var(--c-receita); margin-right: 4px; }
+.num { text-align: right; font-variant-numeric: tabular-nums; }
+
+/* Pills */
+.pills { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
+.pill { background: var(--bg-elev); border: 1px solid var(--border-strong); padding: 6px 14px; border-radius: 999px; cursor: pointer; font-size: 12px; font-weight: 500; color: var(--text-dim); transition: all 0.15s; }
+.pill:hover { color: var(--text); border-color: var(--c-leads); }
+.pill.active { background: var(--c-leads); color: white; border-color: var(--c-leads); }
+
+/* Chart */
+.chart-wrap { position: relative; height: 280px; }
+.chart-wrap.tall { height: 320px; }
+.chart-legend { display: flex; gap: 16px; font-size: 11px; color: var(--text-dim); margin-bottom: 8px; flex-wrap: wrap; }
+.chart-legend .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 5px; vertical-align: middle; }
+
+/* Visit cards */
+.visita-card { background: var(--bg-elev); border-radius: 8px; padding: 12px 14px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; border-left: 3px solid var(--c-visitas); gap: 12px; }
+.visita-card .nm { font-size: 12px; font-weight: 500; color: var(--text); flex: 1; }
+.visita-badge { font-size: 10px; padding: 3px 10px; border-radius: 999px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap; }
+.b-ok { background: rgba(34,197,94,0.18); color: #4ADE80; }
+.b-pend { background: rgba(249,115,22,0.18); color: #FB923C; }
+.b-info { background: rgba(59,130,246,0.18); color: #60A5FA; }
+
+/* Ranking */
+.rank-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+.rank-row:last-child { border-bottom: none; }
+.rank-medal { font-size: 16px; margin-right: 8px; }
+.rank-name { flex: 1; font-weight: 600; }
+.rank-val { font-weight: 700; color: var(--c-vendas); }
+
+h2.section { font-size: 14px; font-weight: 700; color: var(--text); margin: 24px 0 10px; }
+.spark { display: inline-block; vertical-align: middle; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <h1>Dashboard Hygibras 2026 <span class="badge-partial">● Junho em andamento</span></h1>
+    <div class="sub">Funil de vendas — atualizado em 09/06/2026</div>
+  </div>
+  <button class="btn-export" onclick="exportarDiretores()">↓ Exportar para diretores</button>
+</div>
+
+<div class="tabs">
+  <button class="tab active" data-tab="panorama">Panorama</button>
+  <button class="tab" data-tab="semanal">Comparativo Semanal</button>
+  <button class="tab" data-tab="origens">Origens / Canais</button>
+  <button class="tab" data-tab="visitas">Visitas</button>
+  <button class="tab" data-tab="vendas">Vendas Fechadas</button>
+</div>
+
+<div id="panorama" class="panel active"></div>
+<div id="semanal" class="panel"></div>
+<div id="origens" class="panel"></div>
+<div id="visitas" class="panel"></div>
+<div id="vendas" class="panel"></div>
+
+<script>
+const MONTHS = [{"key": "FUNIL JAN", "name": "Janeiro", "short": "Jan", "partial": false, "weeks": [{"label": "05 a 09", "dias_uteis": 5.0, "email": 5.0, "krolic": 49.0, "rd": 4.0, "outbound": 2.0, "leads": 60.0, "qualif": 3.0, "vendas": 0.0, "receita": 0.0}, {"label": "12 a 16", "dias_uteis": 5.0, "email": 3.0, "krolic": 51.0, "rd": 9.0, "outbound": 10.0, "leads": 73.0, "qualif": 8.0, "vendas": 0.0, "receita": 0.0}, {"label": "19 a 23", "dias_uteis": 5.0, "email": 3.0, "krolic": 41.0, "rd": 3.0, "outbound": 18.0, "leads": 65.0, "qualif": 13.0, "vendas": 0.0, "receita": 0.0}, {"label": "26 a 30", "dias_uteis": 5.0, "email": 5.0, "krolic": 38.0, "rd": 7.0, "outbound": 9.0, "leads": 59.0, "qualif": 11.0, "vendas": 1.0, "receita": 693.24}], "totals": {"dias_uteis": 20.0, "email": 11.0, "krolic": 141.0, "rd": 16.0, "outbound": 30.0, "leads": 257.0, "qualif": 24.0, "vendas": 1.0, "receita": 693.24, "orcamentos": 7.0}, "visitas_total": 8.0, "visitas_list": [{"cliente": "01-2026 - Maria Eduarda (COPECAR INDUSTRIA E COMERCIO DE PECAS AGRICOLAS)", "status": "ok"}, {"cliente": "89279 - Walter (Lukros Distribuidora | Ribeirão Prêto SP)", "status": "ok"}, {"cliente": "89890 - Ulysses (Inbrasc Indústria Brasileira Componentes Ltda)", "status": "higiclear"}, {"cliente": "89829 - Leandro (Gota Dourada Cosméticos)", "status": "pendente"}, {"cliente": "01-2026 - LAÍSSA TUBESTEEL SERTAOZINHO", "status": "pendente"}, {"cliente": "89620 - RD STATION - Luana (LongPing - 08.864.422/0003-89)", "status": "ok"}, {"cliente": "89320 - Marcelo (Husqvarna - 04.098.470/0001-90)", "status": "ok"}, {"cliente": "94336 - KAROL - USINA SÃO LUIZ S.A.", "status": "pendente"}], "vendas_fechadas": []}, {"key": "FUNIL FEV", "name": "Fevereiro", "short": "Fev", "partial": false, "weeks": [{"label": "02 a 06", "dias_uteis": 5.0, "email": 5.0, "krolic": 20.0, "rd": 4.0, "outbound": 27.0, "leads": 56.0, "qualif": 11.0, "vendas": 7.0, "receita": 12497.779999999999}, {"label": "09 a 13", "dias_uteis": 5.0, "email": 3.0, "krolic": 38.0, "rd": 8.0, "outbound": 49.0, "leads": 98.0, "qualif": 3.0, "vendas": 1.0, "receita": 0.0}, {"label": "16 a 20", "dias_uteis": 2.0, "email": 1.0, "krolic": 21.0, "rd": 4.0, "outbound": 21.0, "leads": 47.0, "qualif": 7.0, "vendas": 1.0, "receita": 0.0}, {"label": "26 a 27", "dias_uteis": 5.0, "email": 10.0, "krolic": 36.0, "rd": 6.0, "outbound": 11.0, "leads": 63.0, "qualif": 4.0, "vendas": 1.0, "receita": 6533.65}], "totals": {"dias_uteis": 17.0, "email": 19.0, "krolic": 115.0, "rd": 22.0, "outbound": 108.0, "leads": 264.0, "qualif": 25.0, "vendas": 10.0, "receita": 19031.43, "orcamentos": 13.0}, "visitas_total": 3.0, "visitas_list": [{"cliente": "94351 - Júnior/ Paola (KSW Automotive)", "status": "ok"}, {"cliente": "Maycon/ Júlio (MAGISTER EQUIPAMENTOS INDUSTRIAIS LTDA)", "status": "ok"}, {"cliente": "94641 - Rafael (Zanco)", "status": "Pendente"}], "vendas_fechadas": [{"data": "02/02/2026", "cliente": "BISPADO DE RIO PRETO", "origem": "INBOUND", "vendedor": "JEFERSON TOZZO", "valor": 1738.64}, {"data": "04/02/2026", "cliente": "CONSTRUTORA PAGANO S/A", "origem": "INBOUND", "vendedor": "JEFERSON TOZZO", "valor": 719.95}, {"data": "05/02/2026", "cliente": "HUSQVARNA DO BRASIL INDUSTRIA E COMERCIO DE PRODUTOS PARA FL", "origem": "OUTBOUND", "vendedor": "RAFAEL DE JESUS", "valor": 4433.43}, {"data": "05/02/2026", "cliente": "IRMANDADE SAO JOSE DE NOVO HORIZONTE", "origem": "INBOUND", "vendedor": "JEFERSON TOZZO", "valor": 483.98}, {"data": "05/02/2026", "cliente": "LEFF NATURAL PETS LTDA", "origem": "INBOUND", "vendedor": "JEFERSON TOZZO", "valor": 257.35}, {"data": "06/02/2026", "cliente": "LONDRA ACUCAR E ALCOOL LTDA", "origem": "OUTBOUND", "vendedor": "RAFAEL DE JESUS", "valor": 222.6}, {"data": "06/02/2026", "cliente": "LOPES COMERCIO DE PECAS E RECONDICIONAMENTO DE MATERIAL RODA", "origem": "OUTBOUND", "vendedor": "RAFAEL DE JESUS", "valor": 1208.24}, {"data": "09/02/2026", "cliente": "MUNICIPIO DE DUMONT", "origem": "INBOUND", "vendedor": "JEFERSON TOZZO", "valor": 925.8}, {"data": "18/02/2026", "cliente": "RIMA COMERCIO DE PECAS LTDA", "origem": "INBOUND", "vendedor": "RAFAEL DE JESUS", "valor": 2507.79}, {"data": "24/02/2026", "cliente": "SKYFIT ACADEMIA - FRANCISCO JUNQUEIRA LTDA", "origem": "OUTBOUND", "vendedor": "RAFAEL DE JESUS", "valor": 6533.65}]}, {"key": "FUNIL MAR", "name": "Março", "short": "Mar", "partial": false, "weeks": [{"label": "02 a 06", "dias_uteis": 5.0, "email": 4.0, "krolic": 39.0, "rd": 11.0, "outbound": 24.0, "leads": 78.0, "qualif": 11.0, "vendas": 2.0, "receita": 4799.43}, {"label": "09 a 13", "dias_uteis": 5.0, "email": 5.0, "krolic": 46.0, "rd": 8.0, "outbound": 23.0, "leads": 82.0, "qualif": 9.0, "vendas": 2.0, "receita": 1135.4}, {"label": "16 a 20", "dias_uteis": 5.0, "email": 9.0, "krolic": 44.0, "rd": 10.0, "outbound": 16.0, "leads": 79.0, "qualif": 17.0, "vendas": 0.0, "receita": 0.0}, {"label": "26 a 27", "dias_uteis": 5.0, "email": 7.0, "krolic": 42.0, "rd": 8.0, "outbound": 31.0, "leads": 88.0, "qualif": 19.0, "vendas": 0.0, "receita": 0.0}, {"label": "30 e 31", "dias_uteis": 2.0, "email": 3.0, "krolic": 18.0, "rd": 1.0, "outbound": 10.0, "leads": 32.0, "qualif": 1.0, "vendas": 0.0, "receita": 0.0}], "totals": {"dias_uteis": 20.0, "email": 25.0, "krolic": 189.0, "rd": 37.0, "outbound": 94.0, "leads": 359.0, "qualif": 56.0, "vendas": 4.0, "receita": 5934.83, "orcamentos": 12.0}, "visitas_total": 12.0, "visitas_list": [{"cliente": "96656 - RD STATION - Ryan Q, CERD", "status": ""}, {"cliente": "03-2026 - UNITHER INDUSTRIA FARMACEUTICA LTDA.", "status": ""}, {"cliente": "96650 - Fernando - COLAG 06.224.894/0001-80", "status": ""}, {"cliente": "03-2026 - Lívia (Tracan Ribeirão Preto)", "status": ""}, {"cliente": "96766 - RD STATION - Nicole, Acomecerp", "status": ""}, {"cliente": "96767 - Natália (Clínca Olhos Coronado Antunes - 05.075.025/0001-78)", "status": ""}, {"cliente": "Álvaro (CONSTRUTORA INDUSTRIAL E COMERCIAL SAID LTDA)", "status": ""}, {"cliente": "RD STATION - Vanilde,", "status": ""}, {"cliente": "RD STATION - Felipe Mariano, - Metropolitana", "status": ""}, {"cliente": "COLEGIO PEQUENO PRINCIPE-56.013.931/0001-89", "status": ""}, {"cliente": "Erica (Colégio Santa Úrsula - 56.011.026/0001-90)", "status": ""}, {"cliente": "Isabela (Marispan)", "status": ""}], "vendas_fechadas": [{"data": "03/03/2026", "cliente": "COOPERATIVA DOS ANESTESIOLOGISTAS DE RIBEIRAO PRETO - COOPAN", "origem": "INBOUND", "vendedor": "JEFERSON TOZZO", "valor": 4645.05}, {"data": "06/03/2026", "cliente": "ADVOCACIA NUNES E FERNANDES", "origem": "INBOUND", "vendedor": "JEFERSON TOZZO", "valor": 154.38}, {"data": "11/03/2026", "cliente": "SANTA CASA DE MISERICORDIA DE VOTUPORANGA", "origem": "INBOUND", "vendedor": "JEFERSON TOZZO", "valor": 958.4}, {"data": "09/03/2026", "cliente": "ZANCO PRODUTOS ALIMENTICIOS LTDA", "origem": "OUTBOUND", "vendedor": "RAFAEL DE JESUS", "valor": 177.0}]}, {"key": "FUNIL ABR", "name": "Abril", "short": "Abr", "partial": false, "weeks": [{"label": "Sem 1", "dias_uteis": 2.0, "email": 4.0, "krolic": 17.0, "rd": 1.0, "outbound": 4.0, "leads": 26.0, "qualif": 2.0, "vendas": 0.0, "receita": 0.0}, {"label": "Sem 2", "dias_uteis": 5.0, "email": 8.0, "krolic": 44.0, "rd": 14.0, "outbound": 53.0, "leads": 119.0, "qualif": 29.0, "vendas": 2.0, "receita": 8330.03}, {"label": "Sem 3", "dias_uteis": 5.0, "email": 4.0, "krolic": 41.0, "rd": 9.0, "outbound": 25.0, "leads": 79.0, "qualif": 7.0, "vendas": 1.0, "receita": 3225.96}, {"label": "Sem 4", "dias_uteis": 4.0, "email": 8.0, "krolic": 30.0, "rd": 8.0, "outbound": 42.0, "leads": 88.0, "qualif": 6.0, "vendas": 3.0, "receita": 3030.58}, {"label": "Sem 5", "dias_uteis": 4.0, "email": 9.0, "krolic": 30.0, "rd": 3.0, "outbound": 37.0, "leads": 79.0, "qualif": 4.0, "vendas": 1.0, "receita": 6218.2}], "totals": {"dias_uteis": 20.0, "email": 33.0, "krolic": 162.0, "rd": 35.0, "outbound": 161.0, "leads": 391.0, "qualif": 48.0, "orcamentos": 11.0, "vendas": 7.0, "receita": 20804.77}, "visitas_total": 7.0, "visitas_list": [{"cliente": "Rodrigo (Suporte Rei)", "status": ""}, {"cliente": "99850 - Rafaella (Ativa Locação)", "status": ""}, {"cliente": "PROIMAGEM DIAGNOSTICOS MEDICOS", "status": ""}, {"cliente": "100068 - Atri Comercial LTDA", "status": ""}, {"cliente": "Deliz Restaurante LTDA - 62.317.065/0001-12", "status": ""}, {"cliente": "M. S. Serralheria Artística LTDA - 04.354.818/0001-63", "status": ""}, {"cliente": "Gdu Jk Esmalteria LTDA - 36.571.709/0001-94", "status": ""}], "vendas_fechadas": [{"data": "06/04/2026", "cliente": "CASA PAVAO DECORACOES LTDA", "origem": "OUTBOUND", "vendedor": "RAFAEL DE JESUS", "valor": 542.63}, {"data": "07/04/2026", "cliente": "METROPOLITAN EDUCACAO LTDA.", "origem": "RD STATION", "vendedor": "RAFAEL DE JESUS", "valor": 7444.09}, {"data": "09/04/2026", "cliente": "SANI - SERVICO DE ANESTESIOLOGIA INTEGRADA LTDA", "origem": "INBOUND", "vendedor": "JEFERSON TOZZO", "valor": 885.94}, {"data": "14/04/2026", "cliente": "LOPES COMERCIO DE PECAS E RECONDICIONAMENTO DE MATERIAL RODA", "origem": "OUTBOUND", "vendedor": "RAFAEL DE JESUS", "valor": 442.17}, {"data": "14/04/2026", "cliente": "SKYFIT ACADEMIA - FRANCISCO JUNQUEIRA LTDA", "origem": "OUTBOUND", "vendedor": "RAFAEL DE JESUS", "valor": 588.06}, {"data": "16/04/2026", "cliente": "CONCEPTT SERVICOS TERCEIRIZADOS LTDA", "origem": "INBOUND", "vendedor": "JEFERSON TOZZO", "valor": 3225.96}, {"data": "16/04/2026", "cliente": "ERA ANESTESIA ESPECIALIZADA LTDA", "origem": "INBOUND", "vendedor": "RAFAEL DE JESUS", "valor": 189.37}, {"data": "16/04/2026", "cliente": "RIMA COMERCIO DE PECAS LTDA", "origem": "INBOUND", "vendedor": "RAFAEL DE JESUS", "valor": 1537.45}, {"data": "17/04/2026", "cliente": "HUSQVARNA DO BRASIL INDUSTRIA E COMERCIO DE PRODUTOS PARA FL", "origem": "OUTBOUND", "vendedor": "RAFAEL DE JESUS", "valor": 3826.63}, {"data": "22/04/2026", "cliente": "FUNDACAO PADRE ALBINO", "origem": "INBOUND", "vendedor": "JEFERSON TOZZO", "valor": 983.26}, {"data": "24/04/2026", "cliente": "CENTRO DE SAUDE BUCAL NADIA ABDALLAH ZORKOT LTDA", "origem": "INBOUND", "vendedor": "JEFERSON TOZZO", "valor": 1788.27}, {"data": "27/04/2026", "cliente": "ASSOCIACAO DOS COMERC.DO MERC.CENTRAL DE RIBEIRAO PRETO", "origem": "RD STATION", "vendedor": "VIVIANE DE CASSIA BOTELHO DONIZETE", "valor": 259.05}, {"data": "29/04/2026", "cliente": "CLINICA MEDICA OFTALMOLOGICA BLUMENAU LTDA", "origem": "REATIVAÇÃO", "vendedor": "JEFERSON TOZZO", "valor": 1112.65}, {"data": "30/04/2026", "cliente": "INSTITUTO SAO PAULO ESPECIALIDADES MEDICAS S/S LTDA", "origem": "RD STATION", "vendedor": "VIVIANE DE CASSIA BOTELHO DONIZETE", "valor": 6218.2}]}, {"key": "FUNIL MAI", "name": "Maio", "short": "Mai", "partial": false, "weeks": [{"label": "Sem 1", "dias_uteis": 5.0, "email": 9.0, "krolic": 56.0, "rd": 10.0, "outbound": 26.0, "leads": 101.0, "qualif": 11.0, "vendas": 0.0, "receita": 0.0}, {"label": "Sem 2", "dias_uteis": 5.0, "email": 11.0, "krolic": 33.0, "rd": 3.0, "outbound": 50.0, "leads": 97.0, "qualif": 5.0, "vendas": 0.0, "receita": 0.0}, {"label": "Sem 3", "dias_uteis": 5.0, "email": 4.0, "krolic": 32.0, "rd": 3.0, "outbound": 27.0, "leads": 66.0, "qualif": 4.0, "vendas": 1.0, "receita": 3174.62}, {"label": "Sem 4", "dias_uteis": 5.0, "email": 13.0, "krolic": 41.0, "rd": 3.0, "outbound": 84.0, "leads": 141.0, "qualif": 31.0, "vendas": 1.0, "receita": 674.96}], "totals": {"dias_uteis": 20.0, "email": 37.0, "krolic": 162.0, "rd": 19.0, "outbound": 187.0, "leads": 405.0, "qualif": 51.0, "orcamentos": 5.0, "vendas": 2.0, "receita": 3849.58}, "visitas_total": 2.0, "visitas_list": [{"cliente": "ARTUR EDUARDO ( FAZENDA PEROBAS)", "status": ""}, {"cliente": "SUPERMERCADOS GRICKI LTDA.-06.171.020/0009-69", "status": ""}], "vendas_fechadas": [{"data": "19/05/2026", "cliente": "RIMA COMERCIO DE PECAS LTDA", "origem": "INBOUND", "vendedor": "RAFAEL DE JESUS", "valor": 1868.06}, {"data": "21/05/2026", "cliente": "CONDOMINIO COMPLEXO IGUATEMI RIBEIRAO PRETO", "origem": "INBOUND", "vendedor": "JEFERSON TOZZO", "valor": 3174.62}, {"data": "29/05/2026", "cliente": "ARTUR EDUARDO MONASSI", "origem": "OUTBOUND", "vendedor": "VIVIANE", "valor": 674.96}]}, {"key": "FUNIL JUN", "name": "Junho", "short": "Jun", "partial": true, "weeks": [{"label": "Sem 1", "dias_uteis": 4.0, "email": 4.0, "krolic": 45.0, "rd": 1.0, "outbound": 6.0, "leads": 56.0, "qualif": 1.0, "vendas": 2.0, "receita": 2762.02}], "totals": {"dias_uteis": 21.0, "email": 4.0, "krolic": 45.0, "rd": 1.0, "outbound": 6.0, "leads": 56.0, "qualif": 1.0, "orcamentos": 0.0, "vendas": 2.0, "receita": 2762.02}, "visitas_total": 1.0, "visitas_list": [{"cliente": "104518 - Márcio (Crossfit Celeiro)", "status": ""}], "vendas_fechadas": [{"data": "05/06/2026", "cliente": "GENCAU SAO PAULO - INDUSTRIA E COMERCIO DE INGREDIENTES ALIM", "origem": "OUTBOUND", "vendedor": "VIVIANE DE CASSIA BOTELHO DONIZETE", "valor": 1959.24}, {"data": "01/06/2026", "cliente": "PROIMAGEM DIAGNOSTICOS MEDICOS LTDA", "origem": "INBOUND", "vendedor": "VIVIANE DE CASSIA BOTELHO DONIZETE", "valor": 802.78}]}];
+
+const C = {
+  leads: '#3B82F6', qualif: '#8B5CF6', visitas: '#F97316',
+  orc: '#06B6D4', vendas: '#10B981', receita: '#F59E0B',
+  ticket: '#EC4899', conv_lv: '#10B981', conv_qv: '#14B8A6',
+  alert: '#EF4444', success: '#22C55E',
+  categorica: ['#3B82F6', '#F59E0B', '#10B981', '#8B5CF6', '#EC4899', '#06B6D4', '#F97316']
+};
+
+Chart.defaults.color = '#9CA3AF';
+Chart.defaults.borderColor = '#1F293780';
+Chart.defaults.font.family = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto';
+Chart.defaults.font.size = 11;
+
+const fmt = {
+  n: (v) => (v == null || !isFinite(v)) ? '—' : Math.round(v).toLocaleString('pt-BR'),
+  m: (v) => (v == null || !isFinite(v)) ? 'R$ —' : 'R$ ' + Number(v).toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2}),
+  pct: (v) => (v == null || !isFinite(v)) ? '—' : (v*100).toFixed(1).replace('.',',') + '%',
+  delta: (cur, prev) => {
+    if (prev == null || prev === 0 || !isFinite(prev)) return {val:null, dir:'eq'};
+    const d = (cur - prev) / prev;
+    if (!isFinite(d)) return {val:null, dir:'eq'};
+    return { val: d, dir: d > 0.005 ? 'up' : d < -0.005 ? 'dn' : 'eq' };
+  }
+};
+
+const dBadge = d => {
+  if (d.val === null || !isFinite(d.val)) return '';
+  if (d.dir === 'eq') return '';
+  const pct = Math.abs(d.val * 100);
+  const s = pct.toFixed(1).replace('.', ',');
+  const sign = d.val > 0 ? '↑' : '↓';
+  return `<div class="delta ${d.dir}">${sign} ${s}%</div>`;
+};
+
+const charts = {};
+
+function destroyChart(id) { if (charts[id]) { charts[id].destroy(); delete charts[id]; } }
+
+function calcYTD() {
+  const y = { leads:0, qualif:0, orc:0, visitas:0, vendas:0, receita:0 };
+  MONTHS.forEach(m => {
+    y.leads += m.totals.leads || 0; y.qualif += m.totals.qualif || 0;
+    y.orc += m.totals.orcamentos || 0; y.visitas += m.visitas_total || 0;
+    y.vendas += m.totals.vendas || 0; y.receita += m.totals.receita || 0;
+  });
+  return y;
+}
+
+// ===== Panorama =====
+function renderPanorama() {
+  const last = MONTHS[MONTHS.length-1];
+  const prev = MONTHS[MONTHS.length-2] || {totals:{leads:0,qualif:0,vendas:0,receita:0}, visitas_total:0};
+  const ytd = calcYTD();
+
+  const dLeads = fmt.delta(last.totals.leads, prev.totals.leads);
+  const dQualif = fmt.delta(last.totals.qualif, prev.totals.qualif);
+  const dVis = fmt.delta(last.visitas_total, prev.visitas_total);
+  const dVendas = fmt.delta(last.totals.vendas, prev.totals.vendas);
+  const dReceita = fmt.delta(last.totals.receita, prev.totals.receita);
+
+  const html = `
+    <div class="ytd">
+      <div class="ytd-label">
+        <div class="ttl">YTD Acumulado</div>
+        <div class="per">Jan — ${last.short} 2026</div>
+      </div>
+      <div class="ytd-metrics">
+        <div class="ytd-metric"><div class="ml">Leads</div><div class="mv" style="color:${C.leads}">${fmt.n(ytd.leads)}</div></div>
+        <div class="ytd-metric"><div class="ml">Qualificados</div><div class="mv" style="color:${C.qualif}">${fmt.n(ytd.qualif)}</div></div>
+        <div class="ytd-metric"><div class="ml">Visitas</div><div class="mv" style="color:${C.visitas}">${fmt.n(ytd.visitas)}</div></div>
+        <div class="ytd-metric"><div class="ml">Vendas</div><div class="mv" style="color:${C.vendas}">${fmt.n(ytd.vendas)}</div></div>
+        <div class="ytd-metric"><div class="ml">Receita</div><div class="mv" style="color:${C.receita}">${fmt.m(ytd.receita)}</div></div>
+      </div>
+    </div>
+    <h2 class="section">${last.name}${last.partial ? ' — em andamento' : ''}</h2>
+    <div class="grid-5">
+      <div class="kpi" style="--clr:${C.leads}"><div class="lbl">Leads</div><div class="val">${fmt.n(last.totals.leads)}</div>${dBadge(dLeads)}</div>
+      <div class="kpi" style="--clr:${C.qualif}"><div class="lbl">Qualificados</div><div class="val">${fmt.n(last.totals.qualif)}</div><div class="sub">${fmt.pct(last.totals.qualif/last.totals.leads)}</div>${dBadge(dQualif)}</div>
+      <div class="kpi" style="--clr:${C.visitas}"><div class="lbl">Visitas</div><div class="val">${fmt.n(last.visitas_total)}</div>${dBadge(dVis)}</div>
+      <div class="kpi" style="--clr:${C.vendas}"><div class="lbl">Vendas</div><div class="val">${fmt.n(last.totals.vendas)}</div><div class="sub">Conv: ${fmt.pct(last.totals.vendas/last.totals.leads)}</div>${dBadge(dVendas)}</div>
+      <div class="kpi" style="--clr:${C.receita}"><div class="lbl">Receita</div><div class="val">${fmt.m(last.totals.receita)}</div>${dBadge(dReceita)}</div>
+    </div>
+    <div class="grid-2-1" style="margin-top:18px">
+      <div class="card">
+        <div class="card-title">Funil consolidado YTD</div>
+        <div id="funil-cons"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Insights automáticos</div>
+        <div id="insights-list" class="insights"></div>
+      </div>
+    </div>
+    <div class="grid-2" style="margin-top:18px">
+      <div class="card">
+        <div class="card-title">Receita mensal</div>
+        <div class="chart-wrap"><canvas id="ch-receita"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Leads · Visitas · Vendas por mês</div>
+        <div class="chart-legend">
+          <span><span class="dot" style="background:${C.leads}"></span>Leads</span>
+          <span><span class="dot" style="background:${C.visitas}"></span>Visitas</span>
+          <span><span class="dot" style="background:${C.vendas}"></span>Vendas</span>
+        </div>
+        <div class="chart-wrap"><canvas id="ch-lvv"></canvas></div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:18px">
+      <div class="card-title">Resumo mensal</div>
+      <div id="resumo-mensal"></div>
+    </div>
+  `;
+  document.getElementById('panorama').innerHTML = html;
+
+  renderFunilConsolidado(ytd);
+  renderInsights(last, prev, ytd);
+  renderResumoMensal();
+
+  // Receita chart
+  destroyChart('ch-receita');
+  const ctxR = document.getElementById('ch-receita');
+  charts['ch-receita'] = new Chart(ctxR, {
+    type: 'bar',
+    data: {
+      labels: MONTHS.map(m => m.short),
+      datasets: [{
+        data: MONTHS.map(m => m.totals.receita),
+        backgroundColor: MONTHS.map(m => m.partial ? C.receita + '80' : C.receita),
+        borderRadius: 6, borderSkipped: false,
+      }]
+    },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
+      scales: { y: { grid: { color: '#1F293780' }, ticks: { callback: v => 'R$ ' + (v/1000).toFixed(0) + 'k' } }, x: { grid: { display: false } } }
+    }
+  });
+
+  // L/V/V chart
+  destroyChart('ch-lvv');
+  const ctxL = document.getElementById('ch-lvv');
+  charts['ch-lvv'] = new Chart(ctxL, {
+    type: 'bar',
+    data: {
+      labels: MONTHS.map(m => m.short),
+      datasets: [
+        { type:'bar', label:'Leads', data: MONTHS.map(m => m.totals.leads), backgroundColor: C.leads, borderRadius: 6, yAxisID:'y' },
+        { type:'line', label:'Visitas', data: MONTHS.map(m => m.visitas_total), borderColor: C.visitas, backgroundColor: C.visitas, tension:.3, yAxisID:'y1', borderWidth: 2.5, pointRadius: 4 },
+        { type:'line', label:'Vendas', data: MONTHS.map(m => m.totals.vendas), borderColor: C.vendas, backgroundColor: C.vendas, tension:.3, yAxisID:'y1', borderWidth: 2.5, pointRadius: 4 },
+      ]
+    },
+    options: { responsive: true, maintainAspectRatio: false, plugins:{ legend:{ display:false } },
+      scales: {
+        y: { position:'left', grid:{ color:'#1F293780' }, ticks:{ color: C.leads } },
+        y1: { position:'right', grid:{ display:false }, ticks:{ color: C.vendas } }
+      }
+    }
+  });
+}
+
+function renderFunilConsolidado(y) {
+  const stages = [
+    { label: 'Leads', value: y.leads, color: C.leads },
+    { label: 'Qualificados', value: y.qualif, color: C.qualif },
+    { label: 'Orçamentos', value: y.orc, color: C.orc },
+    { label: 'Visitas', value: y.visitas, color: C.visitas },
+    { label: 'Vendas', value: y.vendas, color: C.vendas },
+  ];
+  const maxVal = stages[0].value || 1;
+  let html = '';
+  stages.forEach((s, i) => {
+    const w = Math.max(5, (s.value/maxVal)*100);
+    const isLast = i === stages.length-1;
+    let pctHtml = '';
+    if (isLast) {
+      const lv = y.vendas / y.leads;
+      const qv = y.vendas / y.qualif;
+      pctHtml = `<div class="funil-pct funil-pct-stack">
+        <div class="funil-pct-line" style="color:${C.conv_lv}">${fmt.pct(lv)} <span style="color:#9CA3AF; font-weight:500">L→V</span></div>
+        <div class="funil-pct-line" style="color:${C.conv_qv}">${fmt.pct(qv)} <span style="color:#9CA3AF; font-weight:500">Q→V</span></div>
+      </div>`;
+    } else if (i > 0) {
+      const ratio = s.value / stages[0].value;
+      pctHtml = `<div class="funil-pct">${fmt.pct(ratio)}</div>`;
+    } else {
+      pctHtml = `<div class="funil-pct" style="color:${C.leads}">100,0%</div>`;
+    }
+    html += `<div class="funil-row">
+      <div class="funil-label">${s.label}</div>
+      <div class="funil-bar"><div class="funil-fill" style="background:${s.color}; width:${w}%">${fmt.n(s.value)}</div></div>
+      ${pctHtml}
+    </div>`;
+  });
+  document.getElementById('funil-cons').innerHTML = html;
+}
+
+function renderInsights(last, prev, ytd) {
+  const items = [];
+  const qualRate = (last.totals.qualif || 0) / (last.totals.leads || 1);
+  const convLV = (last.totals.vendas || 0) / (last.totals.leads || 1);
+  const convQV = (last.totals.vendas || 0) / (last.totals.qualif || 1);
+  const ticket = (last.totals.receita || 0) / (last.totals.vendas || 1);
+  const prevTicket = (prev.totals.receita || 0) / (prev.totals.vendas || 1);
+
+  if (last.partial) items.push({c:C.visitas, txt:`<strong>● ${last.name} em andamento</strong> — dados parciais`});
+  if (qualRate > 0.1) items.push({c:C.qualif, txt:`<strong>✓ Qualificação saudável</strong> — ${fmt.pct(qualRate)} de qualificados sobre leads`});
+  else if (qualRate < 0.05 && last.totals.leads > 0) items.push({c:C.alert, txt:`<strong>⚠ Qualificação baixa</strong> — apenas ${fmt.pct(qualRate)}, revisar critério`});
+  if (convLV < 0.02 && last.totals.leads > 0) items.push({c:C.alert, txt:`<strong>⚠ Conv L→V baixa</strong> — ${fmt.pct(convLV)}, gargalo no funil`});
+  if (convQV > 0.25) items.push({c:C.vendas, txt:`<strong>✓ Time comercial fechando bem</strong> — ${fmt.pct(convQV)} dos qualificados viram venda`});
+  else if (convQV > 0 && convQV < 0.1) items.push({c:C.alert, txt:`<strong>⚠ Conv Q→V baixa</strong> — ${fmt.pct(convQV)}, revisar abordagem comercial`});
+  if (prev.totals.receita > 0 && last.totals.receita > prev.totals.receita * 1.3) items.push({c:C.vendas, txt:`<strong>↑ Crescimento expressivo</strong> em receita vs. mês anterior`});
+  if (prev.totals.receita > 0 && last.totals.receita < prev.totals.receita * 0.5 && !last.partial) items.push({c:C.alert, txt:`<strong>↓ Queda na receita</strong> que requer investigação`});
+  if (prevTicket > 0 && ticket > prevTicket * 1.1) items.push({c:C.ticket, txt:`<strong>$ Ticket médio subiu</strong> para ${fmt.m(ticket)}`});
+  if (last.visitas_total > 0 && last.totals.qualif > 0) items.push({c:C.visitas, txt:`<strong>○ ${fmt.pct(last.visitas_total/last.totals.qualif)}</strong> dos qualificados foram visitados em ${last.name}`});
+  let bestMonth = MONTHS[0];
+  MONTHS.forEach(m => { if (m.totals.receita > bestMonth.totals.receita) bestMonth = m; });
+  items.push({c:C.receita, txt:`<strong>★ Melhor mês YTD</strong> — ${bestMonth.name}: ${fmt.m(bestMonth.totals.receita)} em ${fmt.n(bestMonth.totals.vendas)} vendas`});
+
+  document.getElementById('insights-list').innerHTML = items.map(i => `<div class="insight" style="--clr:${i.c}">${i.txt}</div>`).join('');
+}
+
+function renderResumoMensal() {
+  let total = { leads:0, qualif:0, orc:0, visitas:0, vendas:0, receita:0 };
+  let rows = MONTHS.map(m => {
+    total.leads += m.totals.leads; total.qualif += m.totals.qualif;
+    total.orc += m.totals.orcamentos; total.visitas += m.visitas_total;
+    total.vendas += m.totals.vendas; total.receita += m.totals.receita;
+    const qPct = m.totals.qualif / (m.totals.leads || 1);
+    const lv = m.totals.vendas / (m.totals.leads || 1);
+    const qv = m.totals.vendas / (m.totals.qualif || 1);
+    return `<tr class="${m.partial?'partial':''}">
+      <td>${m.name}${m.partial?' *':''}</td>
+      <td class="num">${fmt.n(m.totals.leads)}</td>
+      <td class="num">${fmt.n(m.totals.qualif)}</td>
+      <td class="num">${fmt.pct(qPct)}</td>
+      <td class="num">${fmt.n(m.totals.orcamentos)}</td>
+      <td class="num">${fmt.n(m.visitas_total)}</td>
+      <td class="num">${fmt.n(m.totals.vendas)}</td>
+      <td class="num" style="color:${C.conv_lv}">${fmt.pct(lv)}</td>
+      <td class="num" style="color:${C.conv_qv}">${fmt.pct(qv)}</td>
+      <td class="num">${fmt.m(m.totals.receita)}</td>
+    </tr>`;
+  }).join('');
+  const tQpct = total.qualif/(total.leads||1);
+  const tLV = total.vendas/(total.leads||1);
+  const tQV = total.vendas/(total.qualif||1);
+  rows += `<tr class="total-row">
+    <td>TOTAL YTD</td>
+    <td class="num">${fmt.n(total.leads)}</td>
+    <td class="num">${fmt.n(total.qualif)}</td>
+    <td class="num">${fmt.pct(tQpct)}</td>
+    <td class="num">${fmt.n(total.orc)}</td>
+    <td class="num">${fmt.n(total.visitas)}</td>
+    <td class="num">${fmt.n(total.vendas)}</td>
+    <td class="num" style="color:${C.conv_lv}">${fmt.pct(tLV)}</td>
+    <td class="num" style="color:${C.conv_qv}">${fmt.pct(tQV)}</td>
+    <td class="num">${fmt.m(total.receita)}</td>
+  </tr>`;
+  document.getElementById('resumo-mensal').innerHTML = `<table>
+    <thead><tr><th>Mês</th><th class="num">Leads</th><th class="num">Qualif</th><th class="num">% Qualif</th><th class="num">Orçs</th><th class="num">Visitas</th><th class="num">Vendas</th><th class="num">L→V</th><th class="num">Q→V</th><th class="num">Receita</th></tr></thead>
+    <tbody>${rows}</tbody>
+  </table>`;
+}
+
+// ===== Comparativo Semanal =====
+function renderSemanal() {
+  const html = `
+    <div class="pills" id="pills-semanal">${MONTHS.map((m,i) => `<button class="pill ${i===MONTHS.length-1?'active':''}" data-i="${i}">${m.short}${m.partial?'*':''}</button>`).join('')}</div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">Leads vs Vendas por semana</div>
+        <div class="chart-legend">
+          <span><span class="dot" style="background:${C.leads}"></span>Leads</span>
+          <span><span class="dot" style="background:${C.vendas}"></span>Vendas</span>
+        </div>
+        <div class="chart-wrap"><canvas id="ch-lv-sem"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Receita por semana</div>
+        <div class="chart-wrap"><canvas id="ch-rec-sem"></canvas></div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:18px">
+      <div class="card-title">Detalhamento semanal</div>
+      <div id="tbl-sem"></div>
+    </div>
+  `;
+  document.getElementById('semanal').innerHTML = html;
+  document.querySelectorAll('#pills-semanal .pill').forEach(p => {
+    p.addEventListener('click', () => {
+      document.querySelectorAll('#pills-semanal .pill').forEach(x => x.classList.remove('active'));
+      p.classList.add('active');
+      renderSemanalDetail(parseInt(p.dataset.i, 10));
+    });
+  });
+  renderSemanalDetail(MONTHS.length-1);
+}
+
+function sparkSvg(values, color, w=80, h=22) {
+  if (!values.length) return '';
+  const max = Math.max(...values, 1);
+  const step = w / Math.max(1, values.length-1);
+  const pts = values.map((v, i) => `${(i*step).toFixed(1)},${(h - (v/max)*h).toFixed(1)}`).join(' ');
+  return `<svg class="spark" width="${w}" height="${h}"><polyline points="${pts}" fill="none" stroke="${color}" stroke-width="1.5"/></svg>`;
+}
+
+function renderSemanalDetail(idx) {
+  const m = MONTHS[idx];
+  const labels = m.weeks.map(w => w.label);
+
+  destroyChart('ch-lv-sem');
+  const cLV = document.getElementById('ch-lv-sem');
+  charts['ch-lv-sem'] = new Chart(cLV, {
+    type:'bar',
+    data: { labels, datasets: [
+      { label:'Leads', data: m.weeks.map(w => w.leads), backgroundColor: C.leads, borderRadius:6, borderSkipped:false, yAxisID:'y' },
+      { label:'Vendas', data: m.weeks.map(w => w.vendas), backgroundColor: C.vendas, borderRadius:6, borderSkipped:false, yAxisID:'y1' },
+    ]},
+    options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}},
+      scales: { y:{ position:'left', grid:{color:'#1F293780'}, ticks:{ color: C.leads } }, y1:{ position:'right', grid:{display:false}, ticks:{ color: C.vendas } } }
+    }
+  });
+
+  destroyChart('ch-rec-sem');
+  const cR = document.getElementById('ch-rec-sem');
+  charts['ch-rec-sem'] = new Chart(cR, {
+    type:'line',
+    data: { labels, datasets:[{ data: m.weeks.map(w => w.receita), borderColor: C.receita, backgroundColor: C.receita+'33', fill:true, tension:.3, borderWidth:2.5, pointRadius:4 }]},
+    options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}},
+      scales:{ y:{ grid:{color:'#1F293780'}, ticks:{ callback:v=>'R$ '+(v/1000).toFixed(0)+'k' } } }
+    }
+  });
+
+  let bestIdx = 0, bestVal = -1;
+  m.weeks.forEach((w,i) => { if (w.receita > bestVal) { bestVal = w.receita; bestIdx = i; } });
+
+  let rows = m.weeks.map((w,i) => {
+    const qPct = w.qualif/(w.leads||1);
+    const lv = w.vendas/(w.leads||1);
+    const qv = w.qualif > 0 ? w.vendas/w.qualif : null;
+    const ticket = w.vendas > 0 ? w.receita/w.vendas : null;
+    const isBest = (i === bestIdx && w.receita > 0);
+    return `<tr class="${isBest?'best':''}">
+      <td>${isBest?'<span class="star">★</span>':''}${w.label}</td>
+      <td class="num">${fmt.n(w.dias_uteis)}</td>
+      <td class="num">${fmt.n(w.leads)} ${sparkSvg(m.weeks.map(x=>x.leads), C.leads)}</td>
+      <td class="num">${fmt.n(w.qualif)}</td>
+      <td class="num">${fmt.pct(qPct)}</td>
+      <td class="num">${fmt.n(w.vendas)}</td>
+      <td class="num" style="color:${C.conv_lv}">${fmt.pct(lv)}</td>
+      <td class="num" style="color:${C.conv_qv}">${qv==null?'—':fmt.pct(qv)}</td>
+      <td class="num">${fmt.m(w.receita)} ${sparkSvg(m.weeks.map(x=>x.receita), C.receita)}</td>
+      <td class="num">${ticket==null?'—':fmt.m(ticket)}</td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('tbl-sem').innerHTML = `<table>
+    <thead><tr><th>Semana</th><th class="num">Dias</th><th class="num">Leads</th><th class="num">Qualif</th><th class="num">% Qualif</th><th class="num">Vendas</th><th class="num">L→V</th><th class="num">Q→V</th><th class="num">Receita</th><th class="num">Ticket</th></tr></thead>
+    <tbody>${rows}</tbody>
+  </table>`;
+}
+
+// ===== Origens =====
+function renderOrigens() {
+  const html = `
+    <div class="pills" id="pills-origens">${MONTHS.map((m,i) => `<button class="pill ${i===MONTHS.length-1?'active':''}" data-i="${i}">${m.short}${m.partial?'*':''}</button>`).join('')}</div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">Leads por canal</div>
+        <div class="chart-wrap"><canvas id="ch-canal-bar"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Participação dos canais</div>
+        <div class="chart-wrap"><canvas id="ch-canal-donut"></canvas></div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:18px">
+      <div class="card-title">Ranking de vendedores</div>
+      <div id="ranking-vend"></div>
+    </div>
+  `;
+  document.getElementById('origens').innerHTML = html;
+  document.querySelectorAll('#pills-origens .pill').forEach(p => {
+    p.addEventListener('click', () => {
+      document.querySelectorAll('#pills-origens .pill').forEach(x => x.classList.remove('active'));
+      p.classList.add('active');
+      renderOrigensDetail(parseInt(p.dataset.i, 10));
+    });
+  });
+  renderOrigensDetail(MONTHS.length-1);
+  renderRanking();
+}
+
+function renderOrigensDetail(idx) {
+  const m = MONTHS[idx];
+  const t = m.totals;
+  const labels = ['Email','Krolic','RD','Outbound'];
+  const data = [t.email, t.krolic, t.rd, t.outbound];
+  const colors = [C.categorica[0], C.categorica[1], C.categorica[2], C.categorica[3]];
+
+  destroyChart('ch-canal-bar');
+  charts['ch-canal-bar'] = new Chart(document.getElementById('ch-canal-bar'), {
+    type:'bar',
+    data:{ labels, datasets:[{ data, backgroundColor:colors, borderRadius:6, borderSkipped:false }] },
+    options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{ legend:{ display:false } },
+      scales:{ x:{ grid:{color:'#1F293780'} }, y:{ grid:{display:false} } }
+    }
+  });
+
+  destroyChart('ch-canal-donut');
+  charts['ch-canal-donut'] = new Chart(document.getElementById('ch-canal-donut'), {
+    type:'doughnut',
+    data:{ labels, datasets:[{ data, backgroundColor:colors, borderColor:'#111827', borderWidth:2 }] },
+    options:{ responsive:true, maintainAspectRatio:false, cutout:'65%', plugins:{ legend:{ position:'right', labels:{ color:'#F9FAFB', boxWidth:10, padding:14 } } } }
+  });
+}
+
+function renderRanking() {
+  const map = {};
+  const norm = (n) => {
+    const u = (n||'').toUpperCase();
+    if (u.includes('JEFERSON')) return 'Jeferson Tozzo';
+    if (u.includes('RAFAEL')) return 'Rafael de Jesus';
+    if (u.includes('FERNANDO')) return 'Fernando';
+    if (u.includes('VIVIANE')) return 'Viviane';
+    return (n||'').trim() || '—';
+  };
+  MONTHS.forEach(m => (m.vendas_fechadas||[]).forEach(v => {
+    const k = norm(v.vendedor);
+    if (!map[k]) map[k] = { vendas: 0, receita: 0 };
+    map[k].vendas += 1; map[k].receita += v.valor || 0;
+  }));
+  const arr = Object.entries(map).map(([n,v]) => ({nome:n, ...v})).sort((a,b) => b.receita - a.receita);
+  const medals = ['🥇','🥈','🥉'];
+  document.getElementById('ranking-vend').innerHTML = arr.length === 0
+    ? '<div style="color:var(--text-dim); padding:10px 0">Sem dados de vendedores.</div>'
+    : arr.map((v,i) => `<div class="rank-row">
+        <div style="display:flex; align-items:center;"><span class="rank-medal">${medals[i] || '·'}</span><span class="rank-name">${v.nome}</span></div>
+        <div style="text-align:right"><div class="rank-val">${fmt.m(v.receita)}</div><div style="font-size:11px; color:var(--text-dim)">${fmt.n(v.vendas)} ${v.vendas===1?'venda':'vendas'}</div></div>
+      </div>`).join('');
+}
+
+// ===== Visitas =====
+function renderVisitas() {
+  const html = `
+    <div class="pills" id="pills-visitas">${MONTHS.map((m,i) => `<button class="pill ${i===MONTHS.length-1?'active':''}" data-i="${i}">${m.short}${m.partial?'*':''}</button>`).join('')}</div>
+    <div class="grid-3" id="visitas-kpis"></div>
+    <div class="card" style="margin-top:18px">
+      <div class="card-title">Lista de visitas do mês</div>
+      <div id="visitas-list"></div>
+    </div>
+  `;
+  document.getElementById('visitas').innerHTML = html;
+  document.querySelectorAll('#pills-visitas .pill').forEach(p => {
+    p.addEventListener('click', () => {
+      document.querySelectorAll('#pills-visitas .pill').forEach(x => x.classList.remove('active'));
+      p.classList.add('active');
+      renderVisitasDetail(parseInt(p.dataset.i, 10));
+    });
+  });
+  renderVisitasDetail(MONTHS.length-1);
+}
+
+function renderVisitasDetail(idx) {
+  const m = MONTHS[idx];
+  const vis = m.visitas_total || 0;
+  const pctQ = m.totals.qualif > 0 ? vis/m.totals.qualif : null;
+  const convV = vis > 0 ? m.totals.vendas/vis : null;
+  document.getElementById('visitas-kpis').innerHTML = `
+    <div class="kpi" style="--clr:${C.visitas}"><div class="lbl">Total de Visitas</div><div class="val">${fmt.n(vis)}</div></div>
+    <div class="kpi" style="--clr:${C.qualif}"><div class="lbl">% dos Qualificados</div><div class="val">${pctQ==null?'—':fmt.pct(pctQ)}</div></div>
+    <div class="kpi" style="--clr:${C.vendas}"><div class="lbl">Conv Visita → Venda</div><div class="val">${convV==null?'—':fmt.pct(convV)}</div></div>
+  `;
+  const list = m.visitas_list || [];
+  if (list.length === 0) {
+    document.getElementById('visitas-list').innerHTML = '<div style="color:var(--text-dim); padding:10px 0">Nenhuma visita registrada.</div>';
+    return;
+  }
+  document.getElementById('visitas-list').innerHTML = list.map(v => {
+    let cls = 'b-info', label = 'Sem status';
+    const s = (v.status||'').toLowerCase();
+    if (s === 'ok') { cls = 'b-ok'; label = 'OK'; }
+    else if (s.includes('pend')) { cls = 'b-pend'; label = 'Pendente'; }
+    else if (s) { cls = 'b-info'; label = v.status; }
+    return `<div class="visita-card"><div class="nm">${v.cliente}</div><div class="visita-badge ${cls}">${label}</div></div>`;
+  }).join('');
+}
+
+// ===== Vendas Fechadas =====
+function renderVendas() {
+  const html = `
+    <div class="pills" id="pills-vendas">${MONTHS.map((m,i) => `<button class="pill ${i===MONTHS.length-1?'active':''}" data-i="${i}">${m.short}${m.partial?'*':''}</button>`).join('')}</div>
+    <div class="grid-3" id="vendas-kpis"></div>
+    <div class="card" style="margin-top:18px">
+      <div class="card-title">Vendas do mês</div>
+      <div id="vendas-tbl"></div>
+    </div>
+  `;
+  document.getElementById('vendas').innerHTML = html;
+  document.querySelectorAll('#pills-vendas .pill').forEach(p => {
+    p.addEventListener('click', () => {
+      document.querySelectorAll('#pills-vendas .pill').forEach(x => x.classList.remove('active'));
+      p.classList.add('active');
+      renderVendasDetail(parseInt(p.dataset.i, 10));
+    });
+  });
+  renderVendasDetail(MONTHS.length-1);
+}
+
+function renderVendasDetail(idx) {
+  const m = MONTHS[idx];
+  const list = m.vendas_fechadas || [];
+  const total = list.reduce((s,v) => s + (v.valor||0), 0);
+  const ticket = list.length > 0 ? total/list.length : 0;
+  document.getElementById('vendas-kpis').innerHTML = `
+    <div class="kpi" style="--clr:${C.vendas}"><div class="lbl">Total de Vendas</div><div class="val">${fmt.n(list.length)}</div></div>
+    <div class="kpi" style="--clr:${C.receita}"><div class="lbl">Receita</div><div class="val">${fmt.m(total)}</div></div>
+    <div class="kpi" style="--clr:${C.ticket}"><div class="lbl">Ticket Médio</div><div class="val">${fmt.m(ticket)}</div></div>
+  `;
+  if (list.length === 0) {
+    document.getElementById('vendas-tbl').innerHTML = '<div style="color:var(--text-dim); padding:10px 0">Nenhuma venda registrada.</div>';
+    return;
+  }
+  const rows = list.map(v => `<tr>
+    <td>${v.data}</td>
+    <td>${v.cliente}</td>
+    <td>${v.vendedor}</td>
+    <td>${v.origem}</td>
+    <td class="num">${fmt.m(v.valor)}</td>
+  </tr>`).join('');
+  document.getElementById('vendas-tbl').innerHTML = `<table>
+    <thead><tr><th>Data</th><th>Cliente</th><th>Vendedor</th><th>Origem</th><th class="num">Valor</th></tr></thead>
+    <tbody>${rows}</tbody>
+  </table>`;
+}
+
+// ===== Export =====
+function exportarDiretores() {
+  const ytd = calcYTD();
+  const ticket = ytd.vendas > 0 ? ytd.receita/ytd.vendas : 0;
+  let monthRows = '';
+  MONTHS.forEach(m => {
+    monthRows += `<tr ${m.partial?'style="font-style:italic;color:#6b7280"':''}>
+      <td>${m.name}${m.partial?' *':''}</td>
+      <td style="text-align:right">${fmt.n(m.totals.leads)}</td>
+      <td style="text-align:right">${fmt.n(m.totals.qualif)}</td>
+      <td style="text-align:right">${fmt.n(m.totals.vendas)}</td>
+      <td style="text-align:right">${fmt.m(m.totals.receita)}</td>
+    </tr>`;
+  });
+  const html = `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>Relatório Hygibras</title>
+  <style>
+    body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;background:#f7f8fa;color:#111;padding:36px;margin:0}
+    h1{font-size:24px;margin:0 0 6px}.sub{color:#666;font-size:13px;margin-bottom:24px}
+    .kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:24px}
+    .k{background:#fff;border-radius:10px;padding:16px;border-left:4px solid #3B82F6}
+    .k .l{font-size:11px;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;font-weight:600}
+    .k .v{font-size:22px;font-weight:700;margin-top:4px}
+    .k.q{border-left-color:#8B5CF6}.k.vi{border-left-color:#F97316}.k.s{border-left-color:#10B981}.k.r{border-left-color:#F59E0B}
+    table{width:100%;border-collapse:collapse;background:#fff;border-radius:10px;overflow:hidden;margin-top:12px}
+    th{background:#f3f4f6;color:#111;font-size:11px;text-transform:uppercase;letter-spacing:0.04em;padding:12px 10px;text-align:left;border-bottom:1px solid #e5e7eb}
+    td{padding:10px;border-bottom:1px solid #f0f0f0;font-size:13px}
+    .tt td{background:#f3f4f6;font-weight:700;border-top:2px solid #d1d5db}
+    .ticket{background:#fff;border-radius:10px;padding:14px;margin-bottom:20px;border-left:4px solid #EC4899}
+  </style></head><body>
+  <h1>Relatório Hygibras 2026</h1>
+  <div class="sub">Resumo executivo — gerado em ${new Date().toLocaleDateString('pt-BR')}</div>
+  <div class="kpis">
+    <div class="k"><div class="l">Leads YTD</div><div class="v">${fmt.n(ytd.leads)}</div></div>
+    <div class="k q"><div class="l">Qualif YTD</div><div class="v">${fmt.n(ytd.qualif)}</div></div>
+    <div class="k vi"><div class="l">Visitas YTD</div><div class="v">${fmt.n(ytd.visitas)}</div></div>
+    <div class="k s"><div class="l">Vendas YTD</div><div class="v">${fmt.n(ytd.vendas)}</div></div>
+    <div class="k r"><div class="l">Receita YTD</div><div class="v">${fmt.m(ytd.receita)}</div></div>
+  </div>
+  <div class="ticket"><strong>Ticket médio YTD:</strong> ${fmt.m(ticket)}</div>
+  <h3>Resumo por mês</h3>
+  <table><thead><tr><th>Mês</th><th style="text-align:right">Leads</th><th style="text-align:right">Qualif</th><th style="text-align:right">Vendas</th><th style="text-align:right">Receita</th></tr></thead>
+  <tbody>${monthRows}<tr class="tt"><td>TOTAL YTD</td><td style="text-align:right">${fmt.n(ytd.leads)}</td><td style="text-align:right">${fmt.n(ytd.qualif)}</td><td style="text-align:right">${fmt.n(ytd.vendas)}</td><td style="text-align:right">${fmt.m(ytd.receita)}</td></tr></tbody></table>
+  </body></html>`;
+  const blob = new Blob([html], {type:'text/html'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `hygibras_relatorio_${new Date().toISOString().slice(0,10)}.html`;
+  document.body.appendChild(a); a.click(); a.remove();
+}
+
+// ===== Tab nav =====
+document.querySelectorAll('.tab').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById(t.dataset.tab).classList.add('active');
+    if (t.dataset.tab === 'semanal' && !document.getElementById('semanal').innerHTML.trim()) renderSemanal();
+    if (t.dataset.tab === 'origens' && !document.getElementById('origens').innerHTML.trim()) renderOrigens();
+    if (t.dataset.tab === 'visitas' && !document.getElementById('visitas').innerHTML.trim()) renderVisitas();
+    if (t.dataset.tab === 'vendas' && !document.getElementById('vendas').innerHTML.trim()) renderVendas();
+  });
+});
+
+renderPanorama();
+// Pre-render all panels so charts work on tab switch
+renderSemanal();
+renderOrigens();
+renderVisitas();
+renderVendas();
+</script>
+</body>
+</html>
