@@ -1,0 +1,12 @@
+{
+  "name": "gerador-arte-higiclear",
+  "version": "1.0.0",
+  "description": "Sync WooCommerce -> catalogo.json + gerador de arte comercial",
+  "private": true,
+  "scripts": {
+    "sync": "node scripts/sync.js"
+  },
+  "dependencies": {
+    "sharp": "^0.33.5"
+  }
+}
