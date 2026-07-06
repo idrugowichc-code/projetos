@@ -572,7 +572,7 @@ function renderVisitas() {
   const p = document.getElementById('visitas');
   p.innerHTML = `
     <div class="month-pills" id="pillsVis"></div>
-    <div class="grid g3 mb-24" id="visKpis"></div>
+    <div class="mb-24" id="visKpis" style="max-width: 400px;"></div>
     <div class="card">
       <h3>Lista de visitas</h3>
       <div class="grid g2" id="visList"></div>
@@ -608,8 +608,6 @@ function drawVis() {
   }
   document.getElementById('visKpis').innerHTML = `
     <div class="card kpi" style="--kc:${C.visitas}"><div class="lbl">Total de Visitas</div><div class="val">${fmtBR(totalV)}</div><div class="sub">${list.length} registro(s)</div></div>
-    <div class="card kpi" style="--kc:${C.qualif}"><div class="lbl">% dos Qualificados</div><div class="val">${totalQ?fmtPct(totalV/totalQ):'—'}</div><div class="sub">${fmtBR(totalV)} de ${fmtBR(totalQ)} qualif</div></div>
-    <div class="card kpi" style="--kc:${C.vendas}"><div class="lbl">Conv Visita → Venda</div><div class="val">${totalV?fmtPct(convVV):'—'}</div><div class="sub">taxa de fechamento pós-visita</div></div>
   `;
   document.getElementById('visList').innerHTML = list.length
     ? list.map(v => `<div class="visit-card"><div class="name">${v.cliente}${currentMonthVis==='ytd'?` <span style="color:var(--text-mute)">· ${v.mes}</span>`:''}</div><span class="pill ${v.status==='ok'?'pill-ok':'pill-pending'}">${v.status==='ok'?'OK':'Pendente'}</span></div>`).join('')
