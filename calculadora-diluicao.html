@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calculadora de Diluição — Higiclear</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     MARCA — para versão Hygibras, troque apenas estas variáveis:
+     --brand:#0850A4  --brand-deep:#16205D  --bg:#F1F2F4
+     ============================================================ */
+  :root{
+    --brand:#10806E;
+    --brand-deep:#0B5F52;
+    --accent:#F47820;
+    --bg:#F7F7F9;
+    --card:#FFFFFF;
+    --ink:#1A2B29;
+    --ink-soft:rgba(26,43,41,.62);
+    --line:#E3E7E6;
+    --water:#4AA3DF;
+    --radius:14px;
+    --shadow:0 6px 24px rgba(11,95,82,.08);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    font-family:'DM Sans',system-ui,sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    padding:24px 16px 40px;
+    line-height:1.5;
+  }
+  .calc{max-width:520px;margin:0 auto}
+
+  .calc-header{text-align:center;margin-bottom:24px}
+  .calc-header h1{
+    font-family:'Plus Jakarta Sans',sans-serif;
+    font-weight:800;
+    font-size:clamp(24px,5vw,30px);
+    letter-spacing:-.02em;
+    color:var(--brand-deep);
+  }
+  .calc-header p{color:var(--ink-soft);font-size:15px;margin-top:4px}
+
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:20px;
+    margin-bottom:16px;
+    box-shadow:var(--shadow);
+  }
+  .card-label{
+    font-family:'Plus Jakarta Sans',sans-serif;
+    font-weight:700;
+    font-size:13px;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    color:var(--brand);
+    margin-bottom:14px;
+    display:flex;align-items:center;gap:8px;
+  }
+  .card-label small{
+    font-family:'DM Sans',sans-serif;
+    font-weight:400;text-transform:none;letter-spacing:0;
+    color:var(--ink-soft);font-size:12px;
+  }
+
+  .presets{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  .preset{
+    appearance:none;border:1.5px solid var(--line);
+    background:var(--card);color:var(--ink);
+    border-radius:10px;padding:12px 4px;
+    font-family:'DM Sans',sans-serif;font-weight:500;font-size:15px;
+    cursor:pointer;transition:all .15s ease;
+    min-height:46px;
+  }
+  .preset:hover{border-color:var(--brand)}
+  .preset.active{
+    background:var(--brand);border-color:var(--brand);
+    color:#fff;font-weight:700;
+  }
+  .custom-row{display:flex;align-items:center;gap:10px;margin-top:12px}
+  .custom-row span{font-size:14px;color:var(--ink-soft);white-space:nowrap}
+  .custom-row .prefix{
+    font-weight:700;color:var(--ink);font-size:16px;
+  }
+  input[type=number]{
+    width:100%;border:1.5px solid var(--line);border-radius:10px;
+    padding:11px 12px;font-family:'DM Sans',sans-serif;font-size:16px;
+    color:var(--ink);background:var(--card);
+    outline:none;transition:border-color .15s;
+    -moz-appearance:textfield;
+  }
+  input[type=number]::-webkit-outer-spin-button,
+  input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+  input[type=number]:focus{border-color:var(--brand)}
+
+  /* Resultado */
+  .result{
+    background:var(--brand-deep);
+    border:none;
+    color:#fff;
+  }
+  .result .card-label{color:rgba(255,255,255,.75)}
+  .result-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+  .result-item{
+    background:rgba(255,255,255,.08);
+    border-radius:10px;padding:14px;
+  }
+  .result-item .tag{
+    font-size:12px;text-transform:uppercase;letter-spacing:.05em;
+    display:flex;align-items:center;gap:6px;
+    color:rgba(255,255,255,.75);margin-bottom:4px;
+  }
+  .dot{width:8px;height:8px;border-radius:50%;flex:none}
+  .dot.produto{background:var(--accent)}
+  .dot.agua{background:var(--water)}
+  .result-item .val{
+    font-family:'Plus Jakarta Sans',sans-serif;
+    font-weight:800;font-size:clamp(22px,6vw,28px);
+    letter-spacing:-.02em;font-variant-numeric:tabular-nums;
+  }
+  .result-item .val small{font-size:.55em;font-weight:700;opacity:.8;margin-left:2px}
+
+  /* Barra de proporção — assinatura visual */
+  .ratio-bar{
+    height:14px;border-radius:99px;overflow:hidden;
+    display:flex;background:rgba(255,255,255,.12);
+    margin-bottom:10px;
+  }
+  .ratio-bar .seg-produto{background:var(--accent);min-width:3px;transition:width .35s ease}
+  .ratio-bar .seg-agua{background:var(--water);transition:width .35s ease}
+  .ratio-caption{
+    font-size:13px;color:rgba(255,255,255,.8);
+    display:flex;justify-content:space-between;
+    font-variant-numeric:tabular-nums;
+  }
+  .result .empty{
+    text-align:center;color:rgba(255,255,255,.65);
+    font-size:14px;padding:8px 0;
+  }
+  .hidden{display:none}
+
+  /* Custo opcional */
+  details.custo{margin-top:4px}
+  details.custo summary{
+    cursor:pointer;list-style:none;
+    font-size:14px;font-weight:500;color:var(--brand);
+    display:flex;align-items:center;gap:6px;
+  }
+  details.custo summary::-webkit-details-marker{display:none}
+  details.custo summary::before{content:"+";font-weight:700;font-size:16px}
+  details.custo[open] summary::before{content:"–"}
+  details.custo .custo-body{margin-top:12px}
+  .custo-out{
+    margin-top:10px;font-size:14px;color:var(--ink-soft);
+  }
+  .custo-out strong{
+    color:var(--brand-deep);font-size:17px;
+    font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;
+    font-variant-numeric:tabular-nums;
+  }
+
+  .disclaimer{
+    text-align:center;font-size:12px;color:var(--ink-soft);
+    margin-top:18px;max-width:440px;margin-left:auto;margin-right:auto;
+  }
+
+  @media (max-width:400px){
+    .presets{grid-template-columns:repeat(3,1fr)}
+    body{padding:16px 12px 32px}
+    .card{padding:16px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{transition:none!important}
+  }
+</style>
+</head>
+<body>
+<div class="calc">
+
+  <header class="calc-header">
+    <h1>Calculadora de Diluição</h1>
+    <p>Calcule a proporção correta de produto e água</p>
+  </header>
+
+  <!-- PROPORÇÃO -->
+  <section class="card">
+    <div class="card-label">Proporção <small>(1 parte de produto : X de água)</small></div>
+    <div class="presets" id="ratioPresets">
+      <button class="preset" data-ratio="10">1:10</button>
+      <button class="preset" data-ratio="25">1:25</button>
+      <button class="preset" data-ratio="50">1:50</button>
+      <button class="preset" data-ratio="100">1:100</button>
+      <button class="preset" data-ratio="200">1:200</button>
+      <button class="preset" data-ratio="400">1:400</button>
+      <button class="preset" data-ratio="600">1:600</button>
+      <button class="preset" data-ratio="800">1:800</button>
+    </div>
+    <div class="custom-row">
+      <span>Outra proporção:</span>
+      <span class="prefix">1&nbsp;:</span>
+      <input type="number" id="ratioCustom" inputmode="numeric" min="1" max="10000" placeholder="Ex.: 128">
+    </div>
+  </section>
+
+  <!-- VOLUME -->
+  <section class="card">
+    <div class="card-label">Volume final desejado</div>
+    <div class="presets" id="volPresets">
+      <button class="preset" data-vol="0.5">500 mL</button>
+      <button class="preset" data-vol="1">1 L</button>
+      <button class="preset" data-vol="5">5 L</button>
+      <button class="preset" data-vol="10">10 L</button>
+      <button class="preset" data-vol="20">20 L</button>
+      <button class="preset" data-vol="50">50 L</button>
+      <button class="preset" data-vol="100">100 L</button>
+      <button class="preset" data-vol="200">200 L</button>
+    </div>
+    <div class="custom-row">
+      <span>Outro volume (L):</span>
+      <input type="number" id="volCustom" inputmode="decimal" min="0.1" step="0.1" max="100000" placeholder="Ex.: 12,5">
+    </div>
+  </section>
+
+  <!-- RESULTADO -->
+  <section class="card result">
+    <div class="card-label">Resultado</div>
+
+    <div id="resultEmpty" class="empty">Selecione a proporção e o volume para calcular</div>
+
+    <div id="resultBody" class="hidden">
+      <div class="result-grid">
+        <div class="result-item">
+          <div class="tag"><span class="dot produto"></span>Produto</div>
+          <div class="val" id="outProduto">—</div>
+        </div>
+        <div class="result-item">
+          <div class="tag"><span class="dot agua"></span>Água</div>
+          <div class="val" id="outAgua">—</div>
+        </div>
+      </div>
+      <div class="ratio-bar">
+        <div class="seg-produto" id="barProduto"></div>
+        <div class="seg-agua" id="barAgua"></div>
+      </div>
+      <div class="ratio-caption">
+        <span id="outRatio">—</span>
+        <span>Concentração: <span id="outConc">—</span></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- CUSTO OPCIONAL -->
+  <section class="card">
+    <details class="custo" id="custoDetails">
+      <summary>Calcular custo por litro de solução pronta</summary>
+      <div class="custo-body">
+        <div class="custom-row">
+          <span>Preço do produto concentrado (R$/L):</span>
+          <input type="number" id="custoLitro" inputmode="decimal" min="0" step="0.01" placeholder="Ex.: 28,90">
+        </div>
+        <div class="custo-out hidden" id="custoOut">
+          Custo da solução pronta: <strong id="outCusto">—</strong> por litro
+          &nbsp;·&nbsp; Total desta diluição: <strong id="outCustoTotal">—</strong>
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <p class="disclaimer">
+    Valores de referência. Siga sempre a diluição indicada no rótulo ou na FISPQ do produto.
+    Em caso de dúvida, fale com nosso time técnico.
+  </p>
+
+</div>
+
+<script>
+(function(){
+  var state = { ratio:null, vol:null };
+
+  var ratioPresets = document.getElementById('ratioPresets');
+  var volPresets   = document.getElementById('volPresets');
+  var ratioCustom  = document.getElementById('ratioCustom');
+  var volCustom    = document.getElementById('volCustom');
+  var custoLitro   = document.getElementById('custoLitro');
+
+  function fmt(n, dec){
+    return n.toLocaleString('pt-BR',{minimumFractionDigits:dec===undefined?0:dec, maximumFractionDigits:dec===undefined?2:dec});
+  }
+
+  function fmtVolume(mL){
+    if(mL >= 1000) return fmt(mL/1000,2).replace(/,?0+$/,'').replace(/,$/,'') + '<small>L</small>';
+    return fmt(mL, mL < 10 ? 1 : 0) + '<small>mL</small>';
+  }
+
+  function parseLocale(el){
+    var v = (el.value||'').replace(',','.');
+    var n = parseFloat(v);
+    return isFinite(n) && n > 0 ? n : null;
+  }
+
+  function setActive(container, btn){
+    container.querySelectorAll('.preset').forEach(function(b){b.classList.remove('active');});
+    if(btn) btn.classList.add('active');
+  }
+
+  ratioPresets.addEventListener('click', function(e){
+    var b = e.target.closest('.preset'); if(!b) return;
+    state.ratio = parseFloat(b.dataset.ratio);
+    ratioCustom.value = '';
+    setActive(ratioPresets, b);
+    calc();
+  });
+
+  volPresets.addEventListener('click', function(e){
+    var b = e.target.closest('.preset'); if(!b) return;
+    state.vol = parseFloat(b.dataset.vol);
+    volCustom.value = '';
+    setActive(volPresets, b);
+    calc();
+  });
+
+  ratioCustom.addEventListener('input', function(){
+    var n = parseLocale(ratioCustom);
+    if(n){ state.ratio = n; setActive(ratioPresets, null); }
+    calc();
+  });
+
+  volCustom.addEventListener('input', function(){
+    var n = parseLocale(volCustom);
+    if(n){ state.vol = n; setActive(volPresets, null); }
+    calc();
+  });
+
+  custoLitro.addEventListener('input', calc);
+
+  function calc(){
+    var empty = document.getElementById('resultEmpty');
+    var body  = document.getElementById('resultBody');
+    var custoOut = document.getElementById('custoOut');
+
+    if(!state.ratio || !state.vol){
+      empty.classList.remove('hidden');
+      body.classList.add('hidden');
+      custoOut.classList.add('hidden');
+      return;
+    }
+
+    var totalML   = state.vol * 1000;
+    var parts     = state.ratio + 1;           // 1 parte produto + X partes água
+    var produtoML = totalML / parts;
+    var aguaML    = totalML - produtoML;
+    var conc      = (1 / parts) * 100;
+
+    empty.classList.add('hidden');
+    body.classList.remove('hidden');
+
+    document.getElementById('outProduto').innerHTML = fmtVolume(produtoML);
+    document.getElementById('outAgua').innerHTML    = fmtVolume(aguaML);
+    document.getElementById('outRatio').textContent = 'Diluição 1:' + fmt(state.ratio);
+    document.getElementById('outConc').textContent  =
+      conc >= 1 ? fmt(conc,1) + '%' : fmt(conc,2) + '%';
+
+    var pctProduto = Math.max((produtoML/totalML)*100, 1.5);
+    document.getElementById('barProduto').style.width = pctProduto + '%';
+    document.getElementById('barAgua').style.width    = (100 - pctProduto) + '%';
+
+    // Custo
+    var preco = parseLocale(custoLitro);
+    if(preco){
+      var custoPorLitro = preco * (produtoML/1000) / state.vol;
+      var custoTotal    = preco * (produtoML/1000);
+      document.getElementById('outCusto').textContent =
+        'R$ ' + fmt(custoPorLitro, custoPorLitro < 0.1 ? 3 : 2);
+      document.getElementById('outCustoTotal').textContent = 'R$ ' + fmt(custoTotal,2);
+      custoOut.classList.remove('hidden');
+    } else {
+      custoOut.classList.add('hidden');
+    }
+  }
+})();
+</script>
+</body>
+</html>
